@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 import tkinter as tk
 from tkinter import *
@@ -9,6 +10,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 class App():
     def __init__(self):
@@ -18,6 +20,14 @@ class App():
 
         self.grid_width = 150
         self.grid_height = 100
+
+        self.f = plt.figure(1)
+        self.a = self.f.add_subplot(111)
+
+        self.xdata = []
+        self.ydata = []
+
+        self.index = 0
 
         # Make some default fonts
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
@@ -73,24 +83,36 @@ class App():
         plt.plot(t,s)
         return fig
 
+    def animate(self, i):
+        pullData = open("sampleText.txt","r").read()
+        dataList = pullData.split('\n')
+        xList = []
+        yList = []
+        for eachLine in dataList[0:self.index]:
+            if len(eachLine) > 1:
+                x, y = eachLine.split(',')
+                xList.append(int(x))
+                yList.append(int(y))
+
+        self.a.clear()
+        self.a.plot(xList, yList)
+        self.index += 1
+    
     def make_data_stream(self, root):
         tabs = ["All", "Picarro Spectroscopy", "Laser Distance Sensor", "Abakus Particle Counter",
                        "MFC Flow Meter", "Bronkhurst Pressure", "Melthead"]
         
         notebook = Notebook(root)
 
-        for i, tab in enumerate(tabs):
+        for i, tab in enumerate([tabs[0]]):
             window = Frame(notebook)
             window.grid()
             label = Label(window, text=tab+" data", font=self.bold16)
             label.grid(column=0, row=0)
             
-            fig = self.plot_xy()
-            # creating the Tkinter canvas containing the Matplotlib figure 
-            canvas = FigureCanvasTkAgg(fig, window)   
-            canvas.draw() 
-  
-            # placing the canvas on the Tkinter window 
+            canvas = FigureCanvasTkAgg(self.f, window)
+            canvas.draw()
+            time.sleep(0.1)
             canvas.get_tk_widget().grid(row=1, column=0) 
 
             notebook.add(window, text=tab)
@@ -149,6 +171,7 @@ class App():
             button["state"] = NORMAL
 
     def run(self):
+        ani = FuncAnimation(self.f, self.animate, interval=1000)
         self.root.mainloop()
         self.root.destroy()
 
