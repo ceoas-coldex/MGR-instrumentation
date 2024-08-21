@@ -4,10 +4,10 @@ import concurrent.futures
 from readerwriterlock import rwlock
 
 class Bus():
-    """Class that sets up a bus to pass information around with appropriate read/write locking"""
+    """Class that sets up a bus to pass information around with read/write locking"""
     def __init__(self):
         self.message = None
-        self.lock = rwlock.RWLockWriteD()
+        self.lock = rwlock.RWLockWriteD() # sets up a lock to prevent simultanous reading and writing
 
     def write(self, message):
         with self.lock.gen_wlock():
@@ -77,7 +77,7 @@ class DummyExecutor():
         self.display_delay = 0.1
         
     def execute(self):
-        """Method to execute the sensor, interpretor, and display classes. Calls the appropriate methdos within
+        """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
         those classes and passes them the correct busses and delay times."""
         while True:
             with concurrent.futures.ThreadPoolExecutor() as executor:
