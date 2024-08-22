@@ -15,6 +15,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
+        """Class to communicate with the Abakus particle counter."""
         # Abakus serial communication codes
         self.LEAVE_RC_MODE = b'C0\r\n'
         self.ENTER_RC_MODE = b'C1\r\n'
@@ -27,9 +28,17 @@ class Abakus():
 
     def __del__(self) -> None:
         """Deconstructor, closes the serial port when the object is destroyed"""
+        self.stop_measurement()
+        time.sleep()
         self.ser.close()
 
     def initialize_pyserial(self, port, baud):
+        """
+        Method to open the serial port at the specified baud. These values MUST match the instrument. 
+        Typing "mode" in the Windows Command Prompt gives information about serial ports, but sometimes
+        the baud is wrong, so beware. Check sensor documentation.
+        Inputs - port (str, serial port), baud (int, baud rate)
+        """
         try:
             self.ser = serial.Serial(port, baud, timeout=5)
             logging.info(f"Connected to serial port {port} with baud {baud}")

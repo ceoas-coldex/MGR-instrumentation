@@ -31,6 +31,12 @@ class FlowMeter():
         self.ser.close()
 
     def initialize_pyserial(self, port, baud):
+        """
+        Method to open the serial port at the specified baud. These values MUST match the instrument. 
+        Typing "mode" in the Windows Command Prompt gives information about serial ports, but sometimes
+        the baud is wrong, so beware. Check sensor documentation.
+        Inputs - port (str, serial port), baud (int, baud rate)
+        """
         try:
             self.ser = serial.Serial(port, baud, timeout=5)
             logging.info(f"Connected to serial port {port} with baud {baud}")
@@ -39,10 +45,12 @@ class FlowMeter():
 
     @log_on_end(logging.INFO, "Flowmeter measurements started")
     def start_measurement(self):
+        """Method to start instrument"""
         self.ser.write(self.START)
 
     @log_on_end(logging.INFO, "Flowmeter measurements stopped")
     def stop_measurement(self):
+        """Not sure if this command exists, leaving it here as a reminder to myself to check"""
         pass
 
     @log_on_end(logging.INFO, "Flowmeter queried")
