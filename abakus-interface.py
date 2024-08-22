@@ -29,7 +29,7 @@ class Abakus():
     def __del__(self) -> None:
         """Deconstructor, closes the serial port when the object is destroyed"""
         self.stop_measurement()
-        time.sleep()
+        time.sleep(0.5)
         self.ser.close()
 
     def initialize_pyserial(self, port, baud):
@@ -67,7 +67,6 @@ class Abakus():
         self.ser.write(self.QUERY)
         timestamp = time.time()
         response = self.ser.readline()
-        
         # Decode the serial message
         data_out = response.decode('utf-8').strip()
         # do some regex pattern matching to isolate the data from the serial codes
@@ -114,8 +113,6 @@ if __name__ == "__main__":
             timestamp, output = my_abakus.query()
             process_data_output(output, timestamp)
         elif command == "x" or command == "X":
-            my_abakus.stop_measurement()
-            time.sleep(0.5)
             stop = True
         else:
             print("Invalid entry. Try again")

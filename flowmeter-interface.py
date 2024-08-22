@@ -59,10 +59,8 @@ class FlowMeter():
         self.ser.write(self.QUERY)
         timestamp = time.time()
         response = self.ser.readline()
-        
         # Decode the response
-        byte_list = [byte for byte in response]
-        data_out = [int(byte) for byte in byte_list]
+        data_out = [int(byte) for byte in response]
         return data_out, timestamp
     
 if __name__ == "__main__":
@@ -160,6 +158,7 @@ if __name__ == "__main__":
         elif command == "c" or command == "C":
             raw_output, timestamp = my_flow.query()
             print(raw_output)
+            print(type(raw_output[0]))
             procssed_output = process_flow_data(raw_output, timestamp, scale_factor)
             print(procssed_output)
         elif command == "x" or command == "X":

@@ -63,17 +63,11 @@ class Dimetix():
         # Get the most recent measurement from the laser sensor
         self.ser.write(self.ONE_MEAS)
         time.sleep(1)
+        timestamp = time.time()
         response = self.ser.readline().decode()
         # Decode the response
-        try:
-            output = response[7:].strip()
-            output_cm = float(output) / 100
-        except ValueError as e:
-            logging.error(f"Error in converting distance reading to float: {e}")
-            output_cm = 0
-        
-        logging.info(f"Laser distance {output_cm}cm")
-        return output_cm
+        output = response[7:].strip()
+        return output, timestamp
     
     @log_on_end(logging.INFO, "Dimetix laser queried temperature")
     def query_temperature(self):
@@ -81,6 +75,7 @@ class Dimetix():
         self.ser.write(self.TEMP)
         time.sleep(1)
         temp_raw = self.ser.readline().decode()
+        print(temp_raw)
         # Decode the response
         try:
             temp_raw = temp_raw[3:].strip()
@@ -92,8 +87,14 @@ class Dimetix():
             
 if __name__ == "__main__":
     ## ------- DATA PROCESSING FUNCTION FOR TESTING  ------- ##
-    def process_data_output(data_out, timestamp):
-        pass
+    def process_distance(data_out, timestamp):
+        try:
+            output_cm = float(data_out) / 100
+        except ValueError as e:
+            logging.error(f"Error in converting distance reading to float: {e}")
+            output_cm = 0
+        logging.info(f"Laser distance {output_cm}cm")
+
     ## ------- UI FOR TESTING  ------- ##
     my_laser = Dimetix()
     print("Testing serial communication\n")
@@ -105,7 +106,10 @@ if __name__ == "__main__":
         elif command == "b" or command == "B":
             my_laser.stop_laser()
         elif command == "c" or command == "C":
-            my_laser.query_distance()
+            # time.sleep(5)
+            output, timestamp = my_laser.query_distance()
+            process_distance(output, timestamp)
+            time.sleep(5)
             my_laser.query_temperature()
         elif command == "x" or command == "X":
             stop = True
