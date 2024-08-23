@@ -67,7 +67,7 @@ class Dimetix():
         response = self.ser.readline().decode()
         # Decode the response
         output = response[7:].strip()
-        return output, timestamp
+        return timestamp, output
     
     @log_on_end(logging.INFO, "Dimetix laser queried temperature")
     def query_temperature(self):
@@ -107,7 +107,7 @@ if __name__ == "__main__":
             my_laser.stop_laser()
         elif command == "c" or command == "C":
             # time.sleep(5)
-            output, timestamp = my_laser.query_distance()
+            timestamp, output = my_laser.query_distance()
             process_distance(output, timestamp)
             time.sleep(5)
             my_laser.query_temperature()

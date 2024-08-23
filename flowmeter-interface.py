@@ -55,13 +55,14 @@ class FlowMeter():
 
     @log_on_end(logging.INFO, "Flowmeter queried")
     def query(self):
-        """Queries the flowmeter. Returns raw data and timestamp"""
+        """Queries the flowmeter. Returns raw data and timestamp
+            Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""
         self.ser.write(self.QUERY)
         timestamp = time.time()
         response = self.ser.readline()
         # Decode the response
         data_out = [int(byte) for byte in response]
-        return data_out, timestamp
+        return timestamp, data_out
     
 if __name__ == "__main__":
     ## ------- DATA PROCESSING FUNCTIONS FOR TESTING  ------- ##
@@ -156,7 +157,7 @@ if __name__ == "__main__":
         elif command == "b" or command == "B":
             pass
         elif command == "c" or command == "C":
-            raw_output, timestamp = my_flow.query()
+            timestamp, raw_output = my_flow.query()
             print(raw_output)
             print(type(raw_output[0]))
             procssed_output = process_flow_data(raw_output, timestamp, scale_factor)
