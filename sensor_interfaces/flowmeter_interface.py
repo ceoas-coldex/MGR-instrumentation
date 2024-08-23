@@ -120,8 +120,6 @@ if __name__ == "__main__":
                 rxdata = validated_data[4]
                 ticks = twos(rxdata[0])
                 flow_rate = (ticks / scale_factor)
-                if scale_factor == 500:
-                    flow_rate = (ticks / scale_factor)
 
                 d = {"time (epoch)": [timestamp], "flow": [flow_rate]}
                 output = pd.DataFrame(d)
