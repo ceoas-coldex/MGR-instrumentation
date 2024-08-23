@@ -46,7 +46,7 @@ class GasPicarro():
     def initialize_pyserial(self, port, baud):
         logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    @log_on_end("Picarro queried")
+    @log_on_end(logging.INFO, "Picarro queried")
     def query():
         """Returns - timestamp (float, epoch time), picarro_reading (str, raw data)"""
 
@@ -59,7 +59,7 @@ class WaterPicarro():
     def __init__(self) -> None:
         pass
 
-class Flowmeter():
+class FlowMeter():
     def __init__(self, serial_port="COM6", baud_rate=115200) -> None:
         """Fake hardware, pretends to do everything the real FlowMeter class does"""
         self.initialize_pyserial(serial_port, baud_rate)
@@ -87,9 +87,9 @@ class Flowmeter():
         return timestamp, fake_flowmeter_sli2000_reading
 
 class Dimetix():
-    def __init__(self) -> None:
+    def __init__(self, serial_port="COM8", baud_rate=19200) -> None:
         """Fake hardware, pretends to do everything the real Dimetix laser class does"""
-        self.initialize_pyserial()
+        self.initialize_pyserial(serial_port, baud_rate)
 
     def __del__(self) -> None:
         self.stop_laser()
@@ -117,5 +117,13 @@ class Dimetix():
         pass
 
 class Bronkhorst():
-    def __init__(self) -> None:
+    def __init__(self, serial_port, baud_rate=38400) -> None:
+        """Not yet done. Fake hardware, pretends to do everything the real Dimetix laser class does"""
+        self.initialize_pyserial(serial_port, baud_rate)
+
+    def initialize_pyserial(port, baud):
+        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+
+    @log_on_end(logging.INFO, "Bronkhorst queried")
+    def query(self):
         pass
