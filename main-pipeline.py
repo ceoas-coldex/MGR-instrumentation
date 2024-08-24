@@ -171,54 +171,61 @@ class Interpretor():
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, output_bus:Bus, delay):
         """Method to read from all the sensor busses and write one compiled output file"""
-        # Read from all the busses
-        abakus_timestamp, abakus_data = abakus_bus.read()
-        flowmeter_sli_timestamp, flowmeter_sli_data = flowmeter_sli_bus.read()
-        flowmeter_sls_timestamp, flowmeter_sls_data = flowmeter_sls_bus.read()
-        laser_timestamp, laser_data = laser_bus.read()
-        picarro_gas_timestamp, picarro_gas_data = picarro_gas_bus.read()
+        # Read from all the busses (should be in the form (timestamp, sensor_data))
+        abakus_output = abakus_bus.read()
+        flowmeter_sli_output = flowmeter_sli_bus.read()
+        flowmeter_sls_output = flowmeter_sls_bus.read()
+        laser_output = laser_bus.read()
+        picarro_gas_output = picarro_gas_bus.read()
         # picarro_water_timestamp, picarro_water_data = picarro_water_bus.read()
 
         # Process the raw data from each bus (each produces a data frame)
-        self.process_abakus_data(abakus_timestamp, abakus_data)
-        self.process_flowmeter_data(flowmeter_sli_timestamp, flowmeter_sli_data, model="SLI2000", scale_factor=5, units="uL/min")
-        self.process_flowmeter_data(flowmeter_sls_timestamp, flowmeter_sls_data, model="SLS1500", scale_factor=500, units="mL/min")
-        self.process_laser_data(laser_timestamp, laser_data)
-        self.process_picarro_data(picarro_gas_timestamp, picarro_gas_data, model="GAS")
+        self.process_abakus_data(abakus_output)
+        self.process_flowmeter_data(flowmeter_sli_output, model="SLI2000", scale_factor=5, units="uL/min")
+        self.process_flowmeter_data(flowmeter_sls_output, model="SLS1500", scale_factor=500, units="mL/min")
+        self.process_laser_data(laser_output)
+        self.process_picarro_data(picarro_gas_output, model="GAS")
         # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
         
         # Concatanate the data frames and take a look at the differece between their timestamps
         big_df = pd.concat([self.abakus_total_counts, self.flowmeter_sli2000_data, 
                             self.flowmeter_sls1500_data, self.laser_data, self.picarro_gas_data], axis=1)
-        # big_df["time_difference"] = [abakus_timestamp - flowmeter_sli_timestamp]
-        print(f"time difference 1: {abakus_timestamp - flowmeter_sli_timestamp}")
-        print(f"time difference 2: {abakus_timestamp - flowmeter_sls_timestamp}")
-        print(f"time difference 3: {abakus_timestamp - laser_timestamp}")
-        print(f"time difference 4: {abakus_timestamp - picarro_gas_timestamp}")
+
+        time1 = self.abakus_total_counts["time (epoch)"] - self.flowmeter_sli2000_data["time (epoch)"]
+        time2 = self.abakus_total_counts["time (epoch)"] - self.flowmeter_sls1500_data["time (epoch)"]
+        time3 = self.abakus_total_counts["time (epoch)"] - self.laser_data["time (epoch)"]
+        time4 = self.abakus_total_counts["time (epoch)"] - self.picarro_gas_data["time (epoch)"]
+        print(f"time difference 1: {time1}")
+        print(f"time difference 2: {time2}")
+        print(f"time difference 3: {time3}")
+        print(f"time difference 4: {time4}")
         
         # Write to the output bus
         output_bus.write(big_df)
         time.sleep(delay)
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
-    def process_abakus_data(self, timestamp, data_out:str):
+    def process_abakus_data(self, abakus_data):
         """
         Function to processes the data from querying the Abakus. The first measurement comes through with 
         more than the expected 32 channels (since the Abakus holds onto the last measurement from the last batch)
         so you should query the Abakus a couple times before starting data processing. We have a check for that here
         just in case.
 
+            Inputs - abakus_data (tuple, (timestamp, raw_data))    
+        
             Updates - self.abakus_data (pd.df, processed timestamp, bins, and particle count/bin)
         """
         # Data processing - from Abby's stuff originally
         try:
+            timestamp, data_out = abakus_data
             output = data_out.split() # split into a list
             bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
             counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
 
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
             if len(bins) == self.abakus_bin_num: 
-                logging.info("Abakus data good, recieved 32 channels.")
+                # logging.info("Abakus data good, recieved 32 channels.")
                 self.abakus_data["time (epoch)"] = timestamp
                 self.abakus_data["bins"] = bins
                 self.abakus_data["counts"] = counts
@@ -230,16 +237,19 @@ class Interpretor():
             logging.debug(f"Encountered exception in processing Abakus: {e}. Not updating measurement")
             
     ## ------------------- FLOWMETER ------------------- ##
-    def process_flowmeter_data(self, timestamp, raw_data, model, scale_factor, units):
+    def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
         """Method to process data from querying the Flowmeter. The scale factor and unit output of the two 
         models differs (SLI2000 - uL/min, SLS1500 - mL/min). Could make that the same if needed, but for now
         I want it to be consistent with the out-of-box software
         
+            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model, scale_factor, units  
+        
             Updates - self.flowmeter_SLXXXXX_data (pd.df, processed timestamp and flow rate)"""
         # Check if reading is good
-        validated_data = self.check_flowmeter_data(raw_data, model)
+        validated_data = self.check_flowmeter_data(flowmeter_data, model)
         # If it's good, try processing it
         try:
+            timestamp = flowmeter_data[0]
             if validated_data:
                 rxdata = validated_data[4]
                 ticks = self.twos_comp(rxdata[0])
@@ -257,12 +267,15 @@ class Interpretor():
         except Exception as e:
             logging.debug(f"Encountered exception in processing flowmeter {model}: {e}. Not updating measurement.")
 
-    def check_flowmeter_data(self, raw_data, model):
+    def check_flowmeter_data(self, flowmeter_data, model):
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
         check in with her about specifics. 
 
+            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model
+
             Returns - a bunch of bytes if the data is valid, False if not"""
         try:
+            raw_data = flowmeter_data[1]
             adr = raw_data[1]
             cmd = raw_data[2]
             state = raw_data[3]
@@ -310,15 +323,18 @@ class Interpretor():
         return n
     
     # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
-    def process_laser_data(self, timestamp, data_out):
+    def process_laser_data(self, laser_data):
         """
         Method to process data from querying the laser. It doesn't always like to return a valid result, but
         if it does, it's just the value in meters (I think, should check with Abby about getting the data sheet there) \n
         
+            Inputs - laser_data (tuple, (timestamp, raw_data))
+            
             Updates - self.laser_data (pd.df, processed_timestamp, distance reading (cm)). 
             Doesn't currently have temperature because I was getting one or the other, and prioritized distance
         """
         try:
+            timestamp, data_out = laser_data
             output_cm = float(data_out) / 100
             self.laser_data["time (epoch)"] = timestamp
             self.laser_data["distance (cm)"] = output_cm
@@ -326,12 +342,15 @@ class Interpretor():
             logging.error(f"Error in converting distance reading to float: {e}. Not updating measurement")
 
     ## ------------------- PICARRO ------------------- ##
-    def process_picarro_data(self, timestamp, data_out, model):
+    def process_picarro_data(self, picarro_model, model):
         """Method to process data from querying the picarro
         
+            Inputs - picarro_data (tuple, (timestamp, raw_data)), model
+            
             Updates - self.picarro_gas_data"""
         if model == "GAS":
             try:
+                timestamp, data_out = picarro_model
                 self.picarro_gas_data["time (epoch)"] = timestamp
                 self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
                 self.picarro_gas_data["CO2"] = float(data_out[1])
@@ -342,7 +361,7 @@ class Interpretor():
                 logging.debug(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
         elif model == "WATER":
             try:
-                pass
+                timestamp, data_out = picarro_model
             except Exception as e:
                 logging.debug(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
 
