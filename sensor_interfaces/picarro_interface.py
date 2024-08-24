@@ -1,22 +1,15 @@
-
 # -------------
 # Establishes serial communication with the Picarro spectrograph. Currently has only been tested on the G2401 model 
 # that measures gas concentrations, but should work with any Picarro that supports a Remote Command Interface. The Picarro 
 # must be properly configured (Picarro Utilities > Setup Tool > Port Manager) to enable the interface, see README for full docs
 #
 # Ali Jones
-# 8/23/24
+# Last updated 8/23/24
 # -------------
-
 
 import serial
 from serial import SerialException
-import csv
-import keyboard
 import time
-import re
-import pandas as pd
-import numpy as np
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
