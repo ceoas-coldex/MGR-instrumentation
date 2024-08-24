@@ -32,9 +32,9 @@ class FlowMeter():
 
     def initialize_pyserial(self, port, baud):
         """
-        Method to open the serial port at the specified baud. These values MUST match the instrument. 
-        Typing "mode" in the Windows Command Prompt gives information about serial ports, but sometimes
-        the baud is wrong, so beware. Check sensor documentation.
+        Method to open the serial port at the specified baud. Also specifies a timeout to prevent infinite blocking.
+        These values (except for timeout) MUST match the instrument. Typing "mode" in the Windows Command Prompt 
+        gives information about serial ports, but sometimes the baud is wrong, so beware. Check sensor documentation.
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:

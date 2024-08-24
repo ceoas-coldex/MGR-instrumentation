@@ -28,16 +28,16 @@ class Dimetix():
         self.initialize_pyserial(serial_port, baud_rate)
 
     def __del__(self) -> None:
-        """Deconstructor, turns off the laser and closes the serial port when the object is destroyed"""
+        """Deconstructor, turns off the laser and closes the serial port when this object is destroyed"""
         self.stop_laser()
         time.sleep(0.5)
         self.ser.close()
 
     def initialize_pyserial(self, port, baud):
         """
-        Method to open the serial port at the specified baud. These values MUST match the instrument. 
-        Typing "mode" in the Windows Command Prompt gives information about serial ports, but sometimes
-        the baud is wrong, so beware. Check sensor documentation.
+        Method to open the serial port at the specified baud. Also specifies a timeout to prevent infinite blocking.
+        These values (except for timeout) MUST match the instrument. Typing "mode" in the Windows Command Prompt 
+        gives information about serial ports, but sometimes the baud is wrong, so beware. Check sensor documentation.
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
