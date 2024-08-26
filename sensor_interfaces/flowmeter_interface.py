@@ -137,7 +137,7 @@ if __name__ == "__main__":
         elif device == "2":
             scale_factor = 500
             port = "COM7" # specific to my laptop, will get dumped in a YAML file when actually set up
-            print("Device set to SLI-1500: units mL/min, scale factor 500")
+            print("Device set to SLS-1500: units mL/min, scale factor 500")
             valid_scale_factor = True
         else:
             print("Invalid entry. Please try again")

@@ -23,6 +23,14 @@ import keyboard
 import msvcrt as kb
 import os, sys
 
+from tkinter_practice import GUI
+
+import matplotlib
+matplotlib.use('TkAgg')
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 logging_format = "%(asctime)s: %(message)s"
@@ -161,17 +169,17 @@ class Interpretor():
         # Set up data frame for all sensors, with initial measurements zeroed and 
         #   the correct formatting to be updated by the sensor outputs
         self.abakus_bin_num = 32
-        init_abakus_data = {"time (epoch)": [0.0]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
+        init_abakus_data = {"abks time (epoch)": [0.0]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
         self.abakus_data = pd.DataFrame(init_abakus_data)
-        self.abakus_total_counts = pd.DataFrame({"time (epoch)": [0.0], "total counts": 0})
+        self.abakus_total_counts = pd.DataFrame({"abks time (epoch)": [0.0], "total counts": 0})
 
-        self.flowmeter_sli2000_data = pd.DataFrame({"time (epoch)": [0.0], "flow (uL/min)": [0.0]})
-        self.flowmeter_sls1500_data = pd.DataFrame({"time (epoch)": [0.0], "flow (mL/min)": [0.0]})
+        self.flowmeter_sli2000_data = pd.DataFrame({"FM time (epoch)": [0.0], "flow (uL/min)": [0.0]})
+        self.flowmeter_sls1500_data = pd.DataFrame({"FM time (epoch)": [0.0], "flow (mL/min)": [0.0]})
 
-        init_laser_data = {"time (epoch)": [0.0], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
+        init_laser_data = {"lsr time (epoch)": [0.0], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
         self.laser_data = pd.DataFrame(init_laser_data)
 
-        init_picarro_gas_data = {"time (epoch)":[0.0], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
+        init_picarro_gas_data = {"gas time (epoch)":[0.0], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
         self.picarro_gas_data = pd.DataFrame(init_picarro_gas_data)
 
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
@@ -201,10 +209,10 @@ class Interpretor():
         time2 = self.abakus_total_counts["time (epoch)"] - self.flowmeter_sls1500_data["time (epoch)"]
         time3 = self.abakus_total_counts["time (epoch)"] - self.laser_data["time (epoch)"]
         time4 = self.abakus_total_counts["time (epoch)"] - self.picarro_gas_data["time (epoch)"]
-        print(f"time difference 1: {time1}")
-        print(f"time difference 2: {time2}")
-        print(f"time difference 3: {time3}")
-        print(f"time difference 4: {time4}")
+        # print(f"time difference 1: {time1}")
+        # print(f"time difference 2: {time2}")
+        # print(f"time difference 3: {time3}")
+        # print(f"time difference 4: {time4}")
         
         # Write to the output bus
         output_bus.write(big_df)
@@ -374,12 +382,20 @@ class Interpretor():
 class Display():
     """Class that reads the interpreted data and displays it. Will eventually be on the GUI, for now it 
     reads the interpretor bus and prints the data"""
-    def __init__(self) -> None:
-        pass
+    def __init__(self, gui:GUI) -> None:
+        self.gui = gui
+        self.x = 0
+        
+        self.ani1 = FuncAnimation(self.gui.f1, self.gui.animate, interval=1000, cache_frame_data=False)
+        self.ani2 = FuncAnimation(self.gui.f2, self.gui.animate2, interval=1000, cache_frame_data=False)
 
     def display_consumer(self, interpretor_bus:Bus, delay):
         interp_data = interpretor_bus.read()
-        logging.info(f"Data: \n{interp_data}")
+        # logging.info(f"Data: \n{interp_data}")
+        try:
+            self.gui.update_abakus_buffer(interp_data["abks time (epoch)"].values[0], interp_data["total counts"].values[0])
+        except TypeError:
+            pass
         time.sleep(delay)
 
 class Executor():
@@ -388,11 +404,19 @@ class Executor():
         # Allow us to enter the data collection loop
         self.data_collection = True
         self.sensors_on = True
+
+        # Initialize the GUI (pull in the GUI class and link it to our functions)
+        sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
+                        "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+        self.gui = GUI(sensors)
         
         # Initialize the classes
         self.sensor = Sensor()
         self.interpretor = Interpretor()
-        self.display = Display()
+        self.display = Display(self.gui)
+
+        # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
+        self._set_gui_buttons()
 
         # Initialize the busses
         self.abakus_bus = Bus()
@@ -406,12 +430,6 @@ class Executor():
         self.sensor_delay = 0.1
         self.interp_delay = 0.1
         self.display_delay = 0.1
-
-        # Initialize the GUI (pull in the GUI class and set it to our functions)
-        # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
-        self. _set_gui_buttons()
-
-        # 
 
     def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
@@ -436,10 +454,12 @@ class Executor():
         """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
         those classes and passes them the correct busses and delay times."""
 
+        # Add a hotkey to break the loop
         keyboard.add_hotkey('alt+q', self.stop_data_collection, suppress=True, trigger_on_release=True)
         
         while self.data_collection == True:
             try:
+                self.gui.run()
                 with concurrent.futures.ThreadPoolExecutor() as self.executor:
                     eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
                     eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
@@ -461,7 +481,7 @@ class Executor():
                 eDisplay.result()
 
             # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
-            # just shut down the sensors and kill the program
+            # prioritize shut down the sensors cleanly and killing the program
             except KeyboardInterrupt:
                 try:
                     self.clean_sensor_shutdown()
@@ -469,7 +489,6 @@ class Executor():
                 except SystemExit:
                     self.clean_sensor_shutdown()
                     os._exit(130)
-
             
 if __name__ == "__main__":
     my_executor = Executor()
