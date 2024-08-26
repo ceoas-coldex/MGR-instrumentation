@@ -1,7 +1,7 @@
 # -------------
 # This is the main data processing pipeline. It has multiple classes - Sensor, Interpretor, Display - that handle 
-# the sensing, interpreting, and displaying of the sensors. Data is passed between them with the Bus class, managed
-# asynchronously with threads.
+# the sensing, interpreting, and displaying of the intrument data. Data is passed between them with the Bus class, 
+# managed asynchronously with threads.
 #
 # It's set up in a producer/consumer framework, with methods that only output data (like sensors) as "producers"
 # and those that only recieve data (like a display) as "consumers". There are also "consumer-producers", which 
@@ -20,6 +20,8 @@ import serial
 from serial import SerialException
 import pandas as pd
 import keyboard
+import msvcrt as kb
+import os, sys
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -67,6 +69,10 @@ class Sensor():
         self.gas_picarro = Picarro(serial_port="COM3")
         self.water_picarro = Picarro(serial_port="COM4")
 
+    def __del__(self) -> None:
+        # self.abakus.__del__()
+        pass
+    
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def abakus_producer(self, abakus_bus:Bus, delay):
         """Method that writes Abakus data to its bus"""
@@ -379,6 +385,10 @@ class Display():
 class Executor():
     """Class that handles passing the data around on all the busses. Still needs a clean shutdown."""
     def __init__(self) -> None:
+        # Allow us to enter the data collection loop
+        self.data_collection = True
+        self.sensors_on = True
+        
         # Initialize the classes
         self.sensor = Sensor()
         self.interpretor = Interpretor()
@@ -390,38 +400,79 @@ class Executor():
         self.flowmeter_sls1500_bus = Bus()
         self.laser_bus = Bus()
         self.picarro_gas_bus = Bus()
-
         self.main_interp_bus = Bus()
 
         # Set the delay times (sec)
         self.sensor_delay = 0.1
         self.interp_delay = 0.1
         self.display_delay = 0.1
-        
+
+        # Initialize the GUI (pull in the GUI class and set it to our functions)
+        # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
+        self. _set_gui_buttons()
+
+        # 
+
+    def clean_sensor_shutdown(self):
+        """Method to cleanly shut down sensors, if they're active"""
+        if self.sensors_on:
+            del self.sensor
+        self.sensors_on = False
+    
+    @log_on_start(logging.INFO, "Exiting data collection")
+    def stop_data_collection(self):
+        """Method to stop data collection, called by the 'alt+q' hotkey"""
+        self.data_collection = False
+        self.clean_sensor_shutdown()
+        self.executor.shutdown(wait=False, cancel_futures=True)
+    
+    def __del__(self) -> None:
+        self.clean_sensor_shutdown()
+    
+    def _set_gui_buttons(self):
+        pass    
+    
     def execute(self):
         """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
         those classes and passes them the correct busses and delay times."""
-        while not keyboard.is_pressed("q"):
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                eAbakus = executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
-                eFlowMeterSLI2000 = executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
-                eFlowMeterSLS1500 = executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
-                eLaser = executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-                ePicarroGas = executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-                
-                eInterpretor = executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
-                                               self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
 
-                eDisplay = executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
+        keyboard.add_hotkey('alt+q', self.stop_data_collection, suppress=True, trigger_on_release=True)
+        
+        while self.data_collection == True:
+            try:
+                with concurrent.futures.ThreadPoolExecutor() as self.executor:
+                    eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+                    eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
+                    eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
+                    eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
+                    ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+                    
+                    eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                                                self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
 
-            eAbakus.result()
-            eFlowMeterSLI2000.result()
-            eFlowMeterSLS1500.result()
-            eLaser.result()
-            ePicarroGas.result()
-            eInterpretor.result()
-            eDisplay.result()
+                    eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
 
+                eAbakus.result()
+                eFlowMeterSLI2000.result()
+                eFlowMeterSLS1500.result()
+                eLaser.result()
+                ePicarroGas.result()
+                eInterpretor.result()
+                eDisplay.result()
+
+            # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
+            # just shut down the sensors and kill the program
+            except KeyboardInterrupt:
+                try:
+                    self.clean_sensor_shutdown()
+                    sys.exit(130)
+                except SystemExit:
+                    self.clean_sensor_shutdown()
+                    os._exit(130)
+
+            
 if __name__ == "__main__":
     my_executor = Executor()
+    data_collection = True
     my_executor.execute()
+    del my_executor

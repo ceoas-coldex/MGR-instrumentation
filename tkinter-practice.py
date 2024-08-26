@@ -83,7 +83,7 @@ class App():
         plt.plot(t,s)
         return fig
 
-    def animate(self, i):
+    def get_data_to_plot(self):
         pullData = open("sampleText.txt","r").read()
         dataList = pullData.split('\n')
         xList = []
@@ -94,8 +94,12 @@ class App():
                 xList.append(int(x))
                 yList.append(int(y))
 
+        return xList, yList
+    
+    def animate(self, i):
+        xlist, ylist = self.get_data_to_plot()
         self.a.clear()
-        self.a.plot(xList, yList)
+        self.a.plot(xlist, ylist)
         self.index += 1
     
     def make_data_stream(self, root):
@@ -171,7 +175,7 @@ class App():
             button["state"] = NORMAL
 
     def run(self):
-        ani = FuncAnimation(self.f, self.animate, interval=1000)
+        ani = FuncAnimation(self.f, self.animate, interval=1000, cache_frame_data=False)
         self.root.mainloop()
         self.root.destroy()
 
