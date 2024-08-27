@@ -24,6 +24,7 @@ import msvcrt as kb
 import os, sys
 
 from tkinter_practice import GUI
+from tkinter.font import Font, BOLD
 
 import matplotlib
 matplotlib.use('TkAgg')
@@ -164,8 +165,8 @@ class Sensor():
         return timestamp, data_out
 
 class Interpretor():
-    """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
     def __init__(self) -> None:
+        """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
         # Set up data frame for all sensors, with initial measurements zeroed and 
         #   the correct formatting to be updated by the sensor outputs
         self.abakus_bin_num = 32
@@ -383,13 +384,17 @@ class Display():
     """Class that reads the interpreted data and displays it. Will eventually be on the GUI, for now it 
     reads the interpretor bus and prints the data"""
     def __init__(self, gui:GUI) -> None:
+        """Initializes the GUI and sets the functions needed for live plotting"""
+        # Store the GUI
         self.gui = gui
-        self.x = 0
-        
+        # These could potentially be in the gui class now that I'm thinking about it
+        # Creates animated plots for the different sensors, with the frame to check for updates, 
+        #   the function to call when there's an update, and the delay (ms)
         self.ani1 = FuncAnimation(self.gui.f1, self.gui.animate, interval=1000, cache_frame_data=False)
         self.ani2 = FuncAnimation(self.gui.f2, self.gui.animate2, interval=1000, cache_frame_data=False)
 
     def display_consumer(self, interpretor_bus:Bus, delay):
+        """Method to read the processed data published by the interpretor class and update the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
         # logging.info(f"Data: \n{interp_data}")
         try:
@@ -445,6 +450,7 @@ class Executor():
         self.executor.shutdown(wait=False, cancel_futures=True)
     
     def __del__(self) -> None:
+        """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
         self.clean_sensor_shutdown()
     
     def _set_gui_buttons(self):

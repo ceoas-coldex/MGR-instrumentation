@@ -33,7 +33,7 @@ class GUI():
         status_grid_frame = Frame(self.root)
         self.make_status_grid_loop(status_grid_frame, names=self.sensor_names, callbacks=None)
 
-        # make a dict of matplotlib figures to put in the notebook
+        # Make matplotlib figures to put in the data streaming notebook
         self.f1 = plt.figure(1)
         self.a = self.f1.add_subplot(111)
         self.f2 = plt.figure(2)
@@ -41,14 +41,12 @@ class GUI():
 
         # Set up data streaming
         self.data_streaming_windows = []
-
         data_streaming_frame = Frame(self.root, bg="purple")
         self.make_data_stream_notebook(data_streaming_frame)
-        self.one_stream(self.f1, self.data_streaming_windows[0])
-        self.one_stream(self.f2, self.data_streaming_windows[1])
+        self.one_stream(self.f1, self.data_streaming_windows[0]) # uses fake data
+        self.one_stream(self.f2, self.data_streaming_windows[1]) # uses abakus data
     
-
-        # initialize fake data
+        # initialize fake data - will eventually be deleted
         self.index = 0
         self.index2 = 0
         self.xdata1 = []
@@ -81,14 +79,17 @@ class GUI():
     def update_picarro_gas_buffer(self, new_dict:dict):
         old_keys = self.picarro_gas_buffer.keys()
         new_keys = new_dict.keys()
-        assert(old_keys != new_keys, "picarro dictionary keys don't match")
+        # assert(old_keys != new_keys, "picarro dictionary keys don't match")
 
         for key in old_keys:
             self.picarro_gas_buffer[key] = new_dict[key]
 
     def update_abakus_buffer(self, time, counts):
-        self.abakus_buffer["time (epoch)"].append(float(time))
-        self.abakus_buffer["total counts"].append(int(counts))
+        """Method to update the abakus buffer for plotting"""
+        time = float(time)
+        counts = int(counts) + np.random.rand()
+        self.abakus_buffer["time (epoch)"].append(time)
+        self.abakus_buffer["total counts"].append(counts)
     
     ## --------------------- LAYOUT --------------------- ##
     
@@ -101,34 +102,41 @@ class GUI():
     ## --------------------- LIVE PLOTTING --------------------- ##
     
     def get_data(self):
+        """Dummy helper method to randomly generate x and y values for plotting"""
         self.xdata1.append(self.index)
         self.ydata1.append(np.random.randint(0, 5))
         self.index += 1
 
     def get_data2(self):
+        """Dummy helper method to randomly generate x and y values for plotting"""
         self.xdata2.append(self.index2)
         self.ydata2.append(np.random.randint(-5, 5))
         self.index2 += 1
     
     def animate(self, i):
+        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
+            potentially streamline with lambda functions or a big if/elif/else"""
         self.get_data()
         self.a.clear()
         self.a.plot(self.xdata1, self.ydata1)
 
     def animate2(self, i):
+        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
+            potentially streamline with lambda functions or a big if/elif/else"""
         # self.get_data2()
         self.a2.clear()
         to_plot = np.array(self.abakus_buffer["total counts"])+np.random.rand()
-        print(to_plot)
         self.a2.plot(to_plot)
         
     def one_stream(self, f, root):
+        """General method to set up a matplotlib figure for tkinter plotting"""
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
         time.sleep(0.1)
         canvas.get_tk_widget().grid(row=1, column=0) 
 
     def make_data_stream_notebook(self, root):
+        """Method to set up a tkinter notebook with a page for each sensor (stored in self.sensor_names)"""
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
