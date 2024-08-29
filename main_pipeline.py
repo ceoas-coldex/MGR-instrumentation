@@ -20,10 +20,9 @@ import serial
 from serial import SerialException
 import pandas as pd
 import keyboard
-import msvcrt as kb
 import os, sys
 
-from tkinter_practice import GUI
+from main_gui import GUI
 from tkinter.font import Font, BOLD
 
 import matplotlib

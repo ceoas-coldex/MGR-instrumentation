@@ -40,25 +40,20 @@ class GUI():
         self.a2 = self.f2.add_subplot(111)
 
         # Set up data streaming
-        self.data_streaming_windows = []
         data_streaming_frame = Frame(self.root, bg="purple")
         self.make_data_stream_notebook(data_streaming_frame)
+        self.init_data_streaming_figs()
+        self.init_data_streaming_canvases()
+        self.init_data_streaming_animations()
 
-        # Creates animated plots for the different sensors, with the frame to check for updates, 
-        #   the function to call when there's an update, and the delay (ms)
-        self.one_stream(self.f1, self.data_streaming_windows[0]) # uses fake data
-        self.one_stream(self.f2, self.data_streaming_windows[1]) # uses abakus data
-
-        self.ani1 = FuncAnimation(self.f1, self.animate, interval=1000, cache_frame_data=False)
-        self.ani2 = FuncAnimation(self.f2, self.animate2, interval=1000, cache_frame_data=False)
+        # not sure the best data management yet, will eventually need to specify how many plots per sensor
+        # putting this empty dict here to remind me
+        self.num_subplots = {}
     
         # initialize fake data - will eventually be deleted
         self.index = 0
-        self.index2 = 0
         self.xdata1 = []
         self.ydata1 = []
-        self.xdata2 = []
-        self.ydata2 = []
 
         # initialize real data buffers
         self.abakus_buffer = {"time (epoch)": [0.0], "total counts": [0]}
@@ -105,44 +100,84 @@ class GUI():
         button.pack(side=loc)
         return button
   
-    ## --------------------- LIVE PLOTTING --------------------- ##
-    
-    def get_data(self):
-        """Dummy helper method to randomly generate x and y values for plotting"""
-        self.xdata1.append(self.index)
-        self.ydata1.append(np.random.randint(0, 5))
-        self.index += 1
+    ## --------------------- DATA STREAMING DISPLAY --------------------- ##
 
-    def get_data2(self):
-        """Dummy helper method to randomly generate x and y values for plotting"""
-        self.xdata2.append(self.index2)
-        self.ydata2.append(np.random.randint(-5, 5))
-        self.index2 += 1
-    
-    def animate(self, i):
-        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
-            potentially streamline with lambda functions or a big if/elif/else"""
-        self.get_data()
-        self.a.clear()
-        self.a.plot(self.xdata1, self.ydata1)
-
-    def animate2(self, i):
-        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
-            potentially streamline with lambda functions or a big if/elif/else"""
-        # self.get_data2()
-        self.a2.clear()
-        to_plot = np.array(self.abakus_buffer["total counts"])+np.random.rand()
-        self.a2.plot(to_plot)
+    def init_data_streaming_figs(self):
+        """Initializes dictionaries of matplotlib figs and axes for each sensor. These get saved
+        and called later for live plotting
         
-    def one_stream(self, f, root):
-        """General method to set up a matplotlib figure for tkinter plotting"""
+            Updates - self.streaming_data_figs & self.streaming_data_axes"""
+        self.data_streaming_figs = {}
+        self.data_streaming_axes = {}
+        # For each sensor, generate and save a unique matplotlib figure and corresponding axis
+        for name in self.sensor_names:
+            fig = plt.figure(name)
+            self.data_streaming_figs.update({name:fig})
+            self.data_streaming_axes.update({name:fig.add_subplot(111)}) # could pass in a term for how many plots per sensor
+
+    def one_canvas(self, f, root):
+        """General method to set up a canvas in a given frame. I'm eventually using each canvas
+        to hold a matplotlib figure for live plotting"""
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
         time.sleep(0.1)
         canvas.get_tk_widget().grid(row=1, column=0) 
 
+    def init_data_streaming_canvases(self):
+        """Sets up a tkinter canvas for each sensor in its own tkinter frame (stored in self.data_streaming_windows).
+        It might not look like anything is getting saved here, but Tkinter handles parent/child relationships internally,
+        so the canvases exist wherever Tkinter keeps the frames"""
+        for name in self.sensor_names:
+            # Grab the appropriate matplotlib figure and root window
+            fig = self.data_streaming_figs[name]
+            window = self.data_streaming_windows[name]
+            # Make a canvas to hold the figure in that window
+            self.one_canvas(fig, window)
+
+    def init_data_streaming_animations(self):
+        """Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
+        
+            Updates - self.streaming_anis (dict, holds the FuncAnimations)"""
+        self.data_streaming_anis = {}
+        # For each sensor, grab the corresponding matplotlib figure and axis. Pass that, along with the sensor name and 
+        # self.animate_general method, into a FuncAnimation. Finally, save the FuncAnimation to make sure the animation
+        # doesn't vanish when this function finishes
+        for name in self.sensor_names:
+            fig = self.data_streaming_figs[name]
+            axis = self.data_streaming_axes[name]
+            n_subplots = 0
+            ani = FuncAnimation(fig, self.animate_general, fargs=(name, axis, n_subplots), interval=1000, cache_frame_data=False)
+            self.data_streaming_anis.update({name:ani})
+
+    def animate_general(self, i, sensor_name, axis:plt.Axes, num_subplots):
+        """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer (not yet)
+        and plots it on the given axis"""
+        self.get_data(sensor_name)
+        axis.clear()
+        axis.plot(self.xdata1, self.ydata1)
+    
+    def get_data(self, sensor_name):
+        """Dummy helper method to randomly generate x and y values for plotting, will eventually
+        grab data from the appropriate buffer"""
+        self.xdata1.append(self.index)
+        self.ydata1.append(np.random.randint(0, 5))
+        self.index += 1
+    
+    def animate(self, i):
+        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
+            potentially streamline with lambda functions or a big if/elif/else"""
+        self.get_data()
+        self.data_streaming_axes["dummy"].clear()
+        self.data_streaming_axes["dummy"].plot(self.xdata1, self.ydata1)
+    
     def make_data_stream_notebook(self, root):
-        """Method to set up a tkinter notebook with a page for each sensor (stored in self.sensor_names)"""
+        """
+        Method to set up a tkinter notebook with a page for each sensor (stored in self.sensor_names)
+            
+        Updates - self.data_streaming_windows (dict of tkinter frames that live in the notebook, can be referenced
+        for plotting, labeling, etc)
+        """
+        self.data_streaming_windows = {}
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
@@ -150,9 +185,9 @@ class GUI():
             label = Label(window, text=name+" Data", font=self.bold16)
             label.grid(column=0, row=0)
             notebook.add(window, text=name)
-            self.data_streaming_windows.append(window)
+            self.data_streaming_windows.update({name: window})
     
-        notebook.pack(padx = 5, pady = 5, expand = True)
+        notebook.pack(padx=2.5, pady=2.5, expand = True)
 
     ## --------------------- "STATUS" GRID --------------------- ##
    
@@ -172,20 +207,24 @@ class GUI():
         num_cols = 2   # might make this dynamic later
         num_rows = round(len(names) / num_cols)
 
+        # Make a frame for the title row
         self.start_all_frame = self.make_status_grid_cell(root, col=0, row=0, colspan=num_cols)
         label=Label(self.start_all_frame, text="Start All Data Collection")
         label.grid(row=0, column=0)
 
         self.sensor_status_frames = [] # append all frames to a list, just in case we want to access them later
         i = 0
-        for row in range(1,num_rows+1):
-            for col in range(num_cols):
-                frame = self.make_status_grid_cell(root, col=col, row=row)
-                label = Label(frame, text=names[i], justify='center')
-                label.grid(row=0, column=0)
-                # add a button
-                self.sensor_status_frames.append(frame)
-                i += 1
+        try:
+            for row in range(1,num_rows+1):
+                for col in range(num_cols):
+                    frame = self.make_status_grid_cell(root, col=col, row=row)
+                    label = Label(frame, text=names[i], justify='center')
+                    label.grid(row=0, column=0)
+                    # add a button 
+                    self.sensor_status_frames.append(frame)
+                    i += 1
+        except IndexError as e:
+            print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}")
 
         # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
@@ -216,19 +255,17 @@ class GUI():
         self.xdata1.append(new_x)
         self.ydata1.append(new_y)
 
-    def update_data2(self, new_x, new_y):
-        self.xdata2.append(new_x)
-        self.ydata2.append(new_y)
-
 if __name__ == "__main__":
-    sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
-                       "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+    # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
+    #                    "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+
+    sensors = ["dummy", "Picarro Gas", "Picarro Water"]
     start_callbacks = [None]*len(sensors)
     stop_callbacks = [None]*len(sensors)
 
     app = GUI(sensors, start_callbacks, stop_callbacks)
-    ani1 = FuncAnimation(app.f1, app.animate, interval=1000, cache_frame_data=False)
-    ani2 = FuncAnimation(app.f2, app.animate2, interval=1000, cache_frame_data=False)
+    # ani1 = FuncAnimation(app.f1, app.animate, interval=1000, cache_frame_data=False)
+    # ani2 = FuncAnimation(app.f2, app.animate2, interval=1000, cache_frame_data=False)
 
     while True:
         app.run()
