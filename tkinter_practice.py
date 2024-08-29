@@ -43,8 +43,14 @@ class GUI():
         self.data_streaming_windows = []
         data_streaming_frame = Frame(self.root, bg="purple")
         self.make_data_stream_notebook(data_streaming_frame)
+
+        # Creates animated plots for the different sensors, with the frame to check for updates, 
+        #   the function to call when there's an update, and the delay (ms)
         self.one_stream(self.f1, self.data_streaming_windows[0]) # uses fake data
         self.one_stream(self.f2, self.data_streaming_windows[1]) # uses abakus data
+
+        self.ani1 = FuncAnimation(self.f1, self.animate, interval=1000, cache_frame_data=False)
+        self.ani2 = FuncAnimation(self.f2, self.animate2, interval=1000, cache_frame_data=False)
     
         # initialize fake data - will eventually be deleted
         self.index = 0

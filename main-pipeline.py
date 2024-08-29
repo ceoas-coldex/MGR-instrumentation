@@ -387,11 +387,6 @@ class Display():
         """Initializes the GUI and sets the functions needed for live plotting"""
         # Store the GUI
         self.gui = gui
-        # These could potentially be in the gui class now that I'm thinking about it
-        # Creates animated plots for the different sensors, with the frame to check for updates, 
-        #   the function to call when there's an update, and the delay (ms)
-        self.ani1 = FuncAnimation(self.gui.f1, self.gui.animate, interval=1000, cache_frame_data=False)
-        self.ani2 = FuncAnimation(self.gui.f2, self.gui.animate2, interval=1000, cache_frame_data=False)
 
     def display_consumer(self, interpretor_bus:Bus, delay):
         """Method to read the processed data published by the interpretor class and update the appropriate buffers for plotting"""
