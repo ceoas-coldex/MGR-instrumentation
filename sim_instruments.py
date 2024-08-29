@@ -1,6 +1,10 @@
-
+# -------------
 # This script creates shadow hardware. If you're not connected to the instruments, this will substitute sensor readings
-# with simulated values of the same representation and type as real data 
+# with simulated values that have the same representation and type as real data 
+# 
+# Ali Jones
+# Last updated 8/23/24
+# -------------
 
 import time
 import logging
@@ -38,7 +42,7 @@ class Abakus():
 
         return timestamp, fake_abakus_data
 
-class GasPicarro():
+class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
         """Fake hardware, pretends to do everything the real Picarro class does"""
         self.initialize_pyserial(serial_port, baud_rate)
@@ -47,17 +51,15 @@ class GasPicarro():
         logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
     @log_on_end(logging.INFO, "Picarro queried")
-    def query():
+    def query(self):
         """Returns - timestamp (float, epoch time), picarro_reading (str, raw data)"""
-
         fake_picarro_data = "2024-08-22 13:52:47.246;-0.990;-0.001;-0.006;0.021"
         timestamp = time.time()
 
-        return timestamp, fake_picarro_data
+        # Split along the semicolons
+        fake_picarro_data = fake_picarro_data.split(";")
 
-class WaterPicarro():
-    def __init__(self) -> None:
-        pass
+        return timestamp, fake_picarro_data
 
 class FlowMeter():
     def __init__(self, serial_port="COM6", baud_rate=115200) -> None:
