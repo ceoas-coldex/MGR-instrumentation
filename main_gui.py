@@ -14,56 +14,55 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 class GUI():
+    """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
+        I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain."""
     def __init__(self, sensors:list, start_callbacks=None, stop_callbacks=None):
+        """Initializes everything"""
+        ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
         self.root.geometry('1000x700')
         
-        self.grid_width = 150
+        self.grid_width = 150 # px? computer screen units?
         self.grid_height = 50
 
         # Make some default fonts
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
 
+        ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
         # Grab the names of the sensors
         self.sensor_names = sensors
-       
+
+        # Initialize data buffers
+        self.abakus_buffer = {"time (epoch)": [], "total counts": []}
+        self.flowmeter_sli2000_buffer = {"time (epoch)": [], "flow (uL/min)": []}
+        self.flowmeter_sls1500_buffer = {"time (epoch)": [], "flow (mL/min)": []}
+        self.laser_buffer = {"time (epoch)": [], "distance (cm)": [], "temperature (°C)": []}
+        self.picarro_gas_buffer = {"time (epoch)":[], "sample time":[], "CO2":[], "CH4":[], "CO":[], "H2O":[]}
+
+        # not sure the best data management yet, will eventually need to specify how many plots per sensor
+        # putting this empty dict here to remind me
+        self.num_subplots = {}
+
+        # initialize dummy data buffers - will eventually delete this, currently for testing
+        self.index = 0
+        self.x_dummy = []
+        self.y_dummy = []
+
+        ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the data grid that will eventually contain sensor status / control, fow now it's empty
         status_grid_frame = Frame(self.root)
         self.make_status_grid_loop(status_grid_frame, names=self.sensor_names, callbacks=None)
 
-        # Make matplotlib figures to put in the data streaming notebook
-        self.f1 = plt.figure(1)
-        self.a = self.f1.add_subplot(111)
-        self.f2 = plt.figure(2)
-        self.a2 = self.f2.add_subplot(111)
-
-        # Set up data streaming
+        # Set up the notebook for data streaming/live plotting
         data_streaming_frame = Frame(self.root, bg="purple")
         self.make_data_stream_notebook(data_streaming_frame)
         self.init_data_streaming_figs()
         self.init_data_streaming_canvases()
         self.init_data_streaming_animations()
-
-        # not sure the best data management yet, will eventually need to specify how many plots per sensor
-        # putting this empty dict here to remind me
-        self.num_subplots = {}
-    
-        # initialize fake data - will eventually be deleted
-        self.index = 0
-        self.xdata1 = []
-        self.ydata1 = []
-
-        # initialize real data buffers
-        self.abakus_buffer = {"time (epoch)": [0.0], "total counts": [0]}
-        self.flowmeter_sli2000_buffer = {"time (epoch)": [0.0], "flow (uL/min)": [0.0]}
-        self.flowmeter_sls1500_buffer = {"time (epoch)": [0.0], "flow (mL/min)": [0.0]}
-        self.laser_buffer = {"time (epoch)": [0.0], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
-        self.picarro_gas_buffer = {"time (epoch)":[0.0], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
         
-        # make some buttons! One toggles the other on/off, example of how to disable buttons 
-        # and do callbacks with arguments
+        # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
         b1 = self.pack_button(data_streaming_frame, callback=None, loc='bottom')
         b2 = self.pack_button(data_streaming_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
                 
@@ -77,18 +76,18 @@ class GUI():
 
     ## --------------------- HELPER FUNCTIONS: BUFFER UPDATE --------------------- ##
 
-    def update_picarro_gas_buffer(self, new_dict:dict):
-        old_keys = self.picarro_gas_buffer.keys()
-        new_keys = new_dict.keys()
-        # assert(old_keys != new_keys, "picarro dictionary keys don't match")
+    # def update_picarro_gas_buffer(self, new_dict:dict):
+    #     old_keys = self.picarro_gas_buffer.keys()
+    #     new_keys = new_dict.keys()
+    #     # assert(old_keys != new_keys, "picarro dictionary keys don't match")
 
-        for key in old_keys:
-            self.picarro_gas_buffer[key] = new_dict[key]
+    #     for key in old_keys:
+    #         self.picarro_gas_buffer[key] = new_dict[key]
 
     def update_abakus_buffer(self, time, counts):
         """Method to update the abakus buffer for plotting"""
         time = float(time)
-        counts = int(counts) + np.random.rand()
+        counts = int(counts) + np.random.rand() ####################### REMEMBER THAT THIS HAS RANDOM NOISE CURRENTLY ########################
         self.abakus_buffer["time (epoch)"].append(time)
         self.abakus_buffer["total counts"].append(counts)
     
@@ -113,7 +112,7 @@ class GUI():
         for name in self.sensor_names:
             fig = plt.figure(name)
             self.data_streaming_figs.update({name:fig})
-            self.data_streaming_axes.update({name:fig.add_subplot(111)}) # could pass in a term for how many plots per sensor
+            self.data_streaming_axes.update({name:[fig.add_subplot(111)]}) # could pass in a term for how many plots per sensor
 
     def one_canvas(self, f, root):
         """General method to set up a canvas in a given frame. I'm eventually using each canvas
@@ -140,35 +139,61 @@ class GUI():
             Updates - self.streaming_anis (dict, holds the FuncAnimations)"""
         self.data_streaming_anis = {}
         # For each sensor, grab the corresponding matplotlib figure and axis. Pass that, along with the sensor name and 
-        # self.animate_general method, into a FuncAnimation. Finally, save the FuncAnimation to make sure the animation
+        # self.animate_general, into a FuncAnimation. Finally, save the FuncAnimation to make sure the animation
         # doesn't vanish when this function finishes
         for name in self.sensor_names:
             fig = self.data_streaming_figs[name]
             axis = self.data_streaming_axes[name]
-            n_subplots = 0
-            ani = FuncAnimation(fig, self.animate_general, fargs=(name, axis, n_subplots), interval=1000, cache_frame_data=False)
+            ani = FuncAnimation(fig, self.animate_general, fargs=(name, axis), interval=1000, cache_frame_data=False)
             self.data_streaming_anis.update({name:ani})
 
-    def animate_general(self, i, sensor_name, axis:plt.Axes, num_subplots):
+    def animate_general(self, i, sensor_name, axis):
         """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer (not yet)
         and plots it on the given axis"""
-        self.get_data(sensor_name)
-        axis.clear()
-        axis.plot(self.xdata1, self.ydata1)
+        xdata, ydata, xlabel, ylabel = self.get_data(sensor_name)
+        for i, x in enumerate(xdata):
+            axis[i].clear()
+            axis[i].plot(x, ydata[i])
+            axis[i].set_xlabel(xlabel[i])
+            axis[i].set_ylabel(ylabel[i])
     
     def get_data(self, sensor_name):
-        """Dummy helper method to randomly generate x and y values for plotting, will eventually
-        grab data from the appropriate buffer"""
-        self.xdata1.append(self.index)
-        self.ydata1.append(np.random.randint(0, 5))
-        self.index += 1
+        """Big method that parses the appropriate data buffer and returns the data to plot. There's ~definitely~ a cleaner
+        way to do this, but I haven't come up with it yet."""
+        
+        if sensor_name == "Picarro Gas":
+            pass
+        elif sensor_name == "Picarro Water":
+            pass
+        elif sensor_name == "Laser Distance Sensor":
+            pass
+        elif sensor_name == "Abakus Particle Counter":
+            x = [self.abakus_buffer["time (epoch)"]]
+            y = [self.abakus_buffer["total counts"]]
+            xlabel = ["Time"]
+            ylabel = ["Total Counts"]
+        elif sensor_name == "Flowmeter SLI2000 (Green)":
+            pass
+        elif sensor_name == "Flowmeter SLS1500 (Black)":
+            pass
+        elif sensor_name == "Bronkhurst Pressure":
+            pass
+        elif sensor_name == "Melthead":
+            pass
+        else:
+            self.dummy_data()
+            x = [self.x_dummy]
+            y = [self.y_dummy]
+            xlabel = ["Iterations"]
+            ylabel = ["Random"]
+
+        return x, y, xlabel, ylabel
     
-    def animate(self, i):
-        """Basic animation function for xdata1 and ydata 1, will eventually have one for each sensor. Could
-            potentially streamline with lambda functions or a big if/elif/else"""
-        self.get_data()
-        self.data_streaming_axes["dummy"].clear()
-        self.data_streaming_axes["dummy"].plot(self.xdata1, self.ydata1)
+    def dummy_data(self):
+        """Dummy helper method to randomly generate x and y values for testing"""
+        self.x_dummy.append(self.index)
+        self.y_dummy.append(np.random.randint(0, 5))
+        self.index += 1
     
     def make_data_stream_notebook(self, root):
         """
@@ -251,21 +276,17 @@ class GUI():
 
     ##  --------------------- HELPER FUNCTIONS  --------------------- ##
 
-    def update_data1(self, new_x, new_y):
-        self.xdata1.append(new_x)
-        self.ydata1.append(new_y)
 
 if __name__ == "__main__":
-    # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
-    #                    "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+    sensors = ["dummy", "Abakus Particle Counter"]
 
-    sensors = ["dummy", "Picarro Gas", "Picarro Water"]
+    # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
+    #                     "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+    
     start_callbacks = [None]*len(sensors)
     stop_callbacks = [None]*len(sensors)
 
     app = GUI(sensors, start_callbacks, stop_callbacks)
-    # ani1 = FuncAnimation(app.f1, app.animate, interval=1000, cache_frame_data=False)
-    # ani2 = FuncAnimation(app.f2, app.animate2, interval=1000, cache_frame_data=False)
 
     while True:
         app.run()

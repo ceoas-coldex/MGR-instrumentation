@@ -164,22 +164,23 @@ class Sensor():
         return timestamp, data_out
 
 class Interpretor():
+    """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
     def __init__(self) -> None:
-        """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
         # Set up data frame for all sensors, with initial measurements zeroed and 
         #   the correct formatting to be updated by the sensor outputs
+        t_i = time.time()
         self.abakus_bin_num = 32
-        init_abakus_data = {"abks time (epoch)": [0.0]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
+        init_abakus_data = {"abks time (epoch)": [t_i]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
         self.abakus_data = pd.DataFrame(init_abakus_data)
-        self.abakus_total_counts = pd.DataFrame({"abks time (epoch)": [0.0], "total counts": 0})
+        self.abakus_total_counts = pd.DataFrame({"abks time (epoch)": [t_i], "total counts": 0})
 
-        self.flowmeter_sli2000_data = pd.DataFrame({"FM time (epoch)": [0.0], "flow (uL/min)": [0.0]})
-        self.flowmeter_sls1500_data = pd.DataFrame({"FM time (epoch)": [0.0], "flow (mL/min)": [0.0]})
+        self.flowmeter_sli2000_data = pd.DataFrame({"FM time (epoch)": [t_i], "flow (uL/min)": [0.0]})
+        self.flowmeter_sls1500_data = pd.DataFrame({"FM time (epoch)": [t_i], "flow (mL/min)": [0.0]})
 
-        init_laser_data = {"lsr time (epoch)": [0.0], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
+        init_laser_data = {"lsr time (epoch)": [t_i], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
         self.laser_data = pd.DataFrame(init_laser_data)
 
-        init_picarro_gas_data = {"gas time (epoch)":[0.0], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
+        init_picarro_gas_data = {"gas time (epoch)":[t_i], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
         self.picarro_gas_data = pd.DataFrame(init_picarro_gas_data)
 
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
@@ -205,10 +206,10 @@ class Interpretor():
         big_df = pd.concat([self.abakus_total_counts, self.flowmeter_sli2000_data, 
                             self.flowmeter_sls1500_data, self.laser_data, self.picarro_gas_data], axis=1)
 
-        time1 = self.abakus_total_counts["time (epoch)"] - self.flowmeter_sli2000_data["time (epoch)"]
-        time2 = self.abakus_total_counts["time (epoch)"] - self.flowmeter_sls1500_data["time (epoch)"]
-        time3 = self.abakus_total_counts["time (epoch)"] - self.laser_data["time (epoch)"]
-        time4 = self.abakus_total_counts["time (epoch)"] - self.picarro_gas_data["time (epoch)"]
+        time1 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sli2000_data["time (epoch)"]
+        time2 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sls1500_data["time (epoch)"]
+        time3 = self.abakus_total_counts["abks time (epoch)"] - self.laser_data["time (epoch)"]
+        time4 = self.abakus_total_counts["abks time (epoch)"] - self.picarro_gas_data["time (epoch)"]
         # print(f"time difference 1: {time1}")
         # print(f"time difference 2: {time2}")
         # print(f"time difference 3: {time3}")
@@ -240,10 +241,10 @@ class Interpretor():
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
             if len(bins) == self.abakus_bin_num: 
                 # logging.info("Abakus data good, recieved 32 channels.")
-                self.abakus_data["time (epoch)"] = timestamp
+                self.abakus_data["abks time (epoch)"] = timestamp
                 self.abakus_data["bins"] = bins
                 self.abakus_data["counts"] = counts
-                self.abakus_total_counts["time (epoch)"] = timestamp
+                self.abakus_total_counts["abks time (epoch)"] = timestamp
                 self.abakus_total_counts["total counts"] = np.sum(counts)
             else:
                 raise Exception("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
@@ -380,10 +381,8 @@ class Interpretor():
                 logging.debug(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
 
 class Display():
-    """Class that reads the interpreted data and displays it. Will eventually be on the GUI, for now it 
-    reads the interpretor bus and prints the data"""
+    """Class that reads the interpreted data and displays it on the GUI"""
     def __init__(self, gui:GUI) -> None:
-        """Initializes the GUI and sets the functions needed for live plotting"""
         # Store the GUI
         self.gui = gui
 
@@ -405,8 +404,10 @@ class Executor():
         self.sensors_on = True
 
         # Initialize the GUI (pull in the GUI class and link it to our functions)
-        sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
-                        "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+        # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
+        #                 "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
+        
+        sensors = ["dummy", "Abakus Particle Counter"]
         self.gui = GUI(sensors)
         
         # Initialize the classes
