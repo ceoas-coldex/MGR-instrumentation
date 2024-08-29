@@ -28,9 +28,9 @@ class Display():
     def display_consumer(self, interpretor_bus:Bus, delay):
         """Method to read the processed data published by the interpretor class and update the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
-        # logging.info(f"Data: \n{interp_data}")
+        # logger.info(f"Data: \n{interp_data}")
         try:
-            self.gui.update_abakus_buffer(interp_data["abks time (epoch)"].values[0], interp_data["total counts"].values[0])
+            self.gui.update_buffer(interp_data)
         except TypeError:
             pass
         time.sleep(delay)

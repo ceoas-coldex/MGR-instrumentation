@@ -26,18 +26,32 @@ class Interpretor():
         #   the correct formatting to be updated by the sensor outputs
         t_i = time.time()
         self.abakus_bin_num = 32
-        init_abakus_data = {"abks time (epoch)": [t_i]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
-        self.abakus_data = pd.DataFrame(init_abakus_data)
-        self.abakus_total_counts = pd.DataFrame({"abks time (epoch)": [t_i], "total counts": 0})
+        self.abakus_data = {"abks time (epoch)": [t_i]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
+        # self.abakus_data = pd.DataFrame(init_abakus_data)
+        self.abakus_total_counts = {"abks time (epoch)": t_i, "total counts": 0}
 
-        self.flowmeter_sli2000_data = pd.DataFrame({"FM time (epoch)": [t_i], "flow (uL/min)": [0.0]})
-        self.flowmeter_sls1500_data = pd.DataFrame({"FM time (epoch)": [t_i], "flow (mL/min)": [0.0]})
+        self.flowmeter_sli2000_data = {"FM time (epoch)": t_i, "flow (uL/min)": 0.0}
+        self.flowmeter_sls1500_data = {"FM time (epoch)": t_i, "flow (mL/min)": 0.0}
 
-        init_laser_data = {"lsr time (epoch)": [t_i], "distance (cm)": [0.0], "temperature (°C)": [99.99]}
-        self.laser_data = pd.DataFrame(init_laser_data)
+        self.laser_data = {"lsr time (epoch)": t_i, "distance (cm)": 0.0, "temperature (°C)": 99.99}
+        # self.laser_data = pd.DataFrame(init_laser_data)
 
-        init_picarro_gas_data = {"gas time (epoch)":[t_i], "sample time":[0.0], "CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}
-        self.picarro_gas_data = pd.DataFrame(init_picarro_gas_data)
+        self.picarro_gas_data = {"gas time (epoch)":t_i, "sample time":0.0, "CO2":0.0, "CH4":0.0, "CO":0.0, "H2O":0.0}
+        # self.picarro_gas_data = pd.DataFrame(init_picarro_gas_data)
+
+        # set up the data management
+        # This should eventually go into a yaml file - could even be set by the GUI if I'm feeling really fancy    
+        self.big_data = {"Picarro Gas":{"time (epoch)":t_i, "data":{"CO2":0.0, "CH4":0.0, "CO":0.0, "H2O":0.0}},
+                         "Picarro Water":{"time (epoch)":t_i, "data":{}},
+                         "Laser Distance Sensor":{"time (epoch)":t_i, "data":{"distance (cm)":0.0, "temperature (°C)":99.99}},
+                         "Abakus Particle Counter":{"time (epoch)":t_i, "data":{"bins":[0]*self.abakus_bin_num, "counts/bin":[0]*self.abakus_bin_num, "total counts":0}},
+                         "Flowmeter SLI2000 (Green)":{"time (epoch)":t_i, "data":{"flow (uL/min)":0.0}},
+                         "Flowmeter SLS1500 (Black)":{"time (epoch)":t_i, "data":{"flow (mL/min)":0.0}},
+                         "Bronkhurst Pressure":{},
+                         "Melthead":{},
+                        }
+        
+        self.sensor_names = list(self.big_data.keys())
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, output_bus:Bus, delay):
@@ -59,8 +73,8 @@ class Interpretor():
         # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
         
         # Concatanate the data frames and take a look at the differece between their timestamps
-        big_df = pd.concat([self.abakus_total_counts, self.flowmeter_sli2000_data, 
-                            self.flowmeter_sls1500_data, self.laser_data, self.picarro_gas_data], axis=1)
+        big_df = [self.abakus_total_counts, self.flowmeter_sli2000_data, 
+                            self.flowmeter_sls1500_data, self.laser_data, self.picarro_gas_data]
 
         time1 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sli2000_data["FM time (epoch)"]
         time2 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sls1500_data["FM time (epoch)"]
@@ -72,7 +86,7 @@ class Interpretor():
         # print(f"time difference 4: {time4}")
         
         # Write to the output bus
-        output_bus.write(big_df)
+        output_bus.write(self.big_data)
         time.sleep(delay)
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
@@ -97,11 +111,10 @@ class Interpretor():
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
             if len(bins) == self.abakus_bin_num: 
                 # logger.info("Abakus data good, recieved 32 channels.")
-                self.abakus_data["abks time (epoch)"] = timestamp
-                self.abakus_data["bins"] = bins
-                self.abakus_data["counts"] = counts
-                self.abakus_total_counts["abks time (epoch)"] = timestamp
-                self.abakus_total_counts["total counts"] = np.sum(counts)
+                self.big_data["Abakus Particle Counter"]["time (epoch)"] = timestamp
+                self.big_data["Abakus Particle Counter"]["data"]["bins"] = bins
+                self.big_data["Abakus Particle Counter"]["data"]["counts/bin"] = counts
+                self.big_data["Abakus Particle Counter"]["data"]["total counts"] = int(np.sum(counts))
             else:
                 raise Exception("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except Exception as e:
@@ -127,11 +140,12 @@ class Interpretor():
                 flow_rate = ticks / scale_factor
 
                 if model == "SLI2000":
-                    self.flowmeter_sli2000_data["time (epoch)"] = timestamp
-                    self.flowmeter_sli2000_data[f"flow ({units})"] = flow_rate
+                    self.big_data["Flowmeter SLI2000 (Green)"]["time (epoch)"] = timestamp
+                    self.big_data["Flowmeter SLI2000 (Green)"]["data"]["flow (uL/min)"] = flow_rate
+                    
                 elif model == "SLS1500":
-                    self.flowmeter_sls1500_data["time (epoch)"] = timestamp
-                    self.flowmeter_sls1500_data[f"flow ({units})"] = flow_rate
+                    self.big_data["Flowmeter SLS1500 (Black)"]["time (epoch)"] = timestamp
+                    self.big_data["Flowmeter SLS1500 (Black)"]["data"]["flow (mL/min)"] = flow_rate
                 else:
                     logger.debug("Invalid flowmeter model given. Not updating measurement")
         # If that didn't work, give up this measurement

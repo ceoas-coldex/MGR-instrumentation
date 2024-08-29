@@ -84,13 +84,28 @@ class GUI():
     #     for key in old_keys:
     #         self.picarro_gas_buffer[key] = new_dict[key]
 
-    def update_abakus_buffer(self, time, counts):
+    def update_abakus_buffer(self, time, total_counts):
         """Method to update the abakus buffer for plotting"""
         time = float(time)
-        counts = int(counts) + np.random.rand() ####################### REMEMBER THAT THIS HAS RANDOM NOISE CURRENTLY ########################
+        total_counts = int(total_counts) + np.random.rand() ####################### REMEMBER THAT THIS HAS RANDOM NOISE CURRENTLY ########################
         self.abakus_buffer["time (epoch)"].append(time)
-        self.abakus_buffer["total counts"].append(counts)
-    
+        self.abakus_buffer["total counts"].append(total_counts)
+
+    def update_picarro_buffer(self):
+        pass
+
+    def update_flowmeter_sli2000_buffer(self, time, flow_rate):
+        """Method to update the flowmeter sli2000 (green) buffer for plotting"""
+        time = float(time)
+        flow_rate = float(flow_rate)
+        self.flowmeter_sli2000_buffer["time (epoch)"].append(time)
+        self.flowmeter_sli2000_buffer["flow (uL/min)"].append(flow_rate)
+
+    def update_buffer(self, data):
+        """Method to update all the individual data buffers"""
+        self.update_abakus_buffer(data["Abakus Particle Counter"]["time (epoch)"], data["Abakus Particle Counter"]["data"]["total counts"])
+        self.update_flowmeter_sli2000_buffer(data["Flowmeter SLI2000 (Green)"]["time (epoch)"], data["Flowmeter SLI2000 (Green)"]["data"]["flow (uL/min)"])
+
     ## --------------------- LAYOUT --------------------- ##
     
     def pack_button(self, root, callback, loc:str="right", text="I'm a button :]"):
@@ -173,7 +188,10 @@ class GUI():
             xlabel = ["Time"]
             ylabel = ["Total Counts"]
         elif sensor_name == "Flowmeter SLI2000 (Green)":
-            pass
+            x = [self.flowmeter_sli2000_buffer["time (epoch)"]]
+            y = [self.flowmeter_sli2000_buffer["flow (uL/min)"]]
+            xlabel = ["Time"]
+            ylabel = ["Flow Rate (uL/min)"]
         elif sensor_name == "Flowmeter SLS1500 (Black)":
             pass
         elif sensor_name == "Bronkhurst Pressure":

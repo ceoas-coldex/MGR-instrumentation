@@ -55,7 +55,7 @@ class Executor():
         # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
         #                 "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
         
-        sensors = ["dummy", "Abakus Particle Counter"]
+        sensors = ["dummy", "Abakus Particle Counter", "Flowmeter SLI2000 (Green)"]
         self.gui = GUI(sensors)
         
         # Initialize the classes

@@ -30,7 +30,7 @@ try:
     from sensor_interfaces.picarro_interface import Picarro
     logger.info(f"Successfully connected to port {test_port}, using real hardware")
 except:
-    from sim_instruments import Abakus, FlowMeter, Dimetix, Picarro
+    from sensor_interfaces.sim_instruments import Abakus, FlowMeter, Dimetix, Picarro
     logger.info(f"Couldn't find real hardware at port {test_port}, shadowing sensor calls with substitute functions")
 
     
