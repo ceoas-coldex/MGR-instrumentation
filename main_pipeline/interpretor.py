@@ -47,8 +47,9 @@ class Interpretor():
                          "Abakus Particle Counter":{"time (epoch)":t_i, "data":{"bins":[0]*self.abakus_bin_num, "counts/bin":[0]*self.abakus_bin_num, "total counts":0}},
                          "Flowmeter SLI2000 (Green)":{"time (epoch)":t_i, "data":{"flow (uL/min)":0.0}},
                          "Flowmeter SLS1500 (Black)":{"time (epoch)":t_i, "data":{"flow (mL/min)":0.0}},
-                         "Bronkhurst Pressure":{},
-                         "Melthead":{},
+                         "Flowmeter":{"time (epoch)":t_i, "data":{"sli2000 (uL/min)":0.0, "sls1500 (mL/min)":0.0}},
+                         "Bronkhurst Pressure":{"time (epoch)":t_i, "data":{}},
+                         "Melthead":{"time (epoch)":t_i, "data":{}},
                         }
         
         self.sensor_names = list(self.big_data.keys())

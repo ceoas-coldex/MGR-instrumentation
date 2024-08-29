@@ -55,12 +55,14 @@ class Executor():
         # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
         #                 "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
         
-        sensors = ["dummy", "Abakus Particle Counter", "Flowmeter SLI2000 (Green)"]
-        self.gui = GUI(sensors)
+        # sensors = ["dummy", "Abakus Particle Counter", "Flowmeter SLI2000 (Green)"]
+        # self.gui = GUI(sensors)
         
         # Initialize the classes
         self.sensor = Sensor()
         self.interpretor = Interpretor()
+        data_dict = self.interpretor.big_data   # pull the empty initialized data dictionary from the interpretor class...
+        self.gui = GUI(data_dict)   # ... and pass it to the GUI
         self.display = Display(self.gui)
 
         # Set what GUI buttons correspond to what functions (stop measurement, query, etc)

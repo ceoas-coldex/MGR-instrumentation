@@ -16,7 +16,7 @@ from matplotlib.animation import FuncAnimation
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
         I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain."""
-    def __init__(self, sensors:list, start_callbacks=None, stop_callbacks=None):
+    def __init__(self, empty_data:dict, start_callbacks=None, stop_callbacks=None):
         """Initializes everything"""
         ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
@@ -32,7 +32,9 @@ class GUI():
 
         ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
         # Grab the names of the sensors
-        self.sensor_names = sensors
+        self.sensor_names = list(empty_data.keys())
+        print(self.sensor_names)
+        self.big_data_dict = empty_data
 
         # Initialize data buffers
         self.abakus_buffer = {"time (epoch)": [], "total counts": []}
@@ -123,19 +125,24 @@ class GUI():
             Updates - self.streaming_data_figs & self.streaming_data_axes"""
         self.data_streaming_figs = {}
         self.data_streaming_axes = {}
-        # For each sensor, generate and save a unique matplotlib figure and corresponding axis
+        # For each sensor, generate and save a unique matplotlib figure and corresponding axes
         for name in self.sensor_names:
             fig = plt.figure(name)
             self.data_streaming_figs.update({name:fig})
-            self.data_streaming_axes.update({name:[fig.add_subplot(111)]}) # could pass in a term for how many plots per sensor
+            self.data_streaming_axes.update({name:[]})
+
+            # Make a subplot for the number of data channels per sensor
+            num_subplots = len(self.big_data_dict[name]["data"].keys())
+            for i in range(num_subplots):
+                self.data_streaming_axes[name].append(fig.add_subplot(i+1, 1, i+1))
 
     def one_canvas(self, f, root):
         """General method to set up a canvas in a given frame. I'm eventually using each canvas
         to hold a matplotlib figure for live plotting"""
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
-        time.sleep(0.1)
-        canvas.get_tk_widget().grid(row=1, column=0) 
+        canvas.get_tk_widget().grid(row=0, column=0)
+        # canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
     def init_data_streaming_canvases(self):
         """Sets up a tkinter canvas for each sensor in its own tkinter frame (stored in self.data_streaming_windows).
@@ -145,7 +152,7 @@ class GUI():
             # Grab the appropriate matplotlib figure and root window
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
-            # Make a canvas to hold the figure in that window
+            num_subplots = len(self.big_data_dict[name]["data"].keys())
             self.one_canvas(fig, window)
 
     def init_data_streaming_animations(self):
@@ -165,6 +172,7 @@ class GUI():
     def animate_general(self, i, sensor_name, axis):
         """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer (not yet)
         and plots it on the given axis"""
+        plt.cla()
         xdata, ydata, xlabel, ylabel = self.get_data(sensor_name)
         for i, x in enumerate(xdata):
             axis[i].clear()
@@ -224,11 +232,9 @@ class GUI():
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
-            window.grid()
-            label = Label(window, text=name+" Data", font=self.bold16)
-            label.grid(column=0, row=0)
+            window.grid(column=0, row=0)
             notebook.add(window, text=name)
-            self.data_streaming_windows.update({name: window})
+            self.data_streaming_windows.update({name:window})
     
         notebook.pack(padx=2.5, pady=2.5, expand = True)
 
@@ -304,7 +310,19 @@ if __name__ == "__main__":
     start_callbacks = [None]*len(sensors)
     stop_callbacks = [None]*len(sensors)
 
-    app = GUI(sensors, start_callbacks, stop_callbacks)
+    t_i = time.time()
+    big_data = {"Picarro Gas":{"time (epoch)":t_i, "data":{"CO2":0.0, "CH4":0.0, "CO":0.0, "H2O":0.0}},
+                         "Picarro Water":{"time (epoch)":t_i, "data":{}},
+                         "Laser Distance Sensor":{"time (epoch)":t_i, "data":{"distance (cm)":0.0, "temperature (°C)":99.99}},
+                         "Abakus Particle Counter":{"time (epoch)":t_i, "data":{"bins":[0]*32, "counts/bin":[0]*32, "total counts":0}},
+                         "Flowmeter SLI2000 (Green)":{"time (epoch)":t_i, "data":{"flow (uL/min)":0.0}},
+                         "Flowmeter SLS1500 (Black)":{"time (epoch)":t_i, "data":{"flow (mL/min)":0.0}},
+                         "Flowmeter":{"time (epoch)":t_i, "data":{"sli2000 (uL/min)":0.0, "sls1500 (mL/min)":0.0}},
+                         "Bronkhurst Pressure":{"time (epoch)":t_i, "data":{}},
+                         "Melthead":{"time (epoch)":t_i, "data":{}},
+                        }
+
+    app = GUI(big_data)
 
     while True:
         app.run()
