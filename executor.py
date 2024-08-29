@@ -50,20 +50,13 @@ class Executor():
         # Allow us to enter the data collection loop
         self.data_collection = True
         self.sensors_on = True
-
-        # Initialize the GUI (pull in the GUI class and link it to our functions)
-        # sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
-        #                 "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
-        
-        # sensors = ["dummy", "Abakus Particle Counter", "Flowmeter SLI2000 (Green)"]
-        # self.gui = GUI(sensors)
         
         # Initialize the classes
         self.sensor = Sensor()
         self.interpretor = Interpretor()
-        data_dict = self.interpretor.big_data   # pull the empty initialized data dictionary from the interpretor class...
+        data_dict = self.interpretor.empty_data   # Pull the empty initialized data dictionary from the interpretor class...
         self.gui = GUI(data_dict)   # ... and pass it to the GUI
-        self.display = Display(self.gui)
+        self.display = Display(self.gui)    # Then pass the GUI into the display class
 
         # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
         self._set_gui_buttons()

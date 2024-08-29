@@ -22,7 +22,7 @@ class GUI():
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
-        self.root.geometry('1000x700')
+        self.root.geometry('1400x1000')
         
         self.grid_width = 150 # px? computer screen units?
         self.grid_height = 50
@@ -33,7 +33,6 @@ class GUI():
         ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
         # Grab the names of the sensors
         self.sensor_names = list(empty_data.keys())
-        print(self.sensor_names)
         self.big_data_dict = empty_data
 
         # Initialize data buffers
@@ -78,14 +77,6 @@ class GUI():
 
     ## --------------------- HELPER FUNCTIONS: BUFFER UPDATE --------------------- ##
 
-    # def update_picarro_gas_buffer(self, new_dict:dict):
-    #     old_keys = self.picarro_gas_buffer.keys()
-    #     new_keys = new_dict.keys()
-    #     # assert(old_keys != new_keys, "picarro dictionary keys don't match")
-
-    #     for key in old_keys:
-    #         self.picarro_gas_buffer[key] = new_dict[key]
-
     def update_abakus_buffer(self, time, total_counts):
         """Method to update the abakus buffer for plotting"""
         time = float(time)
@@ -103,11 +94,30 @@ class GUI():
         self.flowmeter_sli2000_buffer["time (epoch)"].append(time)
         self.flowmeter_sli2000_buffer["flow (uL/min)"].append(flow_rate)
 
-    def update_buffer(self, data):
+    def update_buffer(self, new_data, use_noise=False):
         """Method to update all the individual data buffers"""
-        self.update_abakus_buffer(data["Abakus Particle Counter"]["time (epoch)"], data["Abakus Particle Counter"]["data"]["total counts"])
-        self.update_flowmeter_sli2000_buffer(data["Flowmeter SLI2000 (Green)"]["time (epoch)"], data["Flowmeter SLI2000 (Green)"]["data"]["flow (uL/min)"])
+        # self.update_abakus_buffer(data["Abakus Particle Counter"]["time (epoch)"], data["Abakus Particle Counter"]["data"]["total counts"])
+        # self.update_flowmeter_sli2000_buffer(data["Flowmeter SLI2000 (Green)"]["time (epoch)"], data["Flowmeter SLI2000 (Green)"]["data"]["flow (uL/min)"])
 
+        for name in self.sensor_names:
+            try:
+                new_time = new_data[name]["time (epoch)"][0]
+            except TypeError:
+                new_time = new_data[name]["time (epoch)"]
+
+            self.big_data_dict[name]["time (epoch)"].append(new_time)
+
+            channels = list(self.big_data_dict[name]["data"].keys())
+            for channel in channels:
+                if use_noise:
+                    noise = np.random.rand()
+                try:
+                    ch_data = new_data[name]["data"][channel][0] + noise
+                except TypeError:
+                    ch_data = new_data[name]["data"][channel] + noise
+
+                self.big_data_dict[name]["data"][channel].append(ch_data)
+        
     ## --------------------- LAYOUT --------------------- ##
     
     def pack_button(self, root, callback, loc:str="right", text="I'm a button :]"):
@@ -127,14 +137,22 @@ class GUI():
         self.data_streaming_axes = {}
         # For each sensor, generate and save a unique matplotlib figure and corresponding axes
         for name in self.sensor_names:
-            fig = plt.figure(name)
+            # Make a subplot for the number of data channels per sensor
+            channels = list(self.big_data_dict[name]["data"].keys())
+            num_subplots = len(channels)
+
+            fig = plt.figure(name, figsize=(10,4*num_subplots))
             self.data_streaming_figs.update({name:fig})
+
             self.data_streaming_axes.update({name:[]})
 
-            # Make a subplot for the number of data channels per sensor
-            num_subplots = len(self.big_data_dict[name]["data"].keys())
-            for i in range(num_subplots):
-                self.data_streaming_axes[name].append(fig.add_subplot(i+1, 1, i+1))
+            for i in range(0,num_subplots):
+                ax = fig.add_subplot(num_subplots,1,i+1)
+                ax.set_xlabel("Time (epoch)")
+                ax.set_ylabel(channels[i])
+                self.data_streaming_axes[name].append(ax)
+
+        # plt.tight_layout(pad=0.25)
 
     def one_canvas(self, f, root):
         """General method to set up a canvas in a given frame. I'm eventually using each canvas
@@ -142,7 +160,6 @@ class GUI():
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
-        # canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
     def init_data_streaming_canvases(self):
         """Sets up a tkinter canvas for each sensor in its own tkinter frame (stored in self.data_streaming_windows).
@@ -152,7 +169,6 @@ class GUI():
             # Grab the appropriate matplotlib figure and root window
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
-            num_subplots = len(self.big_data_dict[name]["data"].keys())
             self.one_canvas(fig, window)
 
     def init_data_streaming_animations(self):
@@ -166,21 +182,30 @@ class GUI():
         for name in self.sensor_names:
             fig = self.data_streaming_figs[name]
             axis = self.data_streaming_axes[name]
-            ani = FuncAnimation(fig, self.animate_general, fargs=(name, axis), interval=1000, cache_frame_data=False)
+            ani = FuncAnimation(fig, self.animate_general, fargs=(name, axis), interval=500, cache_frame_data=False)
             self.data_streaming_anis.update({name:ani})
 
     def animate_general(self, i, sensor_name, axis):
         """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer (not yet)
         and plots it on the given axis"""
-        plt.cla()
-        xdata, ydata, xlabel, ylabel = self.get_data(sensor_name)
-        for i, x in enumerate(xdata):
+        # xdata, ydata, xlabel, ylabel = self.get_data(sensor_name)
+        xdata, ydata, ylabels = self.get_data(sensor_name)
+        for i, y in enumerate(ydata):
+            ax = axis[i]
             axis[i].clear()
-            axis[i].plot(x, ydata[i])
-            axis[i].set_xlabel(xlabel[i])
-            axis[i].set_ylabel(ylabel[i])
+            axis[i].plot(xdata, y)
+            axis[i].set_xlabel("Time (epoch)")
+            axis[i].set_ylabel(ylabels[i])
     
     def get_data(self, sensor_name):
+        x_data = self.big_data_dict[sensor_name]["time (epoch)"]
+        y_data = []
+        channels = list(self.big_data_dict[sensor_name]["data"].keys())
+        for channel in channels:
+            y_data.append(self.big_data_dict[sensor_name]["data"][channel])
+        return x_data, y_data, channels
+
+    def get_data_old(self, sensor_name):
         """Big method that parses the appropriate data buffer and returns the data to plot. There's ~definitely~ a cleaner
         way to do this, but I haven't come up with it yet."""
         
@@ -202,6 +227,11 @@ class GUI():
             ylabel = ["Flow Rate (uL/min)"]
         elif sensor_name == "Flowmeter SLS1500 (Black)":
             pass
+        elif sensor_name == "Flowmeter":
+            x = [self.flowmeter_sli2000_buffer["time (epoch)"], self.flowmeter_sls1500_buffer["time (epoch)"]]
+            y = [self.flowmeter_sli2000_buffer["flow (uL/min)"], self.flowmeter_sls1500_buffer["flow (mL/min)"]]
+            xlabel = ["Time", "Time"]
+            ylabel = ["Flow Rate (uL/min)", "Flow Rate (mL/min)"]
         elif sensor_name == "Bronkhurst Pressure":
             pass
         elif sensor_name == "Melthead":
@@ -229,13 +259,22 @@ class GUI():
         for plotting, labeling, etc)
         """
         self.data_streaming_windows = {}
+        self.subplot_streaming_frames = {}
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
             window.grid(column=0, row=0)
             notebook.add(window, text=name)
+
             self.data_streaming_windows.update({name:window})
-    
+            self.subplot_streaming_frames.update({name:[]})
+
+            num_subplots = len(self.big_data_dict[name]["data"].keys())
+            for i in range(num_subplots):
+                subplot_frame = Frame(window)
+                subplot_frame.grid(column=0, row=i)
+                self.subplot_streaming_frames[name].append(subplot_frame)
+
         notebook.pack(padx=2.5, pady=2.5, expand = True)
 
     ## --------------------- "STATUS" GRID --------------------- ##

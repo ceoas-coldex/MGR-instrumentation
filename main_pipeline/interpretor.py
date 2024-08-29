@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import time
+import copy
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -41,17 +42,17 @@ class Interpretor():
 
         # set up the data management
         # This should eventually go into a yaml file - could even be set by the GUI if I'm feeling really fancy    
-        self.big_data = {"Picarro Gas":{"time (epoch)":t_i, "data":{"CO2":0.0, "CH4":0.0, "CO":0.0, "H2O":0.0}},
-                         "Picarro Water":{"time (epoch)":t_i, "data":{}},
-                         "Laser Distance Sensor":{"time (epoch)":t_i, "data":{"distance (cm)":0.0, "temperature (°C)":99.99}},
-                         "Abakus Particle Counter":{"time (epoch)":t_i, "data":{"bins":[0]*self.abakus_bin_num, "counts/bin":[0]*self.abakus_bin_num, "total counts":0}},
-                         "Flowmeter SLI2000 (Green)":{"time (epoch)":t_i, "data":{"flow (uL/min)":0.0}},
-                         "Flowmeter SLS1500 (Black)":{"time (epoch)":t_i, "data":{"flow (mL/min)":0.0}},
-                         "Flowmeter":{"time (epoch)":t_i, "data":{"sli2000 (uL/min)":0.0, "sls1500 (mL/min)":0.0}},
-                         "Bronkhurst Pressure":{"time (epoch)":t_i, "data":{}},
-                         "Melthead":{"time (epoch)":t_i, "data":{}},
+        self.big_data = {"Picarro Gas":{"time (epoch)":[t_i], "data":{"CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}},
+                        #  "Picarro Water":{"time (epoch)":[t_i], "data":{[]}},
+                         "Laser Distance Sensor":{"time (epoch)":[t_i], "data":{"distance (cm)":[0.0], "temperature (°C)":[99.99]}},
+                        #  "Abakus Particle Counter":{"time (epoch)":[t_i], "data":{"total counts":[0], "bins":[[0]*self.abakus_bin_num], "counts/bin":[[0]*self.abakus_bin_num]}},
+                         "Abakus Particle Counter":{"time (epoch)":[t_i], "data":{"total counts":[0]}},
+                         "Flowmeter":{"time (epoch)":[t_i], "data":{"SLI2000 (uL/min)":[0.0], "SLS1500 (mL/min)":[0.0]}},
+                        #  "Bronkhurst Pressure":{"time (epoch)":[t_i], "data":{[]}},
+                        #  "Melthead":{"time (epoch)":[t_i], "data":{[]}},
                         }
-        
+
+        self.empty_data = copy.deepcopy(self.big_data)
         self.sensor_names = list(self.big_data.keys())
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
@@ -65,7 +66,7 @@ class Interpretor():
         picarro_gas_output = picarro_gas_bus.read()
         # picarro_water_timestamp, picarro_water_data = picarro_water_bus.read()
 
-        # Process the raw data from each bus (each produces a data frame)
+        # Process the raw data from each bus (saves the data in self.big_data)
         self.process_abakus_data(abakus_output)
         self.process_flowmeter_data(flowmeter_sli_output, model="SLI2000", scale_factor=5, units="uL/min")
         self.process_flowmeter_data(flowmeter_sls_output, model="SLS1500", scale_factor=500, units="mL/min")
@@ -73,9 +74,6 @@ class Interpretor():
         self.process_picarro_data(picarro_gas_output, model="GAS")
         # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
         
-        # Concatanate the data frames and take a look at the differece between their timestamps
-        big_df = [self.abakus_total_counts, self.flowmeter_sli2000_data, 
-                            self.flowmeter_sls1500_data, self.laser_data, self.picarro_gas_data]
 
         time1 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sli2000_data["FM time (epoch)"]
         time2 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sls1500_data["FM time (epoch)"]
@@ -140,15 +138,9 @@ class Interpretor():
                 ticks = self.twos_comp(rxdata[0])
                 flow_rate = ticks / scale_factor
 
-                if model == "SLI2000":
-                    self.big_data["Flowmeter SLI2000 (Green)"]["time (epoch)"] = timestamp
-                    self.big_data["Flowmeter SLI2000 (Green)"]["data"]["flow (uL/min)"] = flow_rate
-                    
-                elif model == "SLS1500":
-                    self.big_data["Flowmeter SLS1500 (Black)"]["time (epoch)"] = timestamp
-                    self.big_data["Flowmeter SLS1500 (Black)"]["data"]["flow (mL/min)"] = flow_rate
-                else:
-                    logger.debug("Invalid flowmeter model given. Not updating measurement")
+                self.big_data["Flowmeter"]["time (epoch)"] = timestamp
+                self.big_data["Flowmeter"]["data"][f"{model} ({units})"] = flow_rate
+
         # If that didn't work, give up this measurement
         except Exception as e:
             logger.warning(f"Encountered exception in processing flowmeter {model}: {e}. Not updating measurement.")
@@ -224,6 +216,8 @@ class Interpretor():
             output_cm = float(data_out) / 100
             self.laser_data["time (epoch)"] = timestamp
             self.laser_data["distance (cm)"] = output_cm
+            self.big_data["Laser Distance Sensor"]["time (epoch)"] = timestamp
+            self.big_data["Laser Distance Sensor"]["data"]["distance (cm)"] = output_cm
         except ValueError as e:
             logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
         except TypeError as e:
@@ -245,6 +239,13 @@ class Interpretor():
                 self.picarro_gas_data["CH4"] = float(data_out[2])
                 self.picarro_gas_data["CO"] = float(data_out[3])
                 self.picarro_gas_data["H2O"] = float(data_out[4])
+
+                self.big_data["Picarro Gas"]["time (epoch)"] = timestamp
+                self.big_data["Picarro Gas"]["data"]["CO2"] = float(data_out[1])
+                self.big_data["Picarro Gas"]["data"]["CH4"] = float(data_out[2])
+                self.big_data["Picarro Gas"]["data"]["CO"] = float(data_out[3])
+                self.big_data["Picarro Gas"]["data"]["H2O"] = float(data_out[4])
+
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
         elif model == "WATER":
