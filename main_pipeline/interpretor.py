@@ -5,7 +5,11 @@
 import pandas as pd
 import numpy as np
 import time
-import copy
+import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -18,42 +22,35 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-from main_pipeline.bus import Bus
+try:
+    from main_pipeline.bus import Bus
+except ImportError:
+    from bus import Bus
 
 class Interpretor():
     """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
     def __init__(self) -> None:
-        # Set up data frame for all sensors, with initial measurements zeroed and 
-        #   the correct formatting to be updated by the sensor outputs
+
+       self._initialize_data_storage()
+    
+    def _initialize_data_storage(self):
+        """
+            Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
+            updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
+            initializing all values
+        """
+        # Read in the sensor data config file to initialize the data buffer. 
+        with open("config/sensor_data.yaml", 'r') as stream:
+            self.big_data = yaml.safe_load(stream)
+
         t_i = time.time()
-        self.abakus_bin_num = 32
-        self.abakus_data = {"abks time (epoch)": [t_i]*self.abakus_bin_num, "bins": [0]*self.abakus_bin_num, "counts": [0]*self.abakus_bin_num}
-        # self.abakus_data = pd.DataFrame(init_abakus_data)
-        self.abakus_total_counts = {"abks time (epoch)": t_i, "total counts": 0}
-
-        self.flowmeter_sli2000_data = {"FM time (epoch)": t_i, "flow (uL/min)": 0.0}
-        self.flowmeter_sls1500_data = {"FM time (epoch)": t_i, "flow (mL/min)": 0.0}
-
-        self.laser_data = {"lsr time (epoch)": t_i, "distance (cm)": 0.0, "temperature (°C)": 99.99}
-        # self.laser_data = pd.DataFrame(init_laser_data)
-
-        self.picarro_gas_data = {"gas time (epoch)":t_i, "sample time":0.0, "CO2":0.0, "CH4":0.0, "CO":0.0, "H2O":0.0}
-        # self.picarro_gas_data = pd.DataFrame(init_picarro_gas_data)
-
-        # set up the data management
-        # This should eventually go into a yaml file - could even be set by the GUI if I'm feeling really fancy    
-        self.big_data = {"Picarro Gas":{"time (epoch)":[t_i], "data":{"CO2":[0.0], "CH4":[0.0], "CO":[0.0], "H2O":[0.0]}},
-                        #  "Picarro Water":{"time (epoch)":[t_i], "data":{[]}},
-                         "Laser Distance Sensor":{"time (epoch)":[t_i], "data":{"distance (cm)":[0.0], "temperature (°C)":[99.99]}},
-                        #  "Abakus Particle Counter":{"time (epoch)":[t_i], "data":{"total counts":[0], "bins":[[0]*self.abakus_bin_num], "counts/bin":[[0]*self.abakus_bin_num]}},
-                         "Abakus Particle Counter":{"time (epoch)":[t_i], "data":{"total counts":[0]}},
-                         "Flowmeter":{"time (epoch)":[t_i], "data":{"SLI2000 (uL/min)":[0.0], "SLS1500 (mL/min)":[0.0]}},
-                        #  "Bronkhurst Pressure":{"time (epoch)":[t_i], "data":{[]}},
-                        #  "Melthead":{"time (epoch)":[t_i], "data":{[]}},
-                        }
-
-        self.empty_data = copy.deepcopy(self.big_data)
-        self.sensor_names = list(self.big_data.keys())
+        # Comb through the keys, set the timestamp to the current time and the data to zero
+        sensor_names = self.big_data.keys()
+        for name in sensor_names:
+            self.big_data[name]["Time (epoch)"] = t_i
+            channels = list(self.big_data[name]["Data"].keys())
+            for channel in channels:
+                self.big_data[name]["Data"][channel] = 0.0
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, output_bus:Bus, delay):
@@ -74,15 +71,11 @@ class Interpretor():
         self.process_picarro_data(picarro_gas_output, model="GAS")
         # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
         
-
-        time1 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sli2000_data["FM time (epoch)"]
-        time2 = self.abakus_total_counts["abks time (epoch)"] - self.flowmeter_sls1500_data["FM time (epoch)"]
-        time3 = self.abakus_total_counts["abks time (epoch)"] - self.laser_data["lsr time (epoch)"]
-        time4 = self.abakus_total_counts["abks time (epoch)"] - self.picarro_gas_data["gas time (epoch)"]
-        # print(f"time difference 1: {time1}")
-        # print(f"time difference 2: {time2}")
-        # print(f"time difference 3: {time3}")
-        # print(f"time difference 4: {time4}")
+        # Uncomment these lines to check the difference in timestamps between the sensors
+        # print(f"time difference 1: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Gas"]["Time (epoch)"]}")
+        # print(f"time difference 2: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Laser Distance Sensor"]["Time (epoch)"]}")
+        # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
+        # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
         # Write to the output bus
         output_bus.write(self.big_data)
@@ -108,12 +101,13 @@ class Interpretor():
             counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
 
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
-            if len(bins) == self.abakus_bin_num: 
+            abakus_bin_num = 32
+            if len(bins) == abakus_bin_num: 
                 # logger.info("Abakus data good, recieved 32 channels.")
-                self.big_data["Abakus Particle Counter"]["time (epoch)"] = timestamp
-                self.big_data["Abakus Particle Counter"]["data"]["bins"] = bins
-                self.big_data["Abakus Particle Counter"]["data"]["counts/bin"] = counts
-                self.big_data["Abakus Particle Counter"]["data"]["total counts"] = int(np.sum(counts))
+                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
+                self.big_data["Abakus Particle Counter"]["Data"]["bins"] = bins
+                self.big_data["Abakus Particle Counter"]["Data"]["counts/bin"] = counts
+                self.big_data["Abakus Particle Counter"]["Data"]["total counts"] = int(np.sum(counts))
             else:
                 raise Exception("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except Exception as e:
@@ -138,8 +132,8 @@ class Interpretor():
                 ticks = self.twos_comp(rxdata[0])
                 flow_rate = ticks / scale_factor
 
-                self.big_data["Flowmeter"]["time (epoch)"] = timestamp
-                self.big_data["Flowmeter"]["data"][f"{model} ({units})"] = flow_rate
+                self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
+                self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
 
         # If that didn't work, give up this measurement
         except Exception as e:
@@ -214,10 +208,8 @@ class Interpretor():
         try:
             timestamp, data_out = laser_data
             output_cm = float(data_out) / 100
-            self.laser_data["time (epoch)"] = timestamp
-            self.laser_data["distance (cm)"] = output_cm
-            self.big_data["Laser Distance Sensor"]["time (epoch)"] = timestamp
-            self.big_data["Laser Distance Sensor"]["data"]["distance (cm)"] = output_cm
+            self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+            self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = output_cm
         except ValueError as e:
             logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
         except TypeError as e:
@@ -233,18 +225,13 @@ class Interpretor():
         if model == "GAS":
             try:
                 timestamp, data_out = picarro_model
-                self.picarro_gas_data["time (epoch)"] = timestamp
-                self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
-                self.picarro_gas_data["CO2"] = float(data_out[1])
-                self.picarro_gas_data["CH4"] = float(data_out[2])
-                self.picarro_gas_data["CO"] = float(data_out[3])
-                self.picarro_gas_data["H2O"] = float(data_out[4])
+                # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
 
-                self.big_data["Picarro Gas"]["time (epoch)"] = timestamp
-                self.big_data["Picarro Gas"]["data"]["CO2"] = float(data_out[1])
-                self.big_data["Picarro Gas"]["data"]["CH4"] = float(data_out[2])
-                self.big_data["Picarro Gas"]["data"]["CO"] = float(data_out[3])
-                self.big_data["Picarro Gas"]["data"]["H2O"] = float(data_out[4])
+                self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
+                self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
+                self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[2])
+                self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
+                self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
 
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
@@ -253,3 +240,7 @@ class Interpretor():
                 timestamp, data_out = picarro_model
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
+
+if __name__ == "__main__":
+    interp = Interpretor()
+    print(interp.big_data)

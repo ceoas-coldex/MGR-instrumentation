@@ -54,9 +54,8 @@ class Executor():
         # Initialize the classes
         self.sensor = Sensor()
         self.interpretor = Interpretor()
-        data_dict = self.interpretor.empty_data   # Pull the empty initialized data dictionary from the interpretor class...
-        self.gui = GUI(data_dict)   # ... and pass it to the GUI
-        self.display = Display(self.gui)    # Then pass the GUI into the display class
+        self.gui = GUI()
+        self.display = Display(self.gui)  # Pass the GUI into the display class
 
         # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
         self._set_gui_buttons()
