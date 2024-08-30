@@ -1,5 +1,7 @@
 # -------------
 # The sensor class
+# 
+# Currently can't be run from here, since it's importing things from the sensor_interfaces package. Need to figure that out, run it from executor()
 # -------------
 
 # General imports

@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import pandas as pd
+from collections import deque
 import yaml
 try:
     from yaml import CLoader as Loader
@@ -27,7 +28,7 @@ class GUI():
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
-        self.root.geometry('1400x1000')
+        self.root.geometry('1600x1200')
         
         self.grid_width = 150 # px? computer screen units?
         self.grid_height = 50
@@ -36,13 +37,8 @@ class GUI():
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
 
         ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
-        # Read in the sensor data config file to initialize the data buffer. 
-        # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
-        with open("config/sensor_data.yaml", 'r') as stream:
-            self.big_data_dict = yaml.safe_load(stream)
-
-        # Grab the names of the sensors from the dictionary
-        self.sensor_names = list(self.big_data_dict.keys())
+        max_buffer_length = 100 # how long we let the buffers get, helps with memory
+        self._init_data_buffer(max_buffer_length)
 
         # initialize dummy data buffers - will eventually delete this, currently for testing
         self.index = 0
@@ -83,6 +79,23 @@ class GUI():
   
     ## --------------------- DATA STREAMING DISPLAY --------------------- ##
 
+    def _init_data_buffer(self, max_buffer_length):
+        # Read in the sensor data config file to initialize the data buffer. 
+        # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
+        with open("config/sensor_data.yaml", 'r') as stream:
+            self.big_data_dict = yaml.safe_load(stream)
+
+        # Comb through the keys, set the timestamp to the current time and the data to zero
+        sensor_names = self.big_data_dict.keys()
+        for name in sensor_names:
+            self.big_data_dict[name]["Time (epoch)"] = deque([], maxlen=max_buffer_length)
+            channels = self.big_data_dict[name]["Data"].keys()
+            for channel in channels:
+                self.big_data_dict[name]["Data"][channel] = deque([], maxlen=max_buffer_length)
+
+        # Grab the names of the sensors from the dictionary
+        self.sensor_names = list(sensor_names)
+    
     def _init_data_streaming_notebook(self, root):
         """
         Method to set up a tkinter notebook with a page for each sensor (stored in self.sensor_names)
@@ -303,6 +316,7 @@ class GUI():
 if __name__ == "__main__":
     
     app = GUI()
+    print(app.big_data_dict)
 
     while True:
         app.run()

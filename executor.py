@@ -69,7 +69,7 @@ class Executor():
         self.main_interp_bus = Bus()
 
         # Set the delay times (sec)
-        self.sensor_delay = 0.1
+        self.sensor_delay = 0.5
         self.interp_delay = 0.1
         self.display_delay = 0.5
 
