@@ -3,16 +3,21 @@
 # with simulated values that have the same representation and type as real data 
 # 
 # Ali Jones
-# Last updated 8/23/24
+# Last updated 8/29/24
 # -------------
 
 import time
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level=logging.INFO, datefmt ="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__) # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
@@ -23,17 +28,17 @@ class Abakus():
         self.stop_measurement()
 
     def initialize_pyserial(self, port, baud):
-        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+        logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    @log_on_end(logging.INFO, "Abakus measurements started")
+    @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
         pass
 
-    @log_on_end(logging.INFO, "Abakus measurements stopped")
+    @log_on_end(logging.INFO, "Abakus measurements stopped", logger=logger)
     def stop_measurement(self):
         pass
 
-    @log_on_end(logging.INFO, "Abakus queried")
+    @log_on_end(logging.INFO, "Abakus queried", logger=logger)
     def query(self):
         """Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
 
@@ -48,9 +53,9 @@ class Picarro():
         self.initialize_pyserial(serial_port, baud_rate)
 
     def initialize_pyserial(self, port, baud):
-        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+        logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    @log_on_end(logging.INFO, "Picarro queried")
+    @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
         """Returns - timestamp (float, epoch time), picarro_reading (str, raw data)"""
         fake_picarro_data = "2024-08-22 13:52:47.246;-0.990;-0.001;-0.006;0.021"
@@ -67,17 +72,17 @@ class FlowMeter():
         self.initialize_pyserial(serial_port, baud_rate)
 
     def initialize_pyserial(self, port, baud):
-        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+        logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    @log_on_end(logging.INFO, "Flowmeter measurements started")
+    @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
         pass
 
-    @log_on_end(logging.INFO, "Flowmeter measurements stopped")
+    @log_on_end(logging.INFO, "Flowmeter measurements stopped", logger=logger)
     def stop_measurement(self):
         pass
 
-    @log_on_end(logging.INFO, "Flowmeter queried")
+    @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
     def query(self):
         """Returns - timestamp (float, epoch time), data_out ([int], raw data)"""
         timestamp = time.time()
@@ -97,24 +102,24 @@ class Dimetix():
         self.stop_laser()
 
     def initialize_pyserial(self, port, baud):
-        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+        logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
     
-    @log_on_end(logging.INFO, "Dimetix laser turned on")
+    @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
         pass
 
-    @log_on_end(logging.INFO, "Dimetix laser turned off")
+    @log_on_end(logging.INFO, "Dimetix laser turned off", logger=logger)
     def stop_laser(self):
         pass
 
-    @log_on_end(logging.INFO, "Dimetix laser queried distance")
+    @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
         """Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
         fake_laser_distance_reading = "00023" # raw serial output "g0t-00000023"
         timestamp = time.time()
         return timestamp, fake_laser_distance_reading
     
-    @log_on_end(logging.INFO, "Dimetix laser queried temperature")
+    @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         pass
 
@@ -124,8 +129,8 @@ class Bronkhorst():
         self.initialize_pyserial(serial_port, baud_rate)
 
     def initialize_pyserial(port, baud):
-        logging.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+        logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    @log_on_end(logging.INFO, "Bronkhorst queried")
+    @log_on_end(logging.INFO, "Bronkhorst queried", logger=logger)
     def query(self):
         pass

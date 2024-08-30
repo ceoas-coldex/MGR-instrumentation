@@ -14,7 +14,7 @@ import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
 class Picarro():
-    def __init__(self, serial_port="COM3", baud_rate="19200") -> None:
+    def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
         # Picarro communication codes
         self.QUERY = str("_Meas_GetConcEx\r").encode() # gets latest measurement and timestamp
         self.STATUS = str("_Instr_GetStatus\r").encode() # gets instrument status

@@ -10,7 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-from tkinter_practice import GUI
+from gui import GUI
 
 class Bus():
     """Class that sets up a bus to pass information around with read/write locking"""
