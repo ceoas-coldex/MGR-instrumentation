@@ -2,9 +2,11 @@
 # The sensor class
 # -------------
 
+# General imports
 import serial
 from serial import SerialException
 import time
+import yaml
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -17,11 +19,19 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-from main_pipeline.bus import Bus
+# Custom imports
+try:
+    from main_pipeline.bus import Bus   # If we're running this script from the executor file
+except ImportError:
+    from bus import Bus # Otherwise
 
-# Imports sensor classes for either real hardware or shadow hardware, depending on the situation
-test_port = "COM3" # REPLACE WITH READING A .YAML FILE
-test_baud = 15200
+# Load the sensor comms configuration file and grab the Picarro G2041 port and baud rate
+with open("config/sensor_comms.yaml", 'r') as stream:
+    comms_config = yaml.safe_load(stream)
+test_port = comms_config["Picarro Gas"]["serial port"]
+test_baud = comms_config["Picarro Gas"]["baud rate"]
+
+# Check if we can connect to the Picarro, and if so import the real sensor classes
 try:
     serial.Serial(port=test_port, baudrate=test_baud, timeout=5) 
     from sensor_interfaces.abakus_interface import Abakus
@@ -29,21 +39,21 @@ try:
     from sensor_interfaces.laser_interface import Dimetix
     from sensor_interfaces.picarro_interface import Picarro
     logger.info(f"Successfully connected to port {test_port}, using real hardware")
-except:
+# Otherwise use shadow hardware
+except SerialException:
     from sensor_interfaces.sim_instruments import Abakus, FlowMeter, Dimetix, Picarro
     logger.info(f"Couldn't find real hardware at port {test_port}, shadowing sensor calls with substitute functions")
 
-    
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
     def __init__(self) -> None:
-        ### SHOULD EITHER READ IN OR BE PASSED IN A .YAML FILE HERE THAT SPECIFIES PORTS AND BAUDS ###
-        self.abakus = Abakus()
-        self.flowmeter_sli2000 = FlowMeter(serial_port="COM6")
-        self.flowmeter_sls1500 = FlowMeter(serial_port="COM7")
-        self.laser = Dimetix()
-        self.gas_picarro = Picarro(serial_port="COM3")
-        self.water_picarro = Picarro(serial_port="COM4")
+        # Initialize the sensors with the appropriate serial port and baud rate (set in config/sensor_comms.yaml, make sure the dictionary keys here match)
+        self.abakus = Abakus(serial_port=comms_config["Abakus Particle Counter"]["serial port"], baud_rate=comms_config["Abakus Particle Counter"]["baud rate"])
+        self.flowmeter_sli2000 = FlowMeter(serial_port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baud_rate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
+        self.flowmeter_sls1500 = FlowMeter(serial_port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baud_rate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
+        self.laser = Dimetix(serial_port=comms_config["Laser Distance Sensor"]["serial port"], baud_rate=comms_config["Laser Distance Sensor"]["baud rate"])
+        self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
+        self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
 
     def __del__(self) -> None:
         # self.abakus.__del__()

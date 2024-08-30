@@ -71,7 +71,7 @@ class Executor():
         # Set the delay times (sec)
         self.sensor_delay = 0.1
         self.interp_delay = 0.1
-        self.display_delay = 0.1
+        self.display_delay = 0.5
 
     def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
