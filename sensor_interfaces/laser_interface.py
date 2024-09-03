@@ -17,13 +17,16 @@ class Dimetix():
     def __init__(self, serial_port="COM8", baud_rate=19200) -> None:
         """Class to communicate with the dimetix laser distance sensor."""
         # Dimetix communication codes
-        self.LASER_ON = b's0o\r\n'
-        self.LASER_OFF = b's0c\r\n'
-        self.ONE_MEAS = b's0g\r\n'
-        self.TRACKING_MEAS_ON = b's0h\r\n'
-        self.TRACKING_BUFFER_ON = b"s0f+500\r\n"
-        self.QUERY = b's0q\r\n' # gets the most recent measuremt, buffering must be on. Not sure how it differs from ONE_MEAS
-        self.TEMP = b's0t\r\n'
+        self.LASER_ON = b's0o\r\n' # Switches the laser beam on. The laser is on until the Stop / Clear command (STOP_CLR) is issued
+        self.STOP_CLR = b's0c\r\n' # Stops the current execution and clears the status LEDs
+        self.DIST = b's0g\r\n' # Triggers one distance measurement. Each new command cancels an active measurement
+        self.TEMP = b's0t\r\n' # Triggers one temperature measurement
+
+        self.CONT_DIST = b's0h\r\n' # Triggers continuous distance measurements until STOP_CLR
+        self.TRACKING_BUFFER_ON = b"s0f+500\r\n" # Sets tracking buffer with 500ms delay
+        self.READ_BUFF = b's0q\r\n' # Gets the most recent measuremt of the buffer
+
+        self.READ_ERROR = b's0re\r\n' # Read error stack
 
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -50,19 +53,15 @@ class Dimetix():
     @log_on_end(logging.INFO, "Dimetix laser turned on")
     def start_laser(self):
         self.ser.write(self.LASER_ON)
-        time.sleep(1)
-        # self.ser.write(self.TRACKING_BUFFER_ON)
-        # self.ser.write(self.TRACKING_MEAS_ON)
 
     @log_on_end(logging.INFO, "Dimetix laser turned off")
     def stop_laser(self):
-        self.ser.write(self.LASER_OFF)
+        self.ser.write(self.STOP_CLR)
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance")
     def query_distance(self):
         # Get the most recent measurement from the laser sensor
-        self.ser.write(self.ONE_MEAS)
-        time.sleep(1)
+        self.ser.write(self.DIST)
         timestamp = time.time()
         response = self.ser.readline().decode()
         # Decode the response
@@ -73,7 +72,6 @@ class Dimetix():
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
-        time.sleep(1)
         temp_raw = self.ser.readline().decode()
         print(temp_raw)
         # Decode the response
@@ -100,16 +98,15 @@ if __name__ == "__main__":
     print("Testing serial communication\n")
     stop = False
     while not stop:
-        command = input("a: Start measurement, b: Stop measurement, c: Query, x: Quit \n")
+        command = input("a: Start measurement, b: Stop measurement, c: Query dist, d: Query temp, x: Quit \n")
         if command == "a" or command == "A":
             my_laser.start_laser()
         elif command == "b" or command == "B":
             my_laser.stop_laser()
         elif command == "c" or command == "C":
-            # time.sleep(5)
             timestamp, output = my_laser.query_distance()
             process_distance(output, timestamp)
-            time.sleep(5)
+        elif command == "d" or command == "D":
             my_laser.query_temperature()
         elif command == "x" or command == "X":
             stop = True

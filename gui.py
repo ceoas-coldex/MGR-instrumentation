@@ -20,16 +20,18 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+from main_pipeline.sensor import Sensor
+
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
         I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain."""
-    def __init__(self):
+    def __init__(self, button_callback_dict):
         """Initializes everything"""
         ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
-        self.width = 1600
+        self.width = 1700
         self.height = 1200
         self.root.geometry(f"{self.width}x{self.height}")
         self.root.resizable(False, False)
@@ -63,7 +65,7 @@ class GUI():
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the data grid that will eventually contain sensor status / control, fow now it's empty
         status_grid_frame = Frame(self.root)
-        self._init_status_grid_loop(status_grid_frame, callbacks=None)
+        self._init_status_grid(status_grid_frame, button_callback_dict)
 
         # Set up the notebook for data streaming/live plotting
         data_streaming_frame = Frame(self.root, bg=self.light_blue)
@@ -274,7 +276,7 @@ class GUI():
 
     ## --------------------- "STATUS" GRID --------------------- ##
    
-    def _make_status_grid_cell(self, root, col, row, colspan=1, rowspan=1, color='white'):
+    def _make_status_grid_cell(self, root, title, col, row, start_callback=None, stop_callback=None, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
         frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
         # place in the position we want and make it fill the space (sticky in all directions)
@@ -282,6 +284,21 @@ class GUI():
         # make it stretchy if the window is resized
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
+
+        # set a title for the cell
+        label=Label(frame, text=title, font=self.bold16, bg='white')
+        label.grid(row=0, column=0, columnspan=2, sticky=N, pady=20)
+
+        # If we have the ability to start and stop the sensor measurement, add those buttons
+        # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
+            # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
+        if start_callback is not None:
+            start_button = Button(frame, text="Start Measurement", command=start_callback)
+            start_button.grid(row=1, column=0, sticky=W, padx=10)
+        if stop_callback is not None:
+            stop_button = Button(frame, text="Stop Measurement", command=stop_callback)
+            stop_button.grid(row=1, column=1, sticky=E, padx=10)
+
         return frame 
     
     def _find_status_grid_dims(self):
@@ -299,7 +316,7 @@ class GUI():
 
         return num_rows, num_cols
     
-    def _init_status_grid_loop(self, root:Frame, callbacks):
+    def _init_status_grid(self, root:Frame, callbacks):
         """Makes a grid of all the sensors. Currently a placeholder for anything we 
         want to display about the instruments, like adding control or their status"""
         
@@ -307,20 +324,37 @@ class GUI():
         # Make and save all the frames
         self.sensor_status_frames = {}
         # Title row
-        title_frame = self._make_status_grid_cell(root, col=0, row=0, colspan=num_cols)
-        label=Label(title_frame, text="Start All Data Collection", font=self.bold16)
-        label.grid(row=0, column=0)
+        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols)
+        
         self.sensor_status_frames.update({"All": title_frame})
         # All the other rows/cols
         i = 0
         try:
             for row in range(1,num_rows+1):
                 for col in range(num_cols):
-                    frame = self._make_status_grid_cell(root, col=col, row=row)
-                    label = Label(frame, text=self.sensor_names[i], justify='center', font=self.bold16)
-                    label.grid(row=0, column=0)
-                    # mayne add a button here? some status text?
-                    self.sensor_status_frames.update({self.sensor_names[i]: frame})
+                    # Grab the sensor name
+                    sensor_name = self.sensor_names[i]
+                    
+                    # Grab the callbacks we're assigning to the buttons for each sensor
+                    callback_dict = callbacks[sensor_name]
+                    # If there's more going on in the "start" category, deal with that later
+                    if type(callback_dict["start"]) == dict:
+                        start_callback = None
+                        stop_callback = None
+                    # Otherwise pull out the start and stop callbacks
+                    else:
+                        start_callback = callback_dict["start"]
+                        stop_callback = callback_dict["stop"]
+
+                    # Make the cell for each sensor
+                    frame = self._make_status_grid_cell(root, 
+                                                        title=sensor_name, 
+                                                        start_callback=start_callback, 
+                                                        stop_callback=stop_callback, 
+                                                        col=col, 
+                                                        row=row)
+
+                    self.sensor_status_frames.update({sensor_name: frame})
                     i += 1
         except IndexError as e:
             print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}")
@@ -361,8 +395,26 @@ class GUI():
 
 
 if __name__ == "__main__":
+    # Read the sensor data config file in order to grab the sensor names
+    with open("config/sensor_data.yaml", 'r') as stream:
+        big_data_dict = yaml.safe_load(stream)
+    sensor_names = big_data_dict.keys()
+
+    # Read in an instance of the sensor class to grab the callback methods
+    sensor = Sensor()
+
+    # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
+    # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
+    button_dict = {}
+    for name in sensor_names:
+        button_dict.update({name:{"start":None, "stop":None}})
+    # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
+    button_dict["Abakus Particle Counter"]["start"] = sensor.abakus.start_measurement
+    button_dict["Abakus Particle Counter"]["stop"] = sensor.abakus.stop_measurement
+    button_dict["Laser Distance Sensor"]["start"] = sensor.laser.start_laser
+    button_dict["Laser Distance Sensor"]["stop"] = sensor.laser.stop_laser
     
-    app = GUI()
+    app = GUI(button_callback_dict=button_dict)
 
     while True:
         app.run()

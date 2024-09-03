@@ -91,7 +91,26 @@ class Executor():
         self.clean_sensor_shutdown()
     
     def _set_gui_buttons(self):
-        pass    
+        sensor_names = self.gui.sensor_names
+        # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
+        # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
+        button_dict = {}
+        for name in sensor_names:
+            button_dict.update({name:{"start":None, "stop":None}})
+
+        # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
+        button_dict["Abakus Particle Counter"]["start"] = self.sensor.abakus.start_measurement
+        button_dict["Abakus Particle Counter"]["stop"] = self.sensor.abakus.stop_measurement
+        button_dict["Laser Distance Sensor"]["start"] = self.sensor.laser.start_laser
+        button_dict["Laser Distance Sensor"]["stop"] = self.sensor.laser.stop_laser
+
+        # The flowmeter is really two instruments in one, so add another layer of dictionaries to capture that. The flowmeters
+        # also don't have a "stop measurement" command as far as I can tell
+        button_dict.update({"Flowmeter":{"start":{"sli2000":self.sensor.flowmeter_sli2000.start_measurement,
+                                                  "sls1500":self.sensor.flowmeter_sls1500.start_measurement},
+                                         "stop":{"sli2000":None, "sls1500":None}}})
+        
+        
     
     def execute(self):
         """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
