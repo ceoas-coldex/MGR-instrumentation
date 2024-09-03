@@ -23,7 +23,7 @@ from matplotlib.animation import FuncAnimation
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
         I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain."""
-    def __init__(self, start_callbacks=None, stop_callbacks=None):
+    def __init__(self):
         """Initializes everything"""
         ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
@@ -45,9 +45,10 @@ class GUI():
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
         self.bold12 = Font(self.root, family="Helvetica", size=12, weight=BOLD)
 
+        # Set some styles
         s = ttk.Style()
         s.configure('TNotebook.Tab', font=self.bold12, padding=[10, 5])
-        s.configure('TNotebook', background=self.light_blue, borderwidth=0)
+        s.configure('TNotebook', background=self.light_blue)
         s.layout("TNotebook", []) # get rid of the notebook border
 
         ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
@@ -118,7 +119,7 @@ class GUI():
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
-            window.configure(background=self.light_blue, borderwidth=0)
+            window.configure(background=self.light_blue)
             window.grid(column=0, row=1, sticky=NSEW)
             notebook.add(window, text=name)
             # Append the frames to a dict so we can access them later
@@ -152,45 +153,48 @@ class GUI():
         """General method to set up a canvas in a given root. I'm eventually using each canvas
         to hold a matplotlib figure for live plotting
         
-        Args - f (matplotlib figure), root (tkinter object)"""
+        Args - f (matplotlib figure), root (tkinter object), vbar (tkinter Scrollbar), 
+        num_subplots(int, how many subplots we want on this canvas. Used to set the size of the scroll region)"""
+        # Initialize and render a matplotlib embedded canvas
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
-        canvas.get_tk_widget().config(bg='#FFFFFF',scrollregion=(0,0,0,num_subplots*(self.height/2.5)))
-        # canvas.get_tk_widget().config(width=300,height=300)
-        canvas.get_tk_widget().config(yscrollcommand=vbar.set)
+        canvas.get_tk_widget().config(bg='white', # set the background color 
+                                      scrollregion=(0,0,0,num_subplots*(self.height/2.5)), # set the size of the scroll region in screen units
+                                      yscrollcommand=vbar.set, # link the scrollbar to the canvas
+                                      )
         canvas.get_tk_widget().grid(row=0, column=0)
 
+        # Set the scrollbar command and position
         vbar.config(command=canvas.get_tk_widget().yview)
         vbar.grid(row=0, column=1, sticky=N+S)
-
-        canvas.get_tk_widget().bind_all("<MouseWheel>", self._on_mousewheel)
-
-        return canvas
+        # Bind the scrollbar to the mousewheel
+        canvas.get_tk_widget().bind("<MouseWheel>", self._on_mousewheel)
 
     def _init_data_streaming_canvases(self):
-        """Sets up a tkinter canvas for each sensor in its own tkinter frame (stored in self.data_streaming_windows).
+        """
+        Sets up a tkinter canvas for each sensor in its own tkinter frame and with its own matplotlib figure. 
+        The frames were set up in _init_data_streaming_notebook(), and the figures in _init_data_streaming_figs(). We pass
+        the frame and figure into a canvas (FigureCanvasTkAgg object), set up a scrollbar, and bind the scrollbar to the mousewheel.
+
         It might not look like anything is getting saved here, but Tkinter handles parent/child relationships internally,
-        so the canvases exist wherever Tkinter keeps the frames"""
-        self.data_streaming_canvases = {}
+        so the canvases exist wherever Tkinter keeps the frames
+        """
         for name in self.sensor_names:
             # Grab the appropriate matplotlib figure and root window (a tkinter frame)
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
-            # Scrollbars
-            num_subplots = len(fig.get_axes())
+            # Make a scrollbar
             vbar = Scrollbar(window, orient=VERTICAL)
-            # Make a canvas to hold the figure in the window
-            canvas = self._one_canvas(fig, window, vbar, num_subplots)
-
-            self.data_streaming_figs.update({name:fig})
-            self.data_streaming_canvases.update({name:canvas})
-
+            # Make a canvas to hold the figure in the window, and set up the scrollbar
+            self._one_canvas(fig, window, vbar, num_subplots = len(fig.get_axes()))
 
     def _init_data_streaming_animations(self, animation_delay=1000):
-        """Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
+        """
+        Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
         
-            Args - animation_delay (int, number of ms to delay between live plot updates)
-            Updates - self.streaming_anis (dict, holds the FuncAnimations)"""
+            Args - animation_delay (int, number of ms to delay between live plot updates) \n
+            Updates - self.streaming_anis (dict, holds the FuncAnimations)
+        """
         self.data_streaming_anis = {}
         for name in self.sensor_names:
             # For each sensor, grab the corresponding matplotlib figure and axis.
@@ -272,9 +276,9 @@ class GUI():
    
     def _make_status_grid_cell(self, root, col, row, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
-        frame = Frame(root, relief=RAISED, borderwidth=1.5, bg=color, highlightcolor='blue')
-        # place in the position we want and make it fill the space (sticky)
-        frame.grid(column=col, row=row, columnspan=colspan, rowspan=rowspan, sticky='nsew')
+        frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
+        # place in the position we want and make it fill the space (sticky in all directions)
+        frame.grid(column=col, row=row, columnspan=colspan, rowspan=rowspan, sticky=NSEW)
         # make it stretchy if the window is resized
         frame.columnconfigure(0, weight=1)
         frame.rowconfigure(0, weight=1)
@@ -287,8 +291,8 @@ class GUI():
 
         num_cols = 2   # might make this dynamic later
         num_rows = len(self.sensor_names) / num_cols
-        # If the last number of the fraction is a 5, add 0.1. This prevents Python from doing its usual 
-        # 'bankers rounding" (rounding 2.5 to 2, for example)
+        # If the last number of the fraction is a 5, add 0.1. This is necessary because Python defaults to 
+        # "bankers rounding" (rounds 2.5 down to 2, for example) so would otherwise give us too few rows
         if str(num_rows).split('.')[-1] == '5':
             num_rows += 0.1
         num_rows = round(num_rows)
@@ -336,9 +340,13 @@ class GUI():
             button["state"] = NORMAL
 
     def _on_mousewheel(self, event):
+        """Method that scrolls the widget that currently has focus, assuming that widget has this callback bound to it"""
         scroll_speed = int(event.delta/120)
-        for name in self.sensor_names:
-            self.data_streaming_canvases[name].get_tk_widget().yview_scroll(-1*scroll_speed, "units")
+        try:
+            widget = self.root.focus_get()
+            widget.yview_scroll(-1*scroll_speed, "units")
+        except Exception as e:
+            print(f"Exception in mousewheel callback: {e}")
 
     def run_cont(self):
         self.root.mainloop()
