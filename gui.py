@@ -10,6 +10,7 @@ except ImportError:
 
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from tkinter.ttk import Notebook, Sizegrip, Separator
 from tkinter.font import Font, BOLD
 
@@ -28,16 +29,29 @@ class GUI():
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
-        self.root.geometry('1600x1200')
+        self.width = 1600
+        self.height = 1200
+        self.root.geometry(f"{self.width}x{self.height}")
+        self.root.resizable(False, False)
         
         self.grid_width = 150 # px? computer screen units?
         self.grid_height = 50
 
+        # Make some default colors
+        self.light_blue = "#579cba"
+        self.dark_blue = "#083054"
+
         # Make some default fonts
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
+        self.bold12 = Font(self.root, family="Helvetica", size=12, weight=BOLD)
+
+        s = ttk.Style()
+        s.configure('TNotebook.Tab', font=self.bold12, padding=[10, 5])
+        s.configure('TNotebook', background=self.light_blue, borderwidth=0)
+        s.layout("TNotebook", []) # get rid of the notebook border
 
         ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
-        max_buffer_length = 100 # how long we let the buffers get, helps with memory
+        max_buffer_length = 500 # how long we let the buffers get, helps with memory
         self._init_data_buffer(max_buffer_length)
 
         # initialize dummy data buffers - will eventually delete this, currently for testing
@@ -51,7 +65,7 @@ class GUI():
         self._init_status_grid_loop(status_grid_frame, callbacks=None)
 
         # Set up the notebook for data streaming/live plotting
-        data_streaming_frame = Frame(self.root, bg="purple")
+        data_streaming_frame = Frame(self.root, bg=self.light_blue)
         self._init_data_streaming_notebook(data_streaming_frame)
         self._init_data_streaming_figs()
         self._init_data_streaming_canvases()
@@ -60,10 +74,6 @@ class GUI():
         # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
         b1 = self.pack_button(data_streaming_frame, callback=None, loc='bottom')
         b2 = self.pack_button(data_streaming_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
-                
-        # add a sizegrip to the bottom
-        sizegrip = Sizegrip(self.root)
-        sizegrip.pack(side="bottom", expand=False, fill=BOTH, anchor=SE)
 
         # pack the frames
         status_grid_frame.pack(side="left", expand=True, fill=BOTH)
@@ -108,7 +118,8 @@ class GUI():
         notebook = Notebook(root)
         for name in self.sensor_names:
             window = Frame(notebook)
-            window.grid(column=0, row=0)
+            window.configure(background=self.light_blue, borderwidth=0)
+            window.grid(column=0, row=1, sticky=NSEW)
             notebook.add(window, text=name)
             # Append the frames to a dict so we can access them later
             self.data_streaming_windows.update({name:window})
@@ -126,31 +137,54 @@ class GUI():
             channels = list(self.big_data_dict[name]["Data"].keys())
             num_subplots = len(channels)
             # Create a figure and size it based on the number of subplots
-            fig = plt.figure(name, figsize=(10,4*num_subplots))
+            fig = plt.figure(name, figsize=(10.5,4*num_subplots))
             self.data_streaming_figs.update({name:fig})
             # Add the desired number of subplots to each figure
             for i in range(0, num_subplots):
                 fig.add_subplot(num_subplots,1,i+1)
+            
+            # A little cheesy - futz with the whitespace by adjusting the position of the top edge of the subplots 
+            # (as a fraction of the figure height) based on how many subplots we have. For 1 subplot put it at 90% of the figure height, 
+            # for 4 subplots put it at 97%, and interpolate between the two otherwise
+            plt.subplots_adjust(top=np.interp(num_subplots, [1,4], [0.9,0.97]))
 
-    def _one_canvas(self, f, root):
+    def _one_canvas(self, f, root, vbar:Scrollbar, num_subplots) -> FigureCanvasTkAgg:
         """General method to set up a canvas in a given root. I'm eventually using each canvas
         to hold a matplotlib figure for live plotting
         
         Args - f (matplotlib figure), root (tkinter object)"""
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
+        canvas.get_tk_widget().config(bg='#FFFFFF',scrollregion=(0,0,0,num_subplots*(self.height/2.5)))
+        # canvas.get_tk_widget().config(width=300,height=300)
+        canvas.get_tk_widget().config(yscrollcommand=vbar.set)
         canvas.get_tk_widget().grid(row=0, column=0)
+
+        vbar.config(command=canvas.get_tk_widget().yview)
+        vbar.grid(row=0, column=1, sticky=N+S)
+
+        canvas.get_tk_widget().bind_all("<MouseWheel>", self._on_mousewheel)
+
+        return canvas
 
     def _init_data_streaming_canvases(self):
         """Sets up a tkinter canvas for each sensor in its own tkinter frame (stored in self.data_streaming_windows).
         It might not look like anything is getting saved here, but Tkinter handles parent/child relationships internally,
         so the canvases exist wherever Tkinter keeps the frames"""
+        self.data_streaming_canvases = {}
         for name in self.sensor_names:
-            # Grab the appropriate matplotlib figure and root window
+            # Grab the appropriate matplotlib figure and root window (a tkinter frame)
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
+            # Scrollbars
+            num_subplots = len(fig.get_axes())
+            vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window
-            self._one_canvas(fig, window)
+            canvas = self._one_canvas(fig, window, vbar, num_subplots)
+
+            self.data_streaming_figs.update({name:fig})
+            self.data_streaming_canvases.update({name:canvas})
+
 
     def _init_data_streaming_animations(self, animation_delay=1000):
         """Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
@@ -238,7 +272,7 @@ class GUI():
    
     def _make_status_grid_cell(self, root, col, row, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
-        frame = Frame(root, relief='ridge', borderwidth=2.5, bg=color, highlightcolor='blue')
+        frame = Frame(root, relief=RAISED, borderwidth=1.5, bg=color, highlightcolor='blue')
         # place in the position we want and make it fill the space (sticky)
         frame.grid(column=col, row=row, columnspan=colspan, rowspan=rowspan, sticky='nsew')
         # make it stretchy if the window is resized
@@ -301,6 +335,11 @@ class GUI():
         else:
             button["state"] = NORMAL
 
+    def _on_mousewheel(self, event):
+        scroll_speed = int(event.delta/120)
+        for name in self.sensor_names:
+            self.data_streaming_canvases[name].get_tk_widget().yview_scroll(-1*scroll_speed, "units")
+
     def run_cont(self):
         self.root.mainloop()
         self.root.destroy()
@@ -316,7 +355,6 @@ class GUI():
 if __name__ == "__main__":
     
     app = GUI()
-    print(app.big_data_dict)
 
     while True:
         app.run()
