@@ -27,6 +27,7 @@ matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import yaml
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -47,18 +48,26 @@ from main_pipeline.display import Display
 class Executor():
     """Class that handles passing the data around on all the busses."""
     def __init__(self) -> None:
-        # Allow us to enter the data collection loop
-        self.data_collection = True
-        self.sensors_on = True
-        
-        # Initialize the classes
-        self.sensor = Sensor()
-        self.interpretor = Interpretor()
-        self.gui = GUI()
-        self.display = Display(self.gui)  # Pass the GUI into the display class
+        # Set some intitial flags: don't start data collection, do start the GUI and the sensors
+        self.data_shutdown = True
+        self.gui_shutdown = False
+        self.sensors_shutdown = False
 
-        # Set what GUI buttons correspond to what functions (stop measurement, query, etc)
-        self._set_gui_buttons()
+        # Read in the sensor config file to grab a list of all the sensors we're working with
+        with open("config/sensor_data.yaml", 'r') as stream:
+            big_data_dict = yaml.safe_load(stream)
+        self.sensor_names = big_data_dict.keys()
+        
+        # Initialize the sensors
+        self.sensor = Sensor()
+
+        # Set up the GUI
+        button_callbacks = self._set_gui_buttons()
+        self.gui = GUI(button_callback_dict=button_callbacks)
+
+        # Initialize the rest of the process
+        self.interpretor = Interpretor()
+        self.display = Display(self.gui)  # Pass the GUI into the display class
 
         # Initialize the busses
         self.abakus_bus = Bus()
@@ -73,29 +82,54 @@ class Executor():
         self.interp_delay = 0.1
         self.display_delay = 0.5
 
-    def clean_sensor_shutdown(self):
+    @log_on_start(logging.INFO, "Initializing sensors", logger=logger)
+    @log_on_end(logging.INFO, "Finished initializing sensors", logger=logger)
+    def _init_sensors(self):
+        pass
+    
+    @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
+    @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
+    def _clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
-        if self.sensors_on:
-            del self.sensor
-        self.sensors_on = False
+        # If we haven't shut down the sensors yet, do that
+        if not self.sensors_shutdown:
+            self.sensor.shutdown_sensors()
+        self.sensors_shutdown = True
     
+    @log_on_start(logging.INFO, "Starting data collection", logger=logger)
+    def _start_data_collection(self):
+        self.data_shutdown = False
+
     @log_on_start(logging.INFO, "Exiting data collection", logger=logger)
-    def stop_data_collection(self):
-        """Method to stop data collection, called by the 'alt+q' hotkey"""
-        self.data_collection = False
-        self.executor.shutdown(wait=False, cancel_futures=True)
-        self.clean_sensor_shutdown()
-    
+    def _stop_data_collection(self):
+        # If data collection hasn't already been shut down, shut it down
+        if not self.data_shutdown:
+            # Set the data_shutdown flag to True
+            self.data_shutdown = True
+            # probably save the data file here
+
+            # Shutdown the threadpool executor
+            self.executor.shutdown(wait=False, cancel_futures=True)
+
+    def _exit_all(self):
+        """Method to stop break GUI and data collection loops, called by the 'alt+q' hotkey"""
+        self._clean_sensor_shutdown()
+        # Set the GUI shutdown flag to True
+        self.gui_shutdown = True
+        self._stop_data_collection()
+        
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
-        self.clean_sensor_shutdown()
+        self._exit_all()
     
     def _set_gui_buttons(self):
-        sensor_names = self.gui.sensor_names
-        # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
+        """Method that builds up a dictionary to be passed into the GUI. This dictionary holds the methods that start/stop/initialize
+        sensor measurements, and will be used for button callbacks in the GUI."""
+
+        # Make a dictionary to hold the methods we're going to use as button callbacks. Sometimes
         # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
         button_dict = {}
-        for name in sensor_names:
+        for name in self.sensor_names:
             button_dict.update({name:{"start":None, "stop":None}})
 
         # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
@@ -110,50 +144,70 @@ class Executor():
                                                   "sls1500":self.sensor.flowmeter_sls1500.start_measurement},
                                          "stop":{"sli2000":None, "sls1500":None}}})
         
+        # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
+        # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
+        # and one for shutting down all sensors (self._clean_sensor_shutdown)
+        button_dict.update({"All Sensors":{"start":self._init_sensors, "stop":self._clean_sensor_shutdown}})
+        button_dict.update({"Data Collection":{"start":self._start_data_collection, "stop":self._stop_data_collection}})
         
-    
+        return button_dict
+        
     def execute(self):
         """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
         those classes and passes them the correct busses and delay times."""
 
         # Add a hotkey to break the loop
-        keyboard.add_hotkey('alt+q', self.stop_data_collection, suppress=True, trigger_on_release=True)
+        keyboard.add_hotkey('alt+q', self._exit_all, suppress=True, trigger_on_release=True)
         
-        while self.data_collection == True:
+        # Eugh, two nested while loops. The first one boots up the GUI. Then, once data collection has been started, we begin querying
+        # the sensors, processing the data, and displaying the final result.
+        while not self.gui_shutdown:
             try:
                 self.gui.run()
-                with concurrent.futures.ThreadPoolExecutor() as self.executor:
-                    eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
-                    eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
-                    eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
-                    eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-                    ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-                    
-                    eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
-                                                self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
-
-                    eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
-
-                eAbakus.result()
-                eFlowMeterSLI2000.result()
-                eFlowMeterSLS1500.result()
-                eLaser.result()
-                ePicarroGas.result()
-                eInterpretor.result()
-                eDisplay.result()
-
-            # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
-            # prioritize shut down the sensors cleanly and killing the program
             except KeyboardInterrupt:
                 try:
-                    self.clean_sensor_shutdown()
+                    self._clean_sensor_shutdown()
                     sys.exit(130)
                 except SystemExit:
-                    self.clean_sensor_shutdown()
+                    self._clean_sensor_shutdown()
                     os._exit(130)
+            # time.sleep(0.1)
+            while not self.data_shutdown:
+                # print("here2")
+                self.gui.run()
+                try:
+                    with concurrent.futures.ThreadPoolExecutor() as self.executor:
+                        eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+                        eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
+                        eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
+                        eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
+                        ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+                        
+                        eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                                                    self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
+
+                        eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
+
+                    eAbakus.result()
+                    eFlowMeterSLI2000.result()
+                    eFlowMeterSLS1500.result()
+                    eLaser.result()
+                    ePicarroGas.result()
+                    eInterpretor.result()
+                    eDisplay.result()
+
+                # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
+                # prioritize shut down the sensors cleanly and killing the program
+                except KeyboardInterrupt:
+                    try:
+                        self._clean_sensor_shutdown()
+                        sys.exit(130)
+                    except SystemExit:
+                        self._clean_sensor_shutdown()
+                        os._exit(130)
             
 if __name__ == "__main__":
     my_executor = Executor()
     data_collection = True
     my_executor.execute()
-    del my_executor
+    # del my_executor

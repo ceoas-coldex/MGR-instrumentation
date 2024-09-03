@@ -58,8 +58,11 @@ class Sensor():
         self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
 
     def __del__(self) -> None:
-        # self.abakus.__del__()
-        pass
+        self.shutdown_sensors()
+
+    def shutdown_sensors(self):
+        self.abakus.stop_measurement()
+        self.laser.stop_laser()
     
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def abakus_producer(self, abakus_bus:Bus, delay):

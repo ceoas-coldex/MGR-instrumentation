@@ -20,7 +20,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-from main_pipeline.sensor import Sensor
 
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
@@ -65,7 +64,8 @@ class GUI():
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the data grid that will eventually contain sensor status / control, fow now it's empty
         status_grid_frame = Frame(self.root)
-        self._init_status_grid(status_grid_frame, button_callback_dict)
+        self.button_callback_dict = button_callback_dict
+        self._init_status_grid(status_grid_frame)
 
         # Set up the notebook for data streaming/live plotting
         data_streaming_frame = Frame(self.root, bg=self.light_blue)
@@ -75,18 +75,20 @@ class GUI():
         self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
         
         # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
-        b1 = self.pack_button(data_streaming_frame, callback=None, loc='bottom')
-        b2 = self.pack_button(data_streaming_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
+        # logging_frame = Frame(self.root, bg="white")
+        # b1 = self.pack_button(logging_frame, callback=None, loc='bottom', default=DISABLED)
+        # b2 = self.pack_button(logging_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
 
         # pack the frames
         status_grid_frame.pack(side="left", expand=True, fill=BOTH)
         data_streaming_frame.pack(side="right", expand=True, fill=BOTH)
+        # logging_frame.pack(side="bottom", expand=False, fill=X, anchor=S)
         
     ## --------------------- LAYOUT --------------------- ##
     
-    def pack_button(self, root, callback, loc:str="right", text="I'm a button :]"):
+    def pack_button(self, root, callback, loc:str="right", text="I'm a button :]", default=NORMAL):
         """General method that creates and packs a button inside the given root"""
-        button = Button(root, text=text, command=callback)
+        button = Button(root, text=text, command=callback, state=default)
         button.pack(side=loc)
         return button
   
@@ -276,6 +278,24 @@ class GUI():
 
     ## --------------------- "STATUS" GRID --------------------- ##
    
+    def _make_status_grid_title(self, root, num_cols, button_width=20):
+        pad = int(button_width / 2)
+        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols)
+
+        init_sensor_button = Button(title_frame, text="Initialize All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_init)
+        init_sensor_button.grid(column=0, row=1, sticky=W, padx=pad, pady=pad)
+
+        shutdown_sensor_button = Button(title_frame, text="Shut Down All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_shutdown)
+        shutdown_sensor_button.grid(column=1, row=1, sticky=E, padx=pad)
+
+        start_data_button = Button(title_frame, text="Start Data Collection", font=self.bold16, width=button_width, state=DISABLED, command=self._on_start_data)
+        start_data_button.grid(column=0, row=2, sticky=W, padx=pad)
+        self.buttons_to_enable_after_init.append(start_data_button)
+
+        stop_data_button = Button(title_frame, text="Stop Data Collection", font=self.bold16, width=button_width, state=DISABLED, command=self._on_stop_data)
+        stop_data_button.grid(column=1, row=2, sticky=E, padx=pad)
+        self.buttons_to_enable_after_init.append(stop_data_button)
+    
     def _make_status_grid_cell(self, root, title, col, row, start_callback=None, stop_callback=None, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
         frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
@@ -293,13 +313,15 @@ class GUI():
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
             # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
         if start_callback is not None:
-            start_button = Button(frame, text="Start Measurement", command=start_callback)
+            start_button = Button(frame, text="Start Measurement", command=start_callback, state=DISABLED)
             start_button.grid(row=1, column=0, sticky=W, padx=10)
+            self.buttons_to_enable_after_init.append(start_button)
         if stop_callback is not None:
-            stop_button = Button(frame, text="Stop Measurement", command=stop_callback)
+            stop_button = Button(frame, text="Stop Measurement", command=stop_callback, state=DISABLED)
             stop_button.grid(row=1, column=1, sticky=E, padx=10)
+            self.buttons_to_enable_after_init.append(stop_button)
 
-        return frame 
+        return frame
     
     def _find_status_grid_dims(self):
         """Method to determine the number of rows and columns we need in our grid
@@ -316,17 +338,25 @@ class GUI():
 
         return num_rows, num_cols
     
-    def _init_status_grid(self, root:Frame, callbacks):
+    def _init_status_grid(self, root:Frame):
         """Makes a grid of all the sensors. Currently a placeholder for anything we 
         want to display about the instruments, like adding control or their status"""
+
+        print(self.button_callback_dict)
         
         num_rows, num_cols = self._find_status_grid_dims()
         # Make and save all the frames
         self.sensor_status_frames = {}
+
+        # Make a list of all buttons that are initially disabled, but should be enabled after sensors have been initialized
+        self.buttons_to_enable_after_init = [] 
+
         # Title row
-        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols)
+        title_frame = self._make_status_grid_title(root, num_cols)
         
         self.sensor_status_frames.update({"All": title_frame})
+        
+
         # All the other rows/cols
         i = 0
         try:
@@ -336,7 +366,7 @@ class GUI():
                     sensor_name = self.sensor_names[i]
                     
                     # Grab the callbacks we're assigning to the buttons for each sensor
-                    callback_dict = callbacks[sensor_name]
+                    callback_dict = self.button_callback_dict[sensor_name]
                     # If there's more going on in the "start" category, deal with that later
                     if type(callback_dict["start"]) == dict:
                         start_callback = None
@@ -355,6 +385,7 @@ class GUI():
                                                         row=row)
 
                     self.sensor_status_frames.update({sensor_name: frame})
+
                     i += 1
         except IndexError as e:
             print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}")
@@ -382,6 +413,36 @@ class GUI():
         except Exception as e:
             print(f"Exception in mousewheel callback: {e}")
 
+    def _on_sensor_init(self):
+        for button in self.buttons_to_enable_after_init:
+            button["state"] = NORMAL
+
+        try:
+            self.button_callback_dict["All Sensors"]["start"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
+        except KeyError as e:
+            print(f"No callback found to initialize all sensors. Probably not run from the executor script: Key Error {e}, _on_sensor_init")
+    
+    def _on_sensor_shutdown(self):
+        for button in self.buttons_to_enable_after_init:
+            button["state"] = DISABLED
+
+        try:
+            self.button_callback_dict["All Sensors"]["stop"]() # Yep, that again.
+        except KeyError as e:
+            print(f"No callback found to shutdown all sensors. Probably not run from the executor script: Key Error {e}, _on_sensor_shutdown")
+    
+    def _on_start_data(self):
+        try:
+            self.button_callback_dict["Data Collection"]["start"]()
+        except KeyError as e:
+            print(f"No callback found to start data collection. Probably not run from the executor script: Key Error {e}, _on_start_data")
+
+    def _on_stop_data(self):
+        try:
+            self.button_callback_dict["Data Collection"]["stop"]()
+        except KeyError as e:
+            print(f"No callback found to stop data collection. Probably not run from the executor script: Key Error {e}, _on_stop_data")
+
     def run_cont(self):
         self.root.mainloop()
         self.root.destroy()
@@ -401,6 +462,7 @@ if __name__ == "__main__":
     sensor_names = big_data_dict.keys()
 
     # Read in an instance of the sensor class to grab the callback methods
+    from main_pipeline.sensor import Sensor
     sensor = Sensor()
 
     # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
