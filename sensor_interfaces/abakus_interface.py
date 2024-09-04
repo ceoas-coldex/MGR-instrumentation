@@ -6,6 +6,7 @@ import time
 import re
 import pandas as pd
 import numpy as np
+import yaml
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -29,6 +30,11 @@ class Abakus():
         self.STOP_MEAS = b'C6\r\n'
         self.QUERY = b'C12\r\n'
 
+        # The Abakus returns the acknowledge character after a successful command is returned, so we want
+        # to read the serial message until that character is found
+        ack = u'\006' # 'acknowledge' character, unicode U+0006, ascii ♠
+        self.ACK = ack.encode() # convert to binary, literally b'\x06'
+        
         self.initialize_pyserial(serial_port, baud_rate)
 
     def __del__(self) -> None:
@@ -45,18 +51,18 @@ class Abakus():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=5)
+            self.ser = serial.Serial(port, baud, timeout=1)
             logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
     @log_on_start(logging.INFO, "Initializing Abakus", logger=logger)
-    def initialize_abakus(self):
-        # Try three times to query and get a valid output. Otherwise report back that initialization failed 
+    def initialize_abakus(self, timeout=10):
+        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
         try:
             self.start_measurement()
-            for i in range(3):
-                logger.info(f"Initialization attempt {i+1}/3")
+            for i in range(10):
+                logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query()
                 output = data_out.split() # split into a list
                 bins = [int(i) for i in output[::2]]
@@ -68,7 +74,7 @@ class Abakus():
         except Exception as e:
             logger.info(f"Exception in Abakus initialization: {e}")
 
-        logger.info("Abakus initialization failed")
+        logger.info(f"Abakus initialization failed after {timeout} attempts")
         return False
     
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
@@ -90,9 +96,15 @@ class Abakus():
         """Queries current values on the running measurement and decodes the serial message. 
             Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
         # Send the query and read the returned serial data
+        time1 = time.time()
         self.ser.write(self.QUERY)
         timestamp = time.time()
-        response = self.ser.readline()
+        # Read until we get an "acknowledge" return from the Abakus
+        response = self.ser.read_until(self.ACK)
+        time2 = time.time()
+        # print(response)
+        print(f"sending serial message took {timestamp-time1} sec")
+        print(f"abakus reading took {time2-timestamp} sec")
         # Decode the serial message
         data_out = response.decode('utf-8').strip()
         # do some regex pattern matching to isolate the data from the serial codes
@@ -124,18 +136,23 @@ if __name__ == "__main__":
             print(f"Recieved {len(output)} channels instead of the expected 32. Disregarding, please query again")
             
     ## ------- UI FOR TESTING  ------- ##
-    my_abakus = Abakus()
+    with open("config/sensor_comms.yaml", 'r') as stream:
+        comms_config = yaml.safe_load(stream)
+    port = comms_config["Abakus Particle Counter"]["serial port"]
+    baud = comms_config["Abakus Particle Counter"]["baud rate"]
+
+    my_abakus = Abakus(serial_port=port, baud_rate=baud)
     print("Testing Abakus serial communication\n")
     stop = False
     while not stop:
-        command = input("a: Start measurement, b: Stop measurement, c: Query, x: Quit \n")
+        command = input("a: Initialize, b: Start measurement, c: Stop measurement, d: Query, x: Quit \n")
         if command == "a" or command == "A":
-            my_abakus.start_measurement()
+            my_abakus.initialize_abakus()
         elif command == "b" or command == "B":
-            my_abakus.stop_measurement()
-        elif command == "c" or command == "C":
             my_abakus.start_measurement()
-            time.sleep(0.5)
+        elif command == "c" or command == "C":
+            my_abakus.stop_measurement()
+        elif command == "d" or command == "D":
             timestamp, output = my_abakus.query()
             process_data_output(output, timestamp)
         elif command == "x" or command == "X":

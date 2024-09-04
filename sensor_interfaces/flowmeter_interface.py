@@ -3,12 +3,18 @@ from serial import SerialException
 import time
 import pandas as pd
 import numpy as np
+import yaml
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level=logging.INFO, datefmt ="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__) # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class FlowMeter():
     def __init__(self, serial_port="COM6", baud_rate=115200) -> None:
@@ -20,6 +26,10 @@ class FlowMeter():
         # Flowmeter communication codes
         self.START = bytes([0x7e, 0x0, 0x33, 0x2, 0x0, 0x64, 0x66, 0x7e])
         self.QUERY =  bytes([0x7e, 0x0, 0x35, 0x1, 0x0, 0xc9, 0x7e])
+
+        # The flowmeter returns "~" at the end of its string. Unfortunately it also returns this at the start of its string, 
+        # so we have to be a little clever about reading in the data
+        self.END_CHAR = b'~' 
         
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -35,28 +45,56 @@ class FlowMeter():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=5)
-            logging.info(f"Connected to serial port {port} with baud {baud}")
+            self.ser = serial.Serial(port, baud, timeout=1)
+            logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
-            logging.info(f"Could not connect to serial port {port}")
+            logger.info(f"Could not connect to serial port {port}")
 
-    @log_on_end(logging.INFO, "Flowmeter measurements started")
+    @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
         """Method to start instrument"""
         self.ser.write(self.START)
 
-    @log_on_end(logging.INFO, "Flowmeter measurements stopped")
+    @log_on_end(logging.INFO, "Flowmeter measurements stopped", logger=logger)
     def stop_measurement(self):
         """Not sure if this command exists, leaving it here as a reminder to myself to check"""
         pass
 
-    @log_on_end(logging.INFO, "Flowmeter queried")
+    def _read_flowmeter(self):
+        """Method to read back one byte at a time until an end character (self.END_CHAR) is reached. The flowmeter returns "~" at the end of its string; 
+        unfortunately, it also returns this at the start of its string. To get the full sequence, we read until we've recieved two tildes, and then stop reading.
+            
+            Returns - buf (byte str)"""
+        
+        # Read the command into a buffer until we get two closing characters ("~" in binary) or we timeout (>50 bytes read)
+        buf = b''
+        timeout = 0
+        num_end_chars = 0
+        while num_end_chars < 2 and timeout <= 50:
+            # Read a byte and append to buffer
+            char = self.ser.read(1)
+            buf = buf + char
+            # Keep track of how many times we've gone through the loop
+            timeout += 1
+            # Keep track of how many "~" we've recieved
+            if char == self.END_CHAR:
+                num_end_chars += 1
+
+        return buf
+        
+    
+    @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
     def query(self):
         """Queries the flowmeter. Returns raw data and timestamp
             Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""
+        time1 = time.time()
         self.ser.write(self.QUERY)
         timestamp = time.time()
-        response = self.ser.readline()
+        response = self._read_flowmeter()
+        time2 = time.time()
+        print(response)
+        print(f"sending serial message took {timestamp-time1} sec")
+        print(f"flowmeter reading took {time2-timestamp} sec")
         # Decode the response
         data_out = [int(byte) for byte in response]
         return timestamp, data_out
@@ -125,24 +163,29 @@ if __name__ == "__main__":
             print(f"Encountered exception in processing: {e}. Skipping this data")
 
     ## ------- UI INTEFACE FOR TESTING  ------- ##
+    with open("config/sensor_comms.yaml", 'r') as stream:
+        comms_config = yaml.safe_load(stream)
+
     print("Testing Flowmeter serial communication\n")
     valid_scale_factor = False
     while not valid_scale_factor:
         device = input("Which device? 1: SLI-2000 (green), 2: SLS-1500 (black)\n")
         if device == "1":
             scale_factor = 5
-            port = "COM6" # specific to my laptop, will get dumped in a YAML file when actually set up
+            port = comms_config["Flowmeter SLI2000 (Green)"]["serial port"]
+            baud = comms_config["Flowmeter SLI2000 (Green)"]["baud rate"]
             print("Device set to SLI-2000: units uL/min, scale factor 5")
             valid_scale_factor = True
         elif device == "2":
             scale_factor = 500
-            port = "COM7" # specific to my laptop, will get dumped in a YAML file when actually set up
+            port = comms_config["Flowmeter SLS1500 (Black)"]["serial port"]
+            baud = comms_config["Flowmeter SLS1500 (Black)"]["baud rate"]
             print("Device set to SLS-1500: units mL/min, scale factor 500")
             valid_scale_factor = True
         else:
             print("Invalid entry. Please try again")
 
-    my_flow = FlowMeter(serial_port=port)
+    my_flow = FlowMeter(serial_port=port, baud_rate=baud)
 
     stop = False
     while not stop:

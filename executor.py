@@ -48,11 +48,11 @@ from main_pipeline.display import Display
 class Executor():
     """Class that handles passing the data around on all the busses."""
     def __init__(self) -> None:
-        # Set some intitial flags: don't start data collection, do start the GUI and the sensors
+        # Set some intitial flags: don't start data collection or sensors, do start the GUI
         self.data_shutdown = True
+        self.sensors_shutdown = True
         self.gui_shutdown = False
-        self.sensors_shutdown = False
-
+        
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
             big_data_dict = yaml.safe_load(stream)
@@ -180,7 +180,7 @@ class Executor():
                         eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
                         eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
                         eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-                        ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+                        # ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
                         
                         eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                                     self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
@@ -191,7 +191,7 @@ class Executor():
                     eFlowMeterSLI2000.result()
                     eFlowMeterSLS1500.result()
                     eLaser.result()
-                    ePicarroGas.result()
+                    # ePicarroGas.result()
                     eInterpretor.result()
                     eDisplay.result()
 

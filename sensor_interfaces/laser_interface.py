@@ -6,12 +6,17 @@ import time
 import re
 import pandas as pd
 import numpy as np
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level=logging.INFO, datefmt ="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__) # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class Dimetix():
     def __init__(self, serial_port="COM8", baud_rate=19200) -> None:
@@ -46,19 +51,19 @@ class Dimetix():
         try:
             self.ser = serial.Serial(port, baud, timeout=5, 
                                      bytesize=serial.SEVENBITS, parity=serial.PARITY_EVEN, stopbits=serial.STOPBITS_ONE)
-            logging.info(f"Connected to serial port {port} with baud {baud}")
+            logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
-            logging.info(f"Could not connect to serial port {port}")
+            logger.info(f"Could not connect to serial port {port}")
     
-    @log_on_end(logging.INFO, "Dimetix laser turned on")
+    @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
         self.ser.write(self.LASER_ON)
 
-    @log_on_end(logging.INFO, "Dimetix laser turned off")
+    @log_on_end(logging.INFO, "Dimetix laser turned off", logger=logger)
     def stop_laser(self):
         self.ser.write(self.STOP_CLR)
 
-    @log_on_end(logging.INFO, "Dimetix laser queried distance")
+    @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
         # Get the most recent measurement from the laser sensor
         self.ser.write(self.DIST)
@@ -68,7 +73,7 @@ class Dimetix():
         output = response[7:].strip()
         return timestamp, output
     
-    @log_on_end(logging.INFO, "Dimetix laser queried temperature")
+    @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
@@ -79,9 +84,9 @@ class Dimetix():
             temp_raw = temp_raw[3:].strip()
             temp_c = float(temp_raw)/10
         except ValueError as e:
-            logging.error(f"Error in converting temp reading to float: {e}")
+            logger.error(f"Error in converting temp reading to float: {e}")
             temp_c = 9999 # maybe this should be NAN?
-        logging.info(f"Laser temperature {temp_c}°C")
+        logger.info(f"Laser temperature {temp_c}°C")
             
 if __name__ == "__main__":
     ## ------- DATA PROCESSING FUNCTION FOR TESTING  ------- ##
@@ -89,9 +94,9 @@ if __name__ == "__main__":
         try:
             output_cm = float(data_out) / 100
         except ValueError as e:
-            logging.error(f"Error in converting distance reading to float: {e}")
+            logger.error(f"Error in converting distance reading to float: {e}")
             output_cm = 0
-        logging.info(f"Laser distance {output_cm}cm")
+        logger.info(f"Laser distance {output_cm}cm")
 
     ## ------- UI FOR TESTING  ------- ##
     my_laser = Dimetix()
