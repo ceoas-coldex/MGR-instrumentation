@@ -43,10 +43,10 @@ class Picarro():
             There might be an existing method that does this, but nether readline() nor read_until() did the trick.
             
             Inputs - command (byte str with appropriate terminator)\n
-            Returns - """
+            Returns - buf (byte str)"""
         # Write the command
         self.ser.write(command)
-        # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>50 bytes read, check
+        # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>50 loops, check
             # if that's sufficient)
         buf = b''
         char = b''
