@@ -285,7 +285,7 @@ class GUI():
         init_sensor_button = Button(title_frame, text="Initialize All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_init)
         init_sensor_button.grid(column=0, row=1, sticky=W, padx=pad, pady=pad)
 
-        shutdown_sensor_button = Button(title_frame, text="Shut Down All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_shutdown)
+        shutdown_sensor_button = Button(title_frame, text="Shutdown All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_shutdown)
         shutdown_sensor_button.grid(column=1, row=1, sticky=E, padx=pad)
 
         start_data_button = Button(title_frame, text="Start Data Collection", font=self.bold16, width=button_width, state=DISABLED, command=self._on_start_data)
@@ -307,18 +307,18 @@ class GUI():
 
         # set a title for the cell
         label=Label(frame, text=title, font=self.bold16, bg='white')
-        label.grid(row=0, column=0, columnspan=2, sticky=N, pady=20)
+        label.grid(row=0, column=0, columnspan=colspan, sticky=N, pady=20)
 
         # If we have the ability to start and stop the sensor measurement, add those buttons
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
             # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
         if start_callback is not None:
-            start_button = Button(frame, text="Start Measurement", command=start_callback, state=DISABLED)
-            start_button.grid(row=1, column=0, sticky=W, padx=10)
+            start_button = Button(frame, text="Start Measurement", command=start_callback, state=DISABLED, font=self.bold16)
+            start_button.grid(row=1, column=0, sticky=N, padx=10, pady=10)
             self.buttons_to_enable_after_init.append(start_button)
         if stop_callback is not None:
-            stop_button = Button(frame, text="Stop Measurement", command=stop_callback, state=DISABLED)
-            stop_button.grid(row=1, column=1, sticky=E, padx=10)
+            stop_button = Button(frame, text="Stop Measurement", command=stop_callback, state=DISABLED, font=self.bold16)
+            stop_button.grid(row=2, column=0, sticky=N, padx=10, pady=10)
             self.buttons_to_enable_after_init.append(stop_button)
 
         return frame
@@ -341,30 +341,19 @@ class GUI():
     def _init_status_grid(self, root:Frame):
         """Makes a grid of all the sensors. Currently a placeholder for anything we 
         want to display about the instruments, like adding control or their status"""
-
-        print(self.button_callback_dict)
-        
+        # Grab the number of rows and columns we should have in our grid given the number of sensors in self.sensor_names 
         num_rows, num_cols = self._find_status_grid_dims()
-        # Make and save all the frames
-        self.sensor_status_frames = {}
-
         # Make a list of all buttons that are initially disabled, but should be enabled after sensors have been initialized
         self.buttons_to_enable_after_init = [] 
-
-        # Title row
-        title_frame = self._make_status_grid_title(root, num_cols)
-        
-        self.sensor_status_frames.update({"All": title_frame})
-        
-
-        # All the other rows/cols
+        # Make the title row
+        self._make_status_grid_title(root, num_cols)    
+        # Make all the other rows/cols
         i = 0
         try:
-            for row in range(1,num_rows+1):
+            for row in range(1, num_rows+1):
                 for col in range(num_cols):
                     # Grab the sensor name
                     sensor_name = self.sensor_names[i]
-                    
                     # Grab the callbacks we're assigning to the buttons for each sensor
                     callback_dict = self.button_callback_dict[sensor_name]
                     # If there's more going on in the "start" category, deal with that later
@@ -375,26 +364,21 @@ class GUI():
                     else:
                         start_callback = callback_dict["start"]
                         stop_callback = callback_dict["stop"]
-
                     # Make the cell for each sensor
-                    frame = self._make_status_grid_cell(root, 
-                                                        title=sensor_name, 
-                                                        start_callback=start_callback, 
-                                                        stop_callback=stop_callback, 
-                                                        col=col, 
-                                                        row=row)
-
-                    self.sensor_status_frames.update({sensor_name: frame})
-
+                    self._make_status_grid_cell(root, 
+                                                title=sensor_name, 
+                                                start_callback=start_callback, 
+                                                stop_callback=stop_callback, 
+                                                col=col, 
+                                                row=row)
                     i += 1
         except IndexError as e:
-            print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}")
+            print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}, that's fine")
 
         # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
-        root.rowconfigure(np.arange(num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
+        root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
-    
     ## --------------------- CALLBACKS --------------------- ##
     
     def toggle_button(self, button: Button):
@@ -414,43 +398,56 @@ class GUI():
             print(f"Exception in mousewheel callback: {e}")
 
     def _on_sensor_init(self):
+        """Callback for the 'Initialize Sensors' button. Enables the other buttons and tries to call the *sensor init* method
+        that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         for button in self.buttons_to_enable_after_init:
             button["state"] = NORMAL
-
+        # Try to call the method that's the value of the "All Sensors":"start" key of the dictionary
         try:
             self.button_callback_dict["All Sensors"]["start"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
+        # If that key doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"No callback found to initialize all sensors. Probably not run from the executor script: Key Error {e}, _on_sensor_init")
+            print(f"No callback found to initialize all sensors. Probably not run from the executor script. Key Error {e}, _on_sensor_init")
     
     def _on_sensor_shutdown(self):
+        """Callback for the 'Shutdown Sensors' button. Disables the other buttons and tries to call the *sensor shutdown* method
+        that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
+        # Disable other buttons
         for button in self.buttons_to_enable_after_init:
             button["state"] = DISABLED
-
+        # Try to call the method that's the value of the "All Sensors":"stop" key of the dictionary
         try:
             self.button_callback_dict["All Sensors"]["stop"]() # Yep, that again.
+        # If that key doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"No callback found to shutdown all sensors. Probably not run from the executor script: Key Error {e}, _on_sensor_shutdown")
+            print(f"No callback found to shutdown all sensors. Probably not run from the executor script. Key Error {e}, _on_sensor_shutdown")
     
     def _on_start_data(self):
+        """Callback for the 'Start Data Collection' button. Tries to call the *start data collection* method
+        that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
+        # Try to call the method that's the value of the "Data Collection":"start" key of the dictionary
         try:
             self.button_callback_dict["Data Collection"]["start"]()
+        # If that key doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"No callback found to start data collection. Probably not run from the executor script: Key Error {e}, _on_start_data")
+            print(f"No callback found to start data collection. Probably not run from the executor script. Key Error {e}, _on_start_data")
 
     def _on_stop_data(self):
+        """Callback for the 'Stop Data Collection' button. Tries to call the *stop data collection* method
+        that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
+        # Try to call the method that's the value of the "Data Collection":"stop" key of the dictionary
         try:
             self.button_callback_dict["Data Collection"]["stop"]()
+        # If that key doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"No callback found to stop data collection. Probably not run from the executor script: Key Error {e}, _on_stop_data")
+            print(f"No callback found to stop data collection. Probably not run from the executor script. Key Error {e}, _on_stop_data")
 
     def run_cont(self):
         self.root.mainloop()
         self.root.destroy()
 
-    def run(self, delay=0):
-        # self.root.update_idletasks()
+    def run(self):
         self.root.update()
-        # time.sleep(delay)
 
     ##  --------------------- HELPER FUNCTIONS  --------------------- ##
 
@@ -480,3 +477,4 @@ if __name__ == "__main__":
 
     while True:
         app.run()
+        time.sleep(0.1)

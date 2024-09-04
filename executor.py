@@ -164,6 +164,7 @@ class Executor():
         while not self.gui_shutdown:
             try:
                 self.gui.run()
+                time.sleep(0.1)
             except KeyboardInterrupt:
                 try:
                     self._clean_sensor_shutdown()
@@ -171,9 +172,8 @@ class Executor():
                 except SystemExit:
                     self._clean_sensor_shutdown()
                     os._exit(130)
-            # time.sleep(0.1)
+            # Note - once we enter ↓this loop, we no longer access ↑that loop. The nested loop doesn't mean we're calling gui.run() twice
             while not self.data_shutdown:
-                # print("here2")
                 self.gui.run()
                 try:
                     with concurrent.futures.ThreadPoolExecutor() as self.executor:
@@ -208,6 +208,4 @@ class Executor():
             
 if __name__ == "__main__":
     my_executor = Executor()
-    data_collection = True
     my_executor.execute()
-    # del my_executor
