@@ -42,19 +42,18 @@ class Picarro():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=5)
+            self.ser = serial.Serial(port, baud, timeout=1)
             logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
-    def _execute_command(self, command):
+    def _read_picarro(self):
         """Method to write the command and read back one byte at a time until an end character is reached.
             There might be an existing method that does this, but nether readline() nor read_until() did the trick.
             
             Inputs - command (byte str with appropriate terminator)\n
             Returns - buf (byte str)"""
-        # Write the command
-        self.ser.write(command)
+        
         # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>50 loops, check
             # if that's sufficient)
         buf = b''
@@ -80,7 +79,9 @@ class Picarro():
 
             Returns - timestamp (float, epoch time), output (str)
         """
-        output = self._execute_command(self.QUERY).decode()
+        # Write the command
+        self.ser.write(command)
+        output = self._read_picarro(self.QUERY).decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")

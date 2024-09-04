@@ -81,7 +81,6 @@ class FlowMeter():
                 num_end_chars += 1
 
         return buf
-        
     
     @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
     def query(self):

@@ -6,6 +6,7 @@ import time
 import re
 import pandas as pd
 import numpy as np
+import yaml
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -33,6 +34,8 @@ class Dimetix():
 
         self.READ_ERROR = b's0re\r\n' # Read error stack
 
+        self.CRLF = b'\r\n' # "Carriage return line feed", returned at the end of all sensor readings
+
         self.initialize_pyserial(serial_port, baud_rate)
 
     def __del__(self) -> None:
@@ -49,7 +52,7 @@ class Dimetix():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=5, 
+            self.ser = serial.Serial(port, baud, timeout=1, 
                                      bytesize=serial.SEVENBITS, parity=serial.PARITY_EVEN, stopbits=serial.STOPBITS_ONE)
             logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
@@ -58,26 +61,39 @@ class Dimetix():
     @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
         self.ser.write(self.LASER_ON)
+        print(self.ser.read_until(self.CRLF))
 
     @log_on_end(logging.INFO, "Dimetix laser turned off", logger=logger)
     def stop_laser(self):
         self.ser.write(self.STOP_CLR)
+        print(self.ser.read_until(self.CRLF))
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
         # Get the most recent measurement from the laser sensor
+        time1 = time.time()
         self.ser.write(self.DIST)
         timestamp = time.time()
-        response = self.ser.readline().decode()
+        # response = self.ser.readline()
+        response = self.ser.read_until(self.CRLF)
+        time2 = time.time()
+        
+        print(f"sending serial message took {timestamp-time1} sec")
+        print(f"laser reading took {time2-timestamp} sec")
+        print(response)
+        print(response.decode())
         # Decode the response
-        output = response[7:].strip()
+        dist_raw = response.decode()
+        output = dist_raw[7:].strip()
         return timestamp, output
     
     @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
-        temp_raw = self.ser.readline().decode()
+        # temp_raw = self.ser.readline()
+        temp_raw = self.ser.read_until(self.CRLF)
+        temp_raw = temp_raw.decode()
         print(temp_raw)
         # Decode the response
         try:
@@ -99,7 +115,12 @@ if __name__ == "__main__":
         logger.info(f"Laser distance {output_cm}cm")
 
     ## ------- UI FOR TESTING  ------- ##
-    my_laser = Dimetix()
+    with open("config/sensor_comms.yaml", 'r') as stream:
+        comms_config = yaml.safe_load(stream)
+    port = comms_config["Abakus Particle Counter"]["serial port"]
+    baud = comms_config["Abakus Particle Counter"]["baud rate"]
+    my_laser = Dimetix(serial_port=port, baud_rate=baud)
+
     print("Testing serial communication\n")
     stop = False
     while not stop:
