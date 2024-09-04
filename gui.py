@@ -31,7 +31,7 @@ class GUI():
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
         self.width = 1700
-        self.height = 1200
+        self.height = 1000
         self.root.geometry(f"{self.width}x{self.height}")
         self.root.resizable(False, False)
         
@@ -153,7 +153,7 @@ class GUI():
             # for 4 subplots put it at 97%, and interpolate between the two otherwise
             plt.subplots_adjust(top=np.interp(num_subplots, [1,4], [0.9,0.97]))
 
-    def _one_canvas(self, f, root, vbar:Scrollbar, num_subplots) -> FigureCanvasTkAgg:
+    def _one_canvas(self, f, root, vbar:Scrollbar) -> FigureCanvasTkAgg:
         """General method to set up a canvas in a given root. I'm eventually using each canvas
         to hold a matplotlib figure for live plotting
         
@@ -162,8 +162,12 @@ class GUI():
         # Initialize and render a matplotlib embedded canvas
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
+
+        num_subplots = len(f.get_axes())
+        max_scroll = num_subplots*self.height
+        scroll_region = np.interp(num_subplots, [1,4], [max_scroll/2.5, max_scroll/1.8])
         canvas.get_tk_widget().config(bg='white', # set the background color 
-                                      scrollregion=(0,0,0,num_subplots*(self.height/2.5)), # set the size of the scroll region in screen units
+                                      scrollregion=(0,0,0,scroll_region), # set the size of the scroll region in screen units
                                       yscrollcommand=vbar.set, # link the scrollbar to the canvas
                                       )
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -190,7 +194,7 @@ class GUI():
             # Make a scrollbar
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
-            self._one_canvas(fig, window, vbar, num_subplots = len(fig.get_axes()))
+            self._one_canvas(fig, window, vbar)
 
     def _init_data_streaming_animations(self, animation_delay=1000):
         """
@@ -217,7 +221,7 @@ class GUI():
         # ydata is a list of lists, one for each channel of the sensor. Iterate through and plot them on the corresponding subplot
         for i, y in enumerate(ydata):
             axes[i].clear()
-            axes[i].plot(xdata, y)
+            axes[i].plot(xdata, y, '.--')
             axes[i].set_xlabel("Time (epoch)")
             axes[i].set_ylabel(ylabels[i])
         axes[0].set_title(sensor_name)
@@ -280,7 +284,7 @@ class GUI():
    
     def _make_status_grid_title(self, root, num_cols, button_width=20):
         pad = int(button_width / 2)
-        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols)
+        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=2)
 
         init_sensor_button = Button(title_frame, text="Initialize All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_init)
         init_sensor_button.grid(column=0, row=1, sticky=W, padx=pad, pady=pad)
@@ -296,7 +300,7 @@ class GUI():
         stop_data_button.grid(column=1, row=2, sticky=E, padx=pad)
         self.buttons_to_enable_after_init.append(stop_data_button)
     
-    def _make_status_grid_cell(self, root, title, col, row, start_callback=None, stop_callback=None, colspan=1, rowspan=1, color='white'):
+    def _make_status_grid_cell(self, root, title, col, row, start_callback=None, stop_callback=None, subsensor_name=[""], colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
         frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
         # place in the position we want and make it fill the space (sticky in all directions)
@@ -309,17 +313,19 @@ class GUI():
         label=Label(frame, text=title, font=self.bold16, bg='white')
         label.grid(row=0, column=0, columnspan=colspan, sticky=N, pady=20)
 
-        # If we have the ability to start and stop the sensor measurement, add those buttons
+        # If we have the ability to start and stop the sensor, add those buttons
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
             # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
         if start_callback is not None:
-            start_button = Button(frame, text="Start Measurement", command=start_callback, state=DISABLED, font=self.bold16)
-            start_button.grid(row=1, column=0, sticky=N, padx=10, pady=10)
-            self.buttons_to_enable_after_init.append(start_button)
+            for i, subsensor in enumerate(subsensor_name):
+                start_button = Button(frame, text=f"Start {subsensor} Instrument", command=start_callback, state=DISABLED, font=self.bold16)
+                start_button.grid(row=1, column=i, sticky=N, padx=10, pady=10)
+                self.buttons_to_enable_after_init.append(start_button)
         if stop_callback is not None:
-            stop_button = Button(frame, text="Stop Measurement", command=stop_callback, state=DISABLED, font=self.bold16)
-            stop_button.grid(row=2, column=0, sticky=N, padx=10, pady=10)
-            self.buttons_to_enable_after_init.append(stop_button)
+            for i, subsensor in enumerate(subsensor_name):
+                stop_button = Button(frame, text=f"Stop {subsensor} Instrument", command=stop_callback, state=DISABLED, font=self.bold16)
+                stop_button.grid(row=2, column=i, sticky=N, padx=10, pady=10)
+                self.buttons_to_enable_after_init.append(stop_button)
 
         return frame
     
@@ -342,7 +348,9 @@ class GUI():
         """Makes a grid of all the sensors. Currently a placeholder for anything we 
         want to display about the instruments, like adding control or their status"""
         # Grab the number of rows and columns we should have in our grid given the number of sensors in self.sensor_names 
-        num_rows, num_cols = self._find_status_grid_dims()
+        # num_rows, num_cols = self._find_status_grid_dims()
+        num_rows = len(self.sensor_names)
+        num_cols = 1
         # Make a list of all buttons that are initially disabled, but should be enabled after sensors have been initialized
         self.buttons_to_enable_after_init = [] 
         # Make the title row
@@ -356,19 +364,27 @@ class GUI():
                     sensor_name = self.sensor_names[i]
                     # Grab the callbacks we're assigning to the buttons for each sensor
                     callback_dict = self.button_callback_dict[sensor_name]
-                    # If there's more going on in the "start" category, deal with that later
+                    # If there are multiple sensors in one (looking at you, Flowmeter), deal with that here
                     if type(callback_dict["start"]) == dict:
-                        start_callback = None
-                        stop_callback = None
+                        start_callback = []
+                        stop_callback = []
+                        subsensor_names = list(callback_dict["start"].keys())
+                        for subsensor in subsensor_names:
+                            start_callback.append(callback_dict["start"][subsensor])
+                            stop_callback.append(callback_dict["stop"][subsensor])
+                        # callback_button_name = subsensor_names
                     # Otherwise pull out the start and stop callbacks
                     else:
-                        start_callback = callback_dict["start"]
-                        stop_callback = callback_dict["stop"]
+                        start_callback = [callback_dict["start"]]
+                        stop_callback = [callback_dict["stop"]]
+                        subsensor_names = [""]
                     # Make the cell for each sensor
                     self._make_status_grid_cell(root, 
                                                 title=sensor_name, 
                                                 start_callback=start_callback, 
-                                                stop_callback=stop_callback, 
+                                                stop_callback=stop_callback,
+                                                subsensor_name=subsensor_names,
+                                                colspan=len(subsensor_names), 
                                                 col=col, 
                                                 row=row)
                     i += 1
@@ -377,7 +393,7 @@ class GUI():
 
         # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
-        root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
+        # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
     ## --------------------- CALLBACKS --------------------- ##
     
@@ -470,8 +486,14 @@ if __name__ == "__main__":
     # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
     button_dict["Abakus Particle Counter"]["start"] = sensor.abakus.start_measurement
     button_dict["Abakus Particle Counter"]["stop"] = sensor.abakus.stop_measurement
-    button_dict["Laser Distance Sensor"]["start"] = sensor.laser.start_laser
-    button_dict["Laser Distance Sensor"]["stop"] = sensor.laser.stop_laser
+    # button_dict["Laser Distance Sensor"]["start"] = sensor.laser.start_laser
+    # button_dict["Laser Distance Sensor"]["stop"] = sensor.laser.stop_laser
+
+    # The flowmeter is really two instruments in one, so add another layer of dictionaries to capture that. The flowmeters
+    # also don't have a "stop measurement" command as far as I can tell
+    button_dict.update({"Flowmeter":{"start":{"sli2000":sensor.flowmeter_sli2000.start_measurement,
+                                                "sls1500":sensor.flowmeter_sls1500.start_measurement},
+                                        "stop":{"sli2000":None, "sls1500":None}}})
     
     app = GUI(button_callback_dict=button_dict)
 

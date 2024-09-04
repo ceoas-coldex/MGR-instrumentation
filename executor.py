@@ -48,11 +48,11 @@ from main_pipeline.display import Display
 class Executor():
     """Class that handles passing the data around on all the busses."""
     def __init__(self) -> None:
-        # Set some intitial flags: don't start data collection, do start the GUI and the sensors
+        # Set some intitial flags: don't start data collection or sensors, do start the GUI
         self.data_shutdown = True
+        self.sensors_shutdown = True
         self.gui_shutdown = False
-        self.sensors_shutdown = False
-
+        
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
             big_data_dict = yaml.safe_load(stream)

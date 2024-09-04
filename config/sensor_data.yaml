@@ -7,12 +7,12 @@ Picarro Gas:
     CH4: []
     CO: []
     H2O: []
-Picarro Water:
-  Time (epoch): []
-  Data:
-    H2O (ppm): []
-    Delta_18_16 (%o): []
-    Delta_D_H (%o): []
+# Picarro Water:
+#   Time (epoch): []
+#   Data:
+#     H2O (ppm): []
+#     Delta_18_16 (%o): []
+#     Delta_D_H (%o): []
 Laser Distance Sensor:
   Time (epoch): []
   Data:
@@ -27,12 +27,12 @@ Flowmeter:
   Data:
     SLI2000 (uL/min): []
     SLS1500 (mL/min): []
-Bronkhorst Pressure:
-  Time (epoch): []
-  Data:
-    Dummy key: []
-Melthead:
-  Time (epoch): []
-  Data:
-    Dummy key: []
+# Bronkhorst Pressure:
+#   Time (epoch): []
+#   Data:
+#     Dummy key: []
+# Melthead:
+#   Time (epoch): []
+#   Data:
+#     Dummy key: []
   

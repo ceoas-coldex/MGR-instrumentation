@@ -22,40 +22,67 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 # Custom imports
-try:
-    from main_pipeline.bus import Bus   # If we're running this script from the executor file
-except ImportError:
-    from bus import Bus # Otherwise
+from main_pipeline.bus import Bus
 
-# Load the sensor comms configuration file and grab the Picarro G2041 port and baud rate
+
+####### -------------------------------- Try to connect to all the sensors -------------------------------- #######
+# If we can connect, use the real sensor at the specified serial port and baud. if not, use simulated hardware. 
+# This allows us to have the entire process running even if we only want a few sensors online
+
+# Load the sensor comms configuration file - dictionary with sensor serial ports and baud rates
 with open("config/sensor_comms.yaml", 'r') as stream:
     comms_config = yaml.safe_load(stream)
-test_port = comms_config["Picarro Gas"]["serial port"]
-test_baud = comms_config["Picarro Gas"]["baud rate"]
 
-# Check if we can connect to the Picarro, and if so import the real sensor classes
+# Picarro Gas
 try:
-    serial.Serial(port=test_port, baudrate=test_baud, timeout=5) 
-    from sensor_interfaces.abakus_interface import Abakus
-    from sensor_interfaces.flowmeter_interface import FlowMeter
-    from sensor_interfaces.laser_interface import Dimetix
+    serial.Serial(port=comms_config["Picarro Gas"]["serial port"], baudrate=comms_config["Picarro Gas"]["baud rate"])
     from sensor_interfaces.picarro_interface import Picarro
-    logger.info(f"Successfully connected to port {test_port}, using real hardware")
-# Otherwise use shadow hardware
+    logger.info(f"Successfully connected to port {comms_config["Picarro Gas"]["serial port"]}, using real Picarro Gas hardware")
 except SerialException:
-    from sensor_interfaces.sim_instruments import Abakus, FlowMeter, Dimetix, Picarro
-    logger.info(f"Couldn't find real hardware at port {test_port}, shadowing sensor calls with substitute functions")
+    from sensor_interfaces.sim_instruments import Picarro
+    logger.info(f"Couldn't find Picarro at port {comms_config["Picarro Gas"]["serial port"]}, shadowing sensor calls with substitute functions")
+
+# Abakus 
+try:
+    serial.Serial(port=comms_config["Abakus Particle Counter"]["serial port"], baudrate=comms_config["Abakus Particle Counter"]["baud rate"])
+    from sensor_interfaces.abakus_interface import Abakus
+    logger.info(f"Successfully connected to port {comms_config["Abakus Particle Counter"]["serial port"]}, using real Abakus hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import Abakus
+    logger.info(f"Couldn't find Abakus at port {comms_config["Abakus Particle Counter"]["serial port"]}, shadowing sensor calls with substitute functions")
+
+# Flowmeter - they both need to be plugged in for this to work
+try:
+    serial.Serial(port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baudrate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
+    serial.Serial(port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baudrate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
+    from sensor_interfaces.flowmeter_interface import FlowMeter
+    logger.info(f"Successfully connected to port {comms_config["Flowmeter SLI2000 (Green)"]["serial port"]} and " +
+                f"{comms_config["Flowmeter SLS1500 (Black)"]["serial port"]}, using real Flowmeter hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import FlowMeter
+    logger.info(f"Couldn't find Flowmeter at port {comms_config["Flowmeter SLI2000 (Green)"]["serial port"]} and" + 
+                f"{comms_config["Flowmeter SLS1500 (Black)"]["serial port"]}, shadowing sensor calls with substitute functions")
+
+# Laser
+try:
+    serial.Serial(port=comms_config["Laser Distance Sensor"]["serial port"], baudrate=comms_config["Laser Distance Sensor"]["baud rate"])
+    from sensor_interfaces.laser_interface import Dimetix
+    logger.info(f"Successfully connected to port {comms_config["Laser Distance Sensor"]["serial port"]}, using real Dimetix hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import Dimetix
+    logger.info(f"Couldn't find Dimetix laser at port {comms_config["Laser Distance Sensor"]["serial port"]}, shadowing sensor calls with substitute functions")
+
 
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
     def __init__(self) -> None:
         # Initialize the sensors with the appropriate serial port and baud rate (set in config/sensor_comms.yaml, make sure the dictionary keys here match)
         self.abakus = Abakus(serial_port=comms_config["Abakus Particle Counter"]["serial port"], baud_rate=comms_config["Abakus Particle Counter"]["baud rate"])
-        self.flowmeter_sli2000 = FlowMeter(serial_port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baud_rate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
-        self.flowmeter_sls1500 = FlowMeter(serial_port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baud_rate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
+        self.flowmeter_sli2000 = FlowMeter(sensor_type="sli2000", serial_port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baud_rate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
+        self.flowmeter_sls1500 = FlowMeter(sensor_type="sls1500", serial_port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baud_rate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
         self.laser = Dimetix(serial_port=comms_config["Laser Distance Sensor"]["serial port"], baud_rate=comms_config["Laser Distance Sensor"]["baud rate"])
         self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
-        self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
+        # self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
@@ -81,8 +108,12 @@ class Sensor():
 
         # Fill in the dictionary with the results of calling the sensor init functions
         sensor_init_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
+        sensor_init_dict.update({"Flowmeter":{"SLI2000":None, "SLS1500":None}})
+        sensor_init_dict["Flowmeter"]["SLI2000"] = self.flowmeter_sli2000.initialize_flowmeter()
+        sensor_init_dict["Flowmeter"]["SLS1500"] = self.flowmeter_sls1500.initialize_flowmeter()
 
-    
+        return sensor_init_dict
+
     @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
     @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
     def shutdown_sensors(self):
@@ -93,7 +124,7 @@ class Sensor():
         Shuts down - Abakus particle counter, Laser distance sensor
         """
         self.abakus.stop_measurement()
-        self.laser.stop_laser()
+        # self.laser.stop_laser()
     
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def abakus_producer(self, abakus_bus:Bus, delay):
