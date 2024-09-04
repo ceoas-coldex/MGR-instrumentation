@@ -17,7 +17,7 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 class FlowMeter():
-    def __init__(self, serial_port="COM6", baud_rate=115200) -> None:
+    def __init__(self, serial_port="COM6", baud_rate=115200, sensor_type="SLI2000") -> None:
         """
         Class to communicate with Sensirion flow meters. It has been tested on the SLI-2000 and the SLS-1500, 
         which both use the SF04 chip. Not sure if it would work with other models, especially the SF06 chip, but maybe.
@@ -30,6 +30,8 @@ class FlowMeter():
         # The flowmeter returns "~" at the end of its string. Unfortunately it also returns this at the start of its string, 
         # so we have to be a little clever about reading in the data
         self.END_CHAR = b'~' 
+
+        self.sensor_type = sensor_type
         
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -45,11 +47,29 @@ class FlowMeter():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=1)
+            self.ser = serial.Serial(port, baud, timeout=0.5)
             logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
+    def initialize_flowmeter(self, timeout=10):
+        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
+        try:
+            self.start_measurement()
+            for i in range(timeout):
+                logger.info(f"Initialization attempt {i+1}/{timeout}")
+                timestamp, data_out = self.query()
+            
+                if type(timestamp) == float and len(data_out) == 9:
+                    logger.info(f"Flowmeter {self.sensor_type} initialized")
+                    return True
+
+        except Exception as e:
+            logger.info(f"Exception in Flowmeter {self.sensor_type} initialization: {e}")
+
+        logger.info(f"Flowmeter {self.sensor_type} initialization failed after {timeout} attempts")
+        return False
+    
     @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
         """Method to start instrument"""
@@ -66,11 +86,11 @@ class FlowMeter():
             
             Returns - buf (byte str)"""
         
-        # Read the command into a buffer until we get two closing characters ("~" in binary) or we timeout (>50 bytes read)
+        # Read the command into a buffer until we get two closing characters ("~" in binary) or we timeout (>10 bytes read, expect 9 in a good reading)
         buf = b''
         timeout = 0
         num_end_chars = 0
-        while num_end_chars < 2 and timeout <= 50:
+        while num_end_chars < 2 and timeout <= 10:
             # Read a byte and append to buffer
             char = self.ser.read(1)
             buf = buf + char
@@ -86,14 +106,10 @@ class FlowMeter():
     def query(self):
         """Queries the flowmeter. Returns raw data and timestamp
             Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""
-        time1 = time.time()
+        logger.info(f"Querying Flowmeter {self.sensor_type}")
         self.ser.write(self.QUERY)
         timestamp = time.time()
         response = self._read_flowmeter()
-        time2 = time.time()
-        print(response)
-        print(f"sending serial message took {timestamp-time1} sec")
-        print(f"flowmeter reading took {time2-timestamp} sec")
         # Decode the response
         data_out = [int(byte) for byte in response]
         return timestamp, data_out

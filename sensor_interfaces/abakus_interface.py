@@ -61,7 +61,7 @@ class Abakus():
         # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
         try:
             self.start_measurement()
-            for i in range(10):
+            for i in range(timeout):
                 logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query()
                 output = data_out.split() # split into a list
@@ -95,16 +95,11 @@ class Abakus():
     def query(self):
         """Queries current values on the running measurement and decodes the serial message. 
             Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
-        # Send the query and read the returned serial data
-        time1 = time.time()
+        # Send the message to query data
         self.ser.write(self.QUERY)
         timestamp = time.time()
         # Read until we get an "acknowledge" return from the Abakus
         response = self.ser.read_until(self.ACK)
-        time2 = time.time()
-        # print(response)
-        print(f"sending serial message took {timestamp-time1} sec")
-        print(f"abakus reading took {time2-timestamp} sec")
         # Decode the serial message
         data_out = response.decode('utf-8').strip()
         # do some regex pattern matching to isolate the data from the serial codes

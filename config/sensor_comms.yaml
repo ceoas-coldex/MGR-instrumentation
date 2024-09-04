@@ -1,8 +1,8 @@
 # This file sets up configuration parameters for sensor communication, like serial ports and baud rates
 ---
-# Picarro Gas:
-#   serial port: "COM3"
-#   baud rate: 19200
+Picarro Gas:
+  serial port: "COM7"
+  baud rate: 19200
 # Picarro Water:
 #   serial port: "COM4"
 #   baud rate: 19200
