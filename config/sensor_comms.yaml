@@ -1,24 +1,24 @@
 # This file sets up configuration parameters for sensor communication, like serial ports and baud rates
 ---
-Picarro Gas:
-  serial port: "COM3"
-  baud rate: 19200
-Picarro Water:
-  serial port: "COM4"
-  baud rate: 19200
+# Picarro Gas:
+#   serial port: "COM3"
+#   baud rate: 19200
+# Picarro Water:
+#   serial port: "COM4"
+#   baud rate: 19200
 Laser Distance Sensor:
-  serial port: "COM8"
+  serial port: "COM6"
   baud rate: 19200
 Abakus Particle Counter:
-  serial port: "COM3"
+  serial port: "COM4"
   baud rate: 38400
 Flowmeter SLI2000 (Green):
-  serial port: "COM6"
+  serial port: "COM3"
   baud rate: 115200
 Flowmeter SLS1500 (Black):
-  serial port: "COM7"
+  serial port: "COM5"
   baud rate: 115200
-Bronkhorst Pressure:
-  serial port:
-  baud rate:
-Melthead:
+# Bronkhorst Pressure:
+#   serial port:
+#   baud rate:
+# Melthead:

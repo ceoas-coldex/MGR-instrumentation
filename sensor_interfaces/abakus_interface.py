@@ -50,7 +50,7 @@ class Abakus():
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
-    @log_on_start(logging.INFO, "Initializing Abakus")
+    @log_on_start(logging.INFO, "Initializing Abakus", logger=logger)
     def initialize_abakus(self):
         # Try three times to query and get a valid output. Otherwise report back that initialization failed 
         try:
@@ -71,21 +71,21 @@ class Abakus():
         logger.info("Abakus initialization failed")
         return False
     
-    @log_on_end(logger.INFO, "Abakus measurements started")
+    @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
         """Method to put the Abakus into remote control mode (disables keys on the instrument) and 
         start taking measurements. Does not recieve data"""
         self.ser.write(self.ENTER_RC_MODE)
         self.ser.write(self.START_MEAS)
 
-    @log_on_end(logger.INFO, "Abakus measurements stopped")
+    @log_on_end(logging.INFO, "Abakus measurements stopped", logger=logger)
     def stop_measurement(self):
         """Method to stop measurement and take the Abakus out of remote control mode"""
         self.ser.write(self.INTERRUPT_MEAS)
         self.ser.write(self.STOP_MEAS)
         self.ser.write(self.LEAVE_RC_MODE)
 
-    @log_on_end(logger.INFO, "Abakus queried")
+    @log_on_end(logging.INFO, "Abakus queried", logger=logger)
     def query(self):
         """Queries current values on the running measurement and decodes the serial message. 
             Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""

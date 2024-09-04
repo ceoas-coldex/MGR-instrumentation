@@ -30,8 +30,8 @@ except ImportError:
 # Load the sensor comms configuration file and grab the Picarro G2041 port and baud rate
 with open("config/sensor_comms.yaml", 'r') as stream:
     comms_config = yaml.safe_load(stream)
-test_port = comms_config["Picarro Gas"]["serial port"]
-test_baud = comms_config["Picarro Gas"]["baud rate"]
+test_port = comms_config["Abakus Particle Counter"]["serial port"]
+test_baud = comms_config["Abakus Particle Counter"]["baud rate"]
 
 # Check if we can connect to the Picarro, and if so import the real sensor classes
 try:
@@ -54,8 +54,8 @@ class Sensor():
         self.flowmeter_sli2000 = FlowMeter(serial_port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baud_rate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
         self.flowmeter_sls1500 = FlowMeter(serial_port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baud_rate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
         self.laser = Dimetix(serial_port=comms_config["Laser Distance Sensor"]["serial port"], baud_rate=comms_config["Laser Distance Sensor"]["baud rate"])
-        self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
-        self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
+        # self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
+        # self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
