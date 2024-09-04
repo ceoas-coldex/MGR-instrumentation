@@ -6,12 +6,17 @@ import time
 import re
 import pandas as pd
 import numpy as np
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level=logging.INFO, datefmt ="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__) # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
@@ -41,25 +46,46 @@ class Abakus():
         """
         try:
             self.ser = serial.Serial(port, baud, timeout=5)
-            logging.info(f"Connected to serial port {port} with baud {baud}")
+            logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
-            logging.info(f"Could not connect to serial port {port}")
+            logger.info(f"Could not connect to serial port {port}")
 
-    @log_on_end(logging.INFO, "Abakus measurements started")
+    @log_on_start(logging.INFO, "Initializing Abakus")
+    def initialize_abakus(self):
+        # Try three times to query and get a valid output. Otherwise report back that initialization failed 
+        try:
+            self.start_measurement()
+            for i in range(3):
+                logger.info(f"Initialization attempt {i+1}/3")
+                timestamp, data_out = self.query()
+                output = data_out.split() # split into a list
+                bins = [int(i) for i in output[::2]]
+            
+                if type(timestamp) == float and len(bins) == 32:
+                    logger.info("Abakus initialized")
+                    return True
+
+        except Exception as e:
+            logger.info(f"Exception in Abakus initialization: {e}")
+
+        logger.info("Abakus initialization failed")
+        return False
+    
+    @log_on_end(logger.INFO, "Abakus measurements started")
     def start_measurement(self):
         """Method to put the Abakus into remote control mode (disables keys on the instrument) and 
         start taking measurements. Does not recieve data"""
         self.ser.write(self.ENTER_RC_MODE)
         self.ser.write(self.START_MEAS)
 
-    @log_on_end(logging.INFO, "Abakus measurements stopped")
+    @log_on_end(logger.INFO, "Abakus measurements stopped")
     def stop_measurement(self):
         """Method to stop measurement and take the Abakus out of remote control mode"""
         self.ser.write(self.INTERRUPT_MEAS)
         self.ser.write(self.STOP_MEAS)
         self.ser.write(self.LEAVE_RC_MODE)
 
-    @log_on_end(logging.INFO, "Abakus queried")
+    @log_on_end(logger.INFO, "Abakus queried")
     def query(self):
         """Queries current values on the running measurement and decodes the serial message. 
             Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""

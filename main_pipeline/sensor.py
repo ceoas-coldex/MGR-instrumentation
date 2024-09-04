@@ -57,10 +57,41 @@ class Sensor():
         self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
         self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
 
+        # Read in the sensor config file to grab a list of all the sensors we're working with
+        with open("config/sensor_data.yaml", 'r') as stream:
+            big_data_dict = yaml.safe_load(stream)
+        self.sensor_names = big_data_dict.keys()
+
     def __del__(self) -> None:
         self.shutdown_sensors()
 
+    @log_on_start(logging.INFO, "Initializing sensors", logger=logger)
+    @log_on_end(logging.INFO, "Finished initializing sensors", logger=logger)
+    def initialize_sensors(self):
+        """
+        Method to take each sensor through a sequence to check that it's on and getting valid readings.
+        **If you're adding a new sensor, you probably need to modify this method**
+
+        Returns - status of each sensor 
+        """
+        # Create a dictionary to store the result of initialization for each sensor
+        sensor_init_dict = {}
+        for name in self.sensor_names:
+            sensor_init_dict.update({name:False})
+
+        # Fill in the dictionary with the results of calling the sensor init functions
+        sensor_init_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
+
+    
+    @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
+    @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
     def shutdown_sensors(self):
+        """
+        Method to stop measurements/exit data collection/turn off the sensors that need it; the rest don't have a shutdown feature.
+        **If you're adding a new sensor, check if you need to modify this method**
+        
+        Shuts down - Abakus particle counter, Laser distance sensor
+        """
         self.abakus.stop_measurement()
         self.laser.stop_laser()
     

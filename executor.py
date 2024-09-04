@@ -82,26 +82,30 @@ class Executor():
         self.interp_delay = 0.1
         self.display_delay = 0.5
 
-    @log_on_start(logging.INFO, "Initializing sensors", logger=logger)
-    @log_on_end(logging.INFO, "Finished initializing sensors", logger=logger)
-    def _init_sensors(self):
-        pass
+    def __del__(self) -> None:
+        """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
+        self._exit_all()
+
+    def init_sensors(self):
+        """Method to take each sensor through its initialization"""
+        if self.sensors_shutdown:   # If the sensors are shut down...
+            self.sensor.initialize_sensors()    # ... initialize them
+            self.sensors_shutdown = False   # ... and set the shutdown flag to False
     
-    @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
-    @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
-    def _clean_sensor_shutdown(self):
+    def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
-        # If we haven't shut down the sensors yet, do that
-        if not self.sensors_shutdown:
-            self.sensor.shutdown_sensors()
-        self.sensors_shutdown = True
+        if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
+            self.sensor.shutdown_sensors() # ... shut them down
+            self.sensors_shutdown = True # ... and set the shutdown flag to True
     
     @log_on_start(logging.INFO, "Starting data collection", logger=logger)
-    def _start_data_collection(self):
+    def start_data_collection(self):
+        """Method that sets the flag to enter data collection mode"""
         self.data_shutdown = False
 
-    @log_on_start(logging.INFO, "Exiting data collection", logger=logger)
-    def _stop_data_collection(self):
+    @log_on_start(logging.INFO, "Stopping data collection", logger=logger)
+    def stop_data_collection(self):
+        """Method that sets the flag to exit data collection mode"""
         # If data collection hasn't already been shut down, shut it down
         if not self.data_shutdown:
             # Set the data_shutdown flag to True
@@ -113,14 +117,9 @@ class Executor():
 
     def _exit_all(self):
         """Method to stop break GUI and data collection loops, called by the 'alt+q' hotkey"""
-        self._clean_sensor_shutdown()
-        # Set the GUI shutdown flag to True
-        self.gui_shutdown = True
-        self._stop_data_collection()
-        
-    def __del__(self) -> None:
-        """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
-        self._exit_all()
+        self.clean_sensor_shutdown()
+        self.gui_shutdown = True # Set the GUI shutdown flag to True
+        self.stop_data_collection()
     
     def _set_gui_buttons(self):
         """Method that builds up a dictionary to be passed into the GUI. This dictionary holds the methods that start/stop/initialize
@@ -147,8 +146,8 @@ class Executor():
         # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
         # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
         # and one for shutting down all sensors (self._clean_sensor_shutdown)
-        button_dict.update({"All Sensors":{"start":self._init_sensors, "stop":self._clean_sensor_shutdown}})
-        button_dict.update({"Data Collection":{"start":self._start_data_collection, "stop":self._stop_data_collection}})
+        button_dict.update({"All Sensors":{"start":self.init_sensors, "stop":self.clean_sensor_shutdown}})
+        button_dict.update({"Data Collection":{"start":self.start_data_collection, "stop":self.stop_data_collection}})
         
         return button_dict
         
@@ -167,10 +166,10 @@ class Executor():
                 time.sleep(0.1)
             except KeyboardInterrupt:
                 try:
-                    self._clean_sensor_shutdown()
+                    self.clean_sensor_shutdown()
                     sys.exit(130)
                 except SystemExit:
-                    self._clean_sensor_shutdown()
+                    self.clean_sensor_shutdown()
                     os._exit(130)
             # Note - once we enter ↓this loop, we no longer access ↑that loop. The nested loop doesn't mean we're calling gui.run() twice
             while not self.data_shutdown:
@@ -197,13 +196,13 @@ class Executor():
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
-                # prioritize shut down the sensors cleanly and killing the program
+                # prioritize shutting down the sensors cleanly and killing the program
                 except KeyboardInterrupt:
                     try:
-                        self._clean_sensor_shutdown()
+                        self.clean_sensor_shutdown()
                         sys.exit(130)
                     except SystemExit:
-                        self._clean_sensor_shutdown()
+                        self.clean_sensor_shutdown()
                         os._exit(130)
             
 if __name__ == "__main__":
