@@ -30,6 +30,10 @@ class Abakus():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    @log_on_start(logging.INFO, "Initializing Abakus")
+    def initialize_abakus(self):
+        pass
+    
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
         pass
