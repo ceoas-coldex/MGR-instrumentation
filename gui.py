@@ -284,7 +284,12 @@ class GUI():
    
     def _make_status_grid_title(self, root, num_cols, button_width=20):
         pad = int(button_width / 2)
-        title_frame = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=2)
+        title_frame = self._make_status_grid_cell(root, 
+                                                  title="Sensor Status & Control", 
+                                                  col=0, 
+                                                  row=0, 
+                                                  colspan=2,
+                                                  start_callback=[self._on_sensor_init, self._on_sensor_shutdown])
 
         init_sensor_button = Button(title_frame, text="Initialize All Sensors", font=self.bold16, width=button_width, command=self._on_sensor_init)
         init_sensor_button.grid(column=0, row=1, sticky=W, padx=pad, pady=pad)
@@ -300,7 +305,7 @@ class GUI():
         stop_data_button.grid(column=1, row=2, sticky=E, padx=pad)
         self.buttons_to_enable_after_init.append(stop_data_button)
     
-    def _make_status_grid_cell(self, root, title, col, row, start_callback=None, stop_callback=None, subsensor_name=[""], colspan=1, rowspan=1, color='white'):
+    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given"""        
         frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
         # place in the position we want and make it fill the space (sticky in all directions)
@@ -313,19 +318,25 @@ class GUI():
         label=Label(frame, text=title, font=self.bold16, bg='white')
         label.grid(row=0, column=0, columnspan=colspan, sticky=N, pady=20)
 
+        for i, button_name in enumerate(button_names):
+            button = Button(frame, text=button_name, command=button_callbacks[i], font=self.bold16, state=DISABLED)
+            button.grid(row=i, column=0, sticky=N, padx=10, pady=10)
+            self.buttons_to_enable_after_init.append(button)
+       
+       
         # If we have the ability to start and stop the sensor, add those buttons
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
             # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
-        if start_callback is not None:
-            for i, subsensor in enumerate(subsensor_name):
-                start_button = Button(frame, text=f"Start {subsensor} Instrument", command=start_callback, state=DISABLED, font=self.bold16)
-                start_button.grid(row=1, column=i, sticky=N, padx=10, pady=10)
-                self.buttons_to_enable_after_init.append(start_button)
-        if stop_callback is not None:
-            for i, subsensor in enumerate(subsensor_name):
-                stop_button = Button(frame, text=f"Stop {subsensor} Instrument", command=stop_callback, state=DISABLED, font=self.bold16)
-                stop_button.grid(row=2, column=i, sticky=N, padx=10, pady=10)
-                self.buttons_to_enable_after_init.append(stop_button)
+        # if start_callback is not None:
+        #     for i, subsensor in enumerate(button_names):
+        #         start_button = Button(frame, text=f"Start {subsensor} Instrument", command=start_callback, state=DISABLED, font=self.bold16)
+        #         start_button.grid(row=1, column=i, sticky=N, padx=10, pady=10)
+        #         self.buttons_to_enable_after_init.append(start_button)
+        # if stop_callback is not None:
+        #     for i, subsensor in enumerate(button_names):
+        #         stop_button = Button(frame, text=f"Stop {subsensor} Instrument", command=stop_callback, state=DISABLED, font=self.bold16)
+        #         stop_button.grid(row=2, column=i, sticky=N, padx=10, pady=10)
+        #         self.buttons_to_enable_after_init.append(stop_button)
 
         return frame
     
@@ -354,7 +365,7 @@ class GUI():
         # Make a list of all buttons that are initially disabled, but should be enabled after sensors have been initialized
         self.buttons_to_enable_after_init = [] 
         # Make the title row
-        self._make_status_grid_title(root, num_cols)    
+        # self._make_status_grid_title(root, num_cols)    
         # Make all the other rows/cols
         i = 0
         try:
@@ -364,29 +375,40 @@ class GUI():
                     sensor_name = self.sensor_names[i]
                     # Grab the callbacks we're assigning to the buttons for each sensor
                     callback_dict = self.button_callback_dict[sensor_name]
-                    # If there are multiple sensors in one (looking at you, Flowmeter), deal with that here
-                    if type(callback_dict["start"]) == dict:
-                        start_callback = []
-                        stop_callback = []
-                        subsensor_names = list(callback_dict["start"].keys())
-                        for subsensor in subsensor_names:
-                            start_callback.append(callback_dict["start"][subsensor])
-                            stop_callback.append(callback_dict["stop"][subsensor])
-                        # callback_button_name = subsensor_names
-                    # Otherwise pull out the start and stop callbacks
-                    else:
-                        start_callback = [callback_dict["start"]]
-                        stop_callback = [callback_dict["stop"]]
-                        subsensor_names = [""]
-                    # Make the cell for each sensor
-                    self._make_status_grid_cell(root, 
-                                                title=sensor_name, 
-                                                start_callback=start_callback, 
-                                                stop_callback=stop_callback,
-                                                subsensor_name=subsensor_names,
-                                                colspan=len(subsensor_names), 
+                    button_names = list(callback_dict.keys())
+                    button_callbacks = list(callback_dict.values())
+
+                    self._make_status_grid_cell(root,
+                                                title=sensor_name,
+                                                button_names=button_names,
+                                                button_callbacks=button_callbacks,
+                                                colspan=2, 
                                                 col=col, 
                                                 row=row)
+                                                
+                    # # If there are multiple sensors in one (looking at you, Flowmeter), deal with that here
+                    # if type(callback_dict["start"]) == dict:
+                    #     start_callback = []
+                    #     stop_callback = []
+                    #     subsensor_names = list(callback_dict["start"].keys())
+                    #     for subsensor in subsensor_names:
+                    #         start_callback.append(callback_dict["start"][subsensor])
+                    #         stop_callback.append(callback_dict["stop"][subsensor])
+                    #     # callback_button_name = subsensor_names
+                    # # Otherwise pull out the start and stop callbacks
+                    # else:
+                    #     start_callback = [callback_dict["start"]]
+                    #     stop_callback = [callback_dict["stop"]]
+                    #     subsensor_names = [""]
+                    # # Make the cell for each sensor
+                    # self._make_status_grid_cell(root, 
+                    #                             title=sensor_name, 
+                    #                             start_callback=start_callback, 
+                    #                             stop_callback=stop_callback,
+                    #                             button_names=subsensor_names,
+                    #                             colspan=len(subsensor_names), 
+                    #                             col=col, 
+                    #                             row=row)
                     i += 1
         except IndexError as e:
             print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}, that's fine")
@@ -482,18 +504,24 @@ if __name__ == "__main__":
     # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
     button_dict = {}
     for name in sensor_names:
-        button_dict.update({name:{"start":None, "stop":None}})
-    # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
-    button_dict["Abakus Particle Counter"]["start"] = sensor.abakus.start_measurement
-    button_dict["Abakus Particle Counter"]["stop"] = sensor.abakus.stop_measurement
-    # button_dict["Laser Distance Sensor"]["start"] = sensor.laser.start_laser
-    # button_dict["Laser Distance Sensor"]["stop"] = sensor.laser.stop_laser
+        button_dict.update({name:{}})
 
-    # The flowmeter is really two instruments in one, so add another layer of dictionaries to capture that. The flowmeters
-    # also don't have a "stop measurement" command as far as I can tell
-    button_dict.update({"Flowmeter":{"start":{"sli2000":sensor.flowmeter_sli2000.start_measurement,
-                                                "sls1500":sensor.flowmeter_sls1500.start_measurement},
-                                        "stop":{"sli2000":None, "sls1500":None}}})
+
+    # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
+    button_dict["Abakus Particle Counter"] = {"Start Abakus": sensor.abakus.start_measurement,
+                                              "Stop Abakus": sensor.abakus.stop_measurement}
+
+    button_dict["Laser Distance Sensor"] = {"Start Laser": sensor.laser.start_laser,
+                                            "Stop Laser": sensor.laser.stop_laser}
+    
+    button_dict["Flowmeter"] = {"Start SLI2000": sensor.flowmeter_sli2000.start_measurement,
+                                "Start SLS1500": sensor.flowmeter_sls1500.start_measurement}
+    
+    # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
+    # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
+    # and one for shutting down all sensors (self._clean_sensor_shutdown)
+    button_dict.update({"All Sensors":{"Initialize All Sensors":None, "Shutdown All Sensors":None}})
+    button_dict.update({"Data Collection":{"Start Data Collection":None, "Stop Data Collection":None}})
     
     app = GUI(button_callback_dict=button_dict)
 

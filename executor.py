@@ -129,7 +129,7 @@ class Executor():
         # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
         button_dict = {}
         for name in self.sensor_names:
-            button_dict.update({name:{"start":None, "stop":None}})
+            button_dict.update({name:{}})
 
         # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
         button_dict["Abakus Particle Counter"]["start"] = self.sensor.abakus.start_measurement
