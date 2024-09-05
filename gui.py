@@ -408,14 +408,16 @@ class GUI():
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         for button in self.buttons_to_enable_after_init:
             button["state"] = NORMAL
-        # Try to call the method that's the value of the "All Sensors":"start" key of the dictionary
+        # Try to call the method that's the value of the "All Sensors":"Initialize All Sensors" key of the dictionary
         try:
-            self.button_callback_dict["All Sensors"]["Initialize All Sensors"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
+            self.sensor_init_dict = self.button_callback_dict["All Sensors"]["Initialize All Sensors"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
             print(f"Key Error {e}, _on_sensor_init")
         except TypeError as e:
             print(f"No callback found to start data collection. Probably not run from the executor script.")
+
+        print(self.sensor_init_dict)
     
     def _on_sensor_shutdown(self):
         """Callback for the 'Shutdown Sensors' button. Disables the other buttons and tries to call the *sensor shutdown* method
@@ -423,7 +425,7 @@ class GUI():
         # Disable other buttons
         for button in self.buttons_to_disable_after_shutdown:
             button["state"] = DISABLED
-        # Try to call the method that's the value of the "All Sensors":"stop" key of the dictionary
+        # Try to call the method that's the value of the "All Sensors":"Shutdown All Sensors" key of the dictionary
         try:
             self.button_callback_dict["All Sensors"]["Shutdown All Sensors"]() # Yep, that again.
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
@@ -435,7 +437,7 @@ class GUI():
     def _on_start_data(self):
         """Callback for the 'Start Data Collection' button. Tries to call the *start data collection* method
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
-        # Try to call the method that's the value of the "Data Collection":"start" key of the dictionary
+        # Try to call the method that's the value of the "Data Collection":"Start Data Collection" key of the dictionary
         try:
             self.button_callback_dict["Data Collection"]["Start Data Collection"]()
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
@@ -447,7 +449,7 @@ class GUI():
     def _on_stop_data(self):
         """Callback for the 'Stop Data Collection' button. Tries to call the *stop data collection* method
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
-        # Try to call the method that's the value of the "Data Collection":"stop" key of the dictionary
+        # Try to call the method that's the value of the "Data Collection":"Stop Data Collection" key of the dictionary
         try:
             self.button_callback_dict["Data Collection"]["Stop Data Collection"]()
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()

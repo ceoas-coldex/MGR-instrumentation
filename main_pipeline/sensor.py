@@ -108,9 +108,12 @@ class Sensor():
 
         # Fill in the dictionary with the results of calling the sensor init functions
         sensor_init_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
-        sensor_init_dict.update({"Flowmeter":{"SLI2000":None, "SLS1500":None}})
-        sensor_init_dict["Flowmeter"]["SLI2000"] = self.flowmeter_sli2000.initialize_flowmeter()
-        sensor_init_dict["Flowmeter"]["SLS1500"] = self.flowmeter_sls1500.initialize_flowmeter()
+        sensor_init_dict.update({"Flowmeter":{"SLI2000":self.flowmeter_sli2000.initialize_flowmeter(), 
+                                              "SLS1500":self.flowmeter_sls1500.initialize_flowmeter()}})
+        
+        sensor_init_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
+
+        sensor_init_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
 
         return sensor_init_dict
 

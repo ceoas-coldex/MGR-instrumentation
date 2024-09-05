@@ -32,7 +32,14 @@ class Abakus():
 
     @log_on_start(logging.INFO, "Initializing Abakus")
     def initialize_abakus(self):
+        """
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+            
+            Returns - 2
+        """
         logger.info("Abakus initialized")
+        return 2
     
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
@@ -59,8 +66,17 @@ class Picarro():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    
+    @log_on_start(logging.INFO, "Initializing Picarro", logger=logger)
     def initialize_picarro(self):
-        pass
+        """
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        
+        Returns - 2
+        """
+        logger.info("Initialized Picarro")
+        return 2
 
     @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
@@ -82,12 +98,19 @@ class FlowMeter():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    @log_on_start(logging.INFO, "Initializing Flowmeter", logger=logger)
     def initialize_flowmeter(self):
+        """
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+            
+            Returns - 2
+        """
         logger.info(f"Flowmeter {self.sensor_type} initialized")
+        return 2
     
-    @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
-        pass
+        logger.info(f"Flowmeter {self.sensor_type} measurements started")
 
     @log_on_end(logging.INFO, "Flowmeter measurements stopped", logger=logger)
     def stop_measurement(self):
@@ -115,8 +138,16 @@ class Dimetix():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
     
+    @log_on_start(logging.INFO, "Initializing Dimetix laser", logger=logger)
     def initialize_laser(self):
+        """
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+            
+            Returns - 2
+        """
         logger.info("Laser initialized")
+        return 2
     
     @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):

@@ -60,6 +60,7 @@ class Executor():
         
         # Initialize the sensors
         self.sensor = Sensor()
+        self.sensor_init_dict = {}
 
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
@@ -88,9 +89,12 @@ class Executor():
 
     def init_sensors(self):
         """Method to take each sensor through its initialization"""
+        ### MIGHT WANT TO GET RID OF THE FLAG HERE, IN CASE YOU NEED TO REDO INITIALIZATION. THINK ABOUT IT
         if self.sensors_shutdown:   # If the sensors are shut down...
-            self.sensor.initialize_sensors()    # ... initialize them
+            self.sensor_init_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
             self.sensors_shutdown = False   # ... and set the shutdown flag to False
+
+        return self.sensor_init_dict
     
     def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
@@ -125,29 +129,28 @@ class Executor():
         """Method that builds up a dictionary to be passed into the GUI. This dictionary holds the methods that start/stop/initialize
         sensor measurements, and will be used for button callbacks in the GUI."""
 
-        # Make a dictionary to hold the methods we're going to use as button callbacks. Sometimes
-        # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
+        # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
+        # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to empty dicts
         button_dict = {}
         for name in self.sensor_names:
             button_dict.update({name:{}})
 
-        # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
-        button_dict["Abakus Particle Counter"]["start"] = self.sensor.abakus.start_measurement
-        button_dict["Abakus Particle Counter"]["stop"] = self.sensor.abakus.stop_measurement
-        button_dict["Laser Distance Sensor"]["start"] = self.sensor.laser.start_laser
-        button_dict["Laser Distance Sensor"]["stop"] = self.sensor.laser.stop_laser
+        # Add the start/stop measurement methods for the instruments that have those features: 
+        # The Abakus, Flowmeters, and Laser Distance Sensor
+        button_dict["Abakus Particle Counter"] = {"Start Abakus": self.sensor.abakus.start_measurement,
+                                                "Stop Abakus": self.sensor.abakus.stop_measurement}
 
-        # The flowmeter is really two instruments in one, so add another layer of dictionaries to capture that. The flowmeters
-        # also don't have a "stop measurement" command as far as I can tell
-        button_dict.update({"Flowmeter":{"start":{"sli2000":self.sensor.flowmeter_sli2000.start_measurement,
-                                                  "sls1500":self.sensor.flowmeter_sls1500.start_measurement},
-                                         "stop":{"sli2000":None, "sls1500":None}}})
+        button_dict["Laser Distance Sensor"] = {"Start Laser": self.sensor.laser.start_laser,
+                                                "Stop Laser": self.sensor.laser.stop_laser}
+        
+        button_dict["Flowmeter"] = {"Start SLI2000": self.sensor.flowmeter_sli2000.start_measurement,
+                                        "Start SLS1500": self.sensor.flowmeter_sls1500.start_measurement}
         
         # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
         # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
         # and one for shutting down all sensors (self._clean_sensor_shutdown)
-        button_dict.update({"All Sensors":{"start":self.init_sensors, "stop":self.clean_sensor_shutdown}})
-        button_dict.update({"Data Collection":{"start":self.start_data_collection, "stop":self.stop_data_collection}})
+        button_dict.update({"All Sensors":{"Initialize All Sensors":self.init_sensors, "Shutdown All Sensors":self.clean_sensor_shutdown}})
+        button_dict.update({"Data Collection":{"Start Data Collection":self.start_data_collection, "Stop Data Collection":self.stop_data_collection}})
         
         return button_dict
         
