@@ -37,40 +37,40 @@ with open("config/sensor_comms.yaml", 'r') as stream:
 try:
     serial.Serial(port=comms_config["Picarro Gas"]["serial port"], baudrate=comms_config["Picarro Gas"]["baud rate"])
     from sensor_interfaces.picarro_interface import Picarro
-    logger.info(f"Successfully connected to port {comms_config["Picarro Gas"]["serial port"]}, using real Picarro Gas hardware")
+    logger.info(f"Successfully connected to port {comms_config['Picarro Gas']['serial port']}, using real Picarro Gas hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import Picarro
-    logger.info(f"Couldn't find Picarro at port {comms_config["Picarro Gas"]["serial port"]}, shadowing sensor calls with substitute functions")
+    logger.info(f"Couldn't find Picarro at port {comms_config['Picarro Gas']['serial port']}, shadowing sensor calls with substitute functions")
 
 # Abakus 
 try:
     serial.Serial(port=comms_config["Abakus Particle Counter"]["serial port"], baudrate=comms_config["Abakus Particle Counter"]["baud rate"])
     from sensor_interfaces.abakus_interface import Abakus
-    logger.info(f"Successfully connected to port {comms_config["Abakus Particle Counter"]["serial port"]}, using real Abakus hardware")
+    logger.info(f"Successfully connected to port {comms_config['Abakus Particle Counter']['serial port']}, using real Abakus hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import Abakus
-    logger.info(f"Couldn't find Abakus at port {comms_config["Abakus Particle Counter"]["serial port"]}, shadowing sensor calls with substitute functions")
+    logger.info(f"Couldn't find Abakus at port {comms_config['Abakus Particle Counter']['serial port']}, shadowing sensor calls with substitute functions")
 
 # Flowmeter - they both need to be plugged in for this to work
 try:
     serial.Serial(port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baudrate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
     serial.Serial(port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baudrate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
     from sensor_interfaces.flowmeter_interface import FlowMeter
-    logger.info(f"Successfully connected to port {comms_config["Flowmeter SLI2000 (Green)"]["serial port"]} and " +
-                f"{comms_config["Flowmeter SLS1500 (Black)"]["serial port"]}, using real Flowmeter hardware")
+    logger.info(f"Successfully connected to port {comms_config['Flowmeter SLI2000 (Green)']['serial port']} and " +
+                f"{comms_config['Flowmeter SLS1500 (Black)']['serial port']}, using real Flowmeter hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import FlowMeter
-    logger.info(f"Couldn't find Flowmeter at port {comms_config["Flowmeter SLI2000 (Green)"]["serial port"]} and" + 
-                f"{comms_config["Flowmeter SLS1500 (Black)"]["serial port"]}, shadowing sensor calls with substitute functions")
+    logger.info(f"Couldn't find Flowmeter at port {comms_config['Flowmeter SLI2000 (Green)']['serial port']} and " + 
+                f"{comms_config['Flowmeter SLS1500 (Black)']['serial port']}, shadowing sensor calls with substitute functions")
 
 # Laser
 try:
-    serial.Serial(port=comms_config["Laser Distance Sensor"]["serial port"], baudrate=comms_config["Laser Distance Sensor"]["baud rate"])
+    serial.Serial(port=comms_config['Laser Distance Sensor']['serial port'], baudrate=comms_config["Laser Distance Sensor"]["baud rate"])
     from sensor_interfaces.laser_interface import Dimetix
-    logger.info(f"Successfully connected to port {comms_config["Laser Distance Sensor"]["serial port"]}, using real Dimetix hardware")
+    logger.info(f"Successfully connected to port {comms_config['Laser Distance Sensor']['serial port']}, using real Dimetix hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import Dimetix
-    logger.info(f"Couldn't find Dimetix laser at port {comms_config["Laser Distance Sensor"]["serial port"]}, shadowing sensor calls with substitute functions")
+    logger.info(f"Couldn't find Dimetix laser at port {comms_config['Laser Distance Sensor']['serial port']}, shadowing sensor calls with substitute functions")
 
 
 class Sensor():
@@ -124,7 +124,7 @@ class Sensor():
         Shuts down - Abakus particle counter, Laser distance sensor
         """
         self.abakus.stop_measurement()
-        # self.laser.stop_laser()
+        self.laser.stop_laser()
     
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def abakus_producer(self, abakus_bus:Bus, delay):

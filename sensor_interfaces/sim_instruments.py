@@ -32,7 +32,7 @@ class Abakus():
 
     @log_on_start(logging.INFO, "Initializing Abakus")
     def initialize_abakus(self):
-        pass
+        logger.info("Abakus initialized")
     
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
@@ -59,6 +59,9 @@ class Picarro():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    def initialize_picarro(self):
+        pass
+
     @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
         """Returns - timestamp (float, epoch time), picarro_reading (str, raw data)"""
@@ -71,13 +74,17 @@ class Picarro():
         return timestamp, fake_picarro_data
 
 class FlowMeter():
-    def __init__(self, serial_port="COM6", baud_rate=115200) -> None:
+    def __init__(self, serial_port="COM6", baud_rate=115200, sensor_type="SLI2000") -> None:
         """Fake hardware, pretends to do everything the real FlowMeter class does"""
         self.initialize_pyserial(serial_port, baud_rate)
+        self.sensor_type = sensor_type
 
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    def initialize_flowmeter(self):
+        logger.info(f"Flowmeter {self.sensor_type} initialized")
+    
     @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
         pass
@@ -107,6 +114,9 @@ class Dimetix():
 
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
+    
+    def initialize_laser(self):
+        logger.info("Laser initialized")
     
     @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
