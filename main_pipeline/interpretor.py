@@ -2,14 +2,9 @@
 # The intepretor class
 # -------------
 
-import pandas as pd
 import numpy as np
 import time
 import yaml
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error

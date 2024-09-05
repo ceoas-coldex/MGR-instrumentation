@@ -94,6 +94,8 @@ class Dimetix():
         self.ser.write(self.STOP_CLR)
         print(self.ser.read_until(self.CRLF))
 
+        return 0
+
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
         # Get the most recent measurement from the laser sensor

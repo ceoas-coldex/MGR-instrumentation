@@ -8,25 +8,15 @@
 # read /and/ write data. These generally take in sensor data, do some processing, and republish the processed data.
 # 
 # Ali Jones
-# Last updated 8/23/24
+# Last updated 9/5/24
 # -------------
 
-import numpy as np
 import time
 import concurrent.futures
 
-import pandas as pd
 import keyboard
 import os, sys
 
-from gui import GUI
-from tkinter.font import Font, BOLD
-
-import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import yaml
 
 import logging
@@ -40,6 +30,7 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+from gui import GUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpretor import Interpretor
@@ -90,17 +81,17 @@ class Executor():
     def init_sensors(self):
         """Method to take each sensor through its initialization"""
         ### MIGHT WANT TO GET RID OF THE FLAG HERE, IN CASE YOU NEED TO REDO INITIALIZATION. THINK ABOUT IT
-        if self.sensors_shutdown:   # If the sensors are shut down...
-            self.sensor_status_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
-            self.sensors_shutdown = False   # ... and set the shutdown flag to False
+        # if self.sensors_shutdown:   # If the sensors are shut down...
+        self.sensor_status_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
+        self.sensors_shutdown = False   # ... and set the shutdown flag to False
 
         return self.sensor_status_dict
     
     def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
-        if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
-            self.sensor_status_dict = self.sensor.shutdown_sensors() # ... shut them down
-            self.sensors_shutdown = True # ... and set the shutdown flag to True
+        # if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
+        self.sensor_status_dict = self.sensor.shutdown_sensors() # ... shut them down
+        self.sensors_shutdown = True # ... and set the shutdown flag to True
 
         return self.sensor_status_dict
     
@@ -139,14 +130,14 @@ class Executor():
 
         # Add the start/stop measurement methods for the instruments that have those features: 
         # The Abakus, Flowmeters, and Laser Distance Sensor
-        button_dict["Abakus Particle Counter"] = {"Start Abakus": self.sensor.abakus.start_measurement,
+        button_dict["Abakus Particle Counter"] = {"Start Abakus": self.sensor.abakus.initialize_abakus,
                                                 "Stop Abakus": self.sensor.abakus.stop_measurement}
 
-        button_dict["Laser Distance Sensor"] = {"Start Laser": self.sensor.laser.start_laser,
+        button_dict["Laser Distance Sensor"] = {"Start Laser": self.sensor.laser.initialize_laser,
                                                 "Stop Laser": self.sensor.laser.stop_laser}
         
-        button_dict["Flowmeter"] = {"Start SLI2000": self.sensor.flowmeter_sli2000.start_measurement,
-                                        "Start SLS1500": self.sensor.flowmeter_sls1500.start_measurement}
+        button_dict["Flowmeter"] = {"Start SLI2000": self.sensor.flowmeter_sli2000.initialize_flowmeter,
+                                        "Start SLS1500": self.sensor.flowmeter_sls1500.initialize_flowmeter}
         
         # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
         # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 

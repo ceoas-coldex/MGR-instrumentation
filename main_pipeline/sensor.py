@@ -112,11 +112,15 @@ class Sensor():
         self.sensor_status_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
         self.sensor_status_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
 
+        # The flowmeters are a little special, since it's two sensors in one - deal with that here
+        # Initialize and grab the results of flowmeter initialization
+        sli2000 = self.flowmeter_sli2000.initialize_flowmeter()
+        sls1500 = self.flowmeter_sls1500.initialize_flowmeter()
         # If both flowmeters are initialized, return that we're initialized
-        if self.flowmeter_sli2000.initialize_flowmeter() == 1 and self.flowmeter_sls1500.initialize_flowmeter() == 1:
+        if sli2000 == 1 and sls1500 == 1:
             flowmeter_status = 1
-        # If both flowmeters are simulated, return tthat we're simulated
-        elif self.flowmeter_sli2000.initialize_flowmeter() == 2 and self.flowmeter_sls1500.initialize_flowmeter() == 2:
+        # If both flowmeters are simulated, return that we're simulated
+        elif sli2000 == 2 and sls1500 == 2:
             flowmeter_status = 2
         # Per how I've set up sim and real flowmeter imports, they're either both sim or both real. So the only other options are
             # one initializes and one fails, or both fail. Either way, return fail. 
@@ -132,10 +136,11 @@ class Sensor():
     def shutdown_sensors(self):
         """
         Method to stop measurements/exit data collection/turn off the sensors that need it; the rest don't have a shutdown feature.
-        **If you're adding a new sensor, check if you need to modify this method**
+        **If you're adding a new sensor, you probably need to modify this method.**
         
         Shuts down - Abakus particle counter, Laser distance sensor
         """
+        # Updates the status dictionary with the results of shutting down the sensors
         self.sensor_status_dict["Abakus Particle Counter"] = self.abakus.stop_measurement()
         self.sensor_status_dict["Laser Distance Sensor"] = self.laser.stop_laser()
 
