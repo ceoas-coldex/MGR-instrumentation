@@ -1,17 +1,14 @@
 import numpy as np
 import time
-import pandas as pd
 from collections import deque
 import yaml
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
+
+from functools import partial
 
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from tkinter.ttk import Notebook, Sizegrip, Separator
+from tkinter.ttk import Notebook
 from tkinter.font import Font, BOLD
 
 import matplotlib
@@ -305,21 +302,31 @@ class GUI():
         label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
         
         self._make_status_readout(frame, 1, title, colspan=title_colspan)
-        buttons = self._make_sensor_buttons(frame, 2, button_rows, button_cols, button_names, button_callbacks, button_states)
+        print(title)
+        buttons = self._make_sensor_buttons(frame, title, 2, button_rows, button_cols, button_names, button_callbacks, button_states)
         
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
         # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
         
         return buttons
     
-    def _make_sensor_buttons(self, root, row:int, button_rows:int, button_cols:int, button_names, button_callbacks, button_states):
-         # Loop through the determined number of rows and columns, creating buttons and assigning them callbacks accordingly
+    def create_callback(self, sensor_name, old_callback):
+        return lambda: self._sensor_button_callback(sensor_name, old_callback)
+    
+    def _make_sensor_buttons(self, root, sensor_name, row:int, button_rows:int, button_cols:int, button_names, button_callbacks, button_states):
+        # Loop through the determined number of rows and columns, creating buttons and assigning them callbacks accordingly
+       
+        print(button_callbacks)
         i = 0
         buttons = []
         try:
             for row in range(row, button_rows+row):
                 for col in range(button_cols):
-                    button = Button(root, text=button_names[i], command=button_callbacks[i], font=self.bold16, state=button_states[i])
+                    test = button_callbacks[i]
+                    print(test)
+                    callback = partial(self._sensor_button_callback, sensor_name, test)
+                    button = Button(root, text=button_names[i], command=callback, 
+                                    font=self.bold16, state=button_states[i])
                     button.grid(row=row, column=col, sticky=N, padx=10, pady=10)
                     buttons.append(button)
                     i+=1
@@ -380,7 +387,7 @@ class GUI():
         self.sensor_status_dict = {}
         self.sensor_status_colors = {}
         for name in self.sensor_names:
-            self.sensor_status_dict.update({name:None})
+            self.sensor_status_dict.update({name:0})
             self.sensor_status_colors.update({name:None})
         # Grab the number of rows we should have in our grid given the number of sensors in self.sensor_names 
         # (this is a little unnecessary currently, since I decided one column looked better)
@@ -414,7 +421,7 @@ class GUI():
                                                           title=sensor_name,
                                                           button_names=button_names,
                                                           button_callbacks=button_callbacks,
-                                                          button_states=[DISABLED]*len(button_names),
+                                                          button_states=[ACTIVE]*len(button_names),
                                                         )
                     # Add the buttons to the list of those we enable after sensor initialization
                     for button in buttons:
@@ -449,6 +456,7 @@ class GUI():
     def _on_sensor_init(self):
         """Callback for the 'Initialize Sensors' button. Enables the other buttons and tries to call the *sensor init* method
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
+        #
         for button in self.buttons_to_enable_after_init:
             button["state"] = NORMAL
         # Try to call the method that's the value of the "All Sensors":"Initialize All Sensors" key of the dictionary
@@ -479,7 +487,7 @@ class GUI():
         except TypeError as e:
             print(f"No callback found to start data collection. Probably not run from the executor script.")
 
-        # self._update_sensor_status()
+        self._update_sensor_status()
     
     def _on_start_data(self):
         """Callback for the 'Start Data Collection' button. Tries to call the *start data collection* method
@@ -504,6 +512,15 @@ class GUI():
             print(f"Key Error {e}, _on_stop_data")
         except TypeError as e:
             print(f"No callback found to start data collection. Probably not run from the executor script.")
+
+    def _sensor_button_callback(self, sensor_name, sensor_command):
+        status = sensor_command()
+        if sensor_name in self.sensor_names:
+            self.sensor_status_dict[sensor_name] = status
+            self._update_sensor_status()
+
+
+
 
     ##  --------------------- HELPER FUNCTIONS --------------------- ##
 
@@ -548,14 +565,14 @@ if __name__ == "__main__":
         button_dict.update({name:{}})
 
     # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
-    button_dict["Abakus Particle Counter"] = {"Start Abakus": sensor.abakus.start_measurement,
+    button_dict["Abakus Particle Counter"] = {"Start Abakus": sensor.abakus.initialize_abakus,
                                               "Stop Abakus": sensor.abakus.stop_measurement}
 
-    button_dict["Laser Distance Sensor"] = {"Start Laser": sensor.laser.start_laser,
+    button_dict["Laser Distance Sensor"] = {"Start Laser": sensor.laser.initialize_laser,
                                             "Stop Laser": sensor.laser.stop_laser}
     
-    button_dict["Flowmeter"] = {"Start SLI2000": sensor.flowmeter_sli2000.start_measurement,
-                                "Start SLS1500": sensor.flowmeter_sls1500.start_measurement}
+    button_dict["Flowmeter"] = {"Start SLI2000": sensor.flowmeter_sli2000.initialize_flowmeter,
+                                "Start SLS1500": sensor.flowmeter_sls1500.initialize_flowmeter}
     
     # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
     # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
