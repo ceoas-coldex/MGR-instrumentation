@@ -2,7 +2,6 @@ import serial
 from serial import SerialException
 import time
 import pandas as pd
-import numpy as np
 import yaml
 
 import logging

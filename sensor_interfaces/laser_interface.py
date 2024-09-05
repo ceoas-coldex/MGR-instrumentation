@@ -1,11 +1,6 @@
 import serial
 from serial import SerialException
-import csv
-import keyboard
 import time
-import re
-import pandas as pd
-import numpy as np
 import yaml
 
 import logging

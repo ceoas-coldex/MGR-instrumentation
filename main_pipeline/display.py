@@ -3,7 +3,6 @@
 # -------------
 
 import time
-import numpy as np
 
 from gui import GUI
 from main_pipeline.bus import Bus
