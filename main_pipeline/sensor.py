@@ -89,6 +89,11 @@ class Sensor():
             big_data_dict = yaml.safe_load(stream)
         self.sensor_names = big_data_dict.keys()
 
+        # Create a dictionary to store the status of each sensor (0: offline, 1: online, 2: disconnected/simulated)
+        self.sensor_status_dict = {}
+        for name in self.sensor_names:
+            self.sensor_status_dict.update({name:0})
+
     def __del__(self) -> None:
         self.shutdown_sensors()
 
@@ -101,21 +106,26 @@ class Sensor():
 
         Returns - status of each sensor 
         """
-        # Create a dictionary to store the result of initialization for each sensor
-        sensor_init_dict = {}
-        for name in self.sensor_names:
-            sensor_init_dict.update({name:False})
 
         # Fill in the dictionary with the results of calling the sensor init functions
-        sensor_init_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
-        sensor_init_dict.update({"Flowmeter":{"SLI2000":self.flowmeter_sli2000.initialize_flowmeter(), 
-                                              "SLS1500":self.flowmeter_sls1500.initialize_flowmeter()}})
-        
-        sensor_init_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
+        self.sensor_status_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
+        self.sensor_status_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
+        self.sensor_status_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
 
-        sensor_init_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
+        # If both flowmeters are initialized, return that we're initialized
+        if self.flowmeter_sli2000.initialize_flowmeter() == 1 and self.flowmeter_sls1500.initialize_flowmeter() == 1:
+            flowmeter_status = 1
+        # If both flowmeters are simulated, return tthat we're simulated
+        elif self.flowmeter_sli2000.initialize_flowmeter() == 2 and self.flowmeter_sls1500.initialize_flowmeter() == 2:
+            flowmeter_status = 2
+        # Per how I've set up sim and real flowmeter imports, they're either both sim or both real. So the only other options are
+            # one initializes and one fails, or both fail. Either way, return fail. 
+        else:
+            flowmeter_status = 0
 
-        return sensor_init_dict
+        self.sensor_status_dict["Flowmeter"] = flowmeter_status
+
+        return self.sensor_status_dict
 
     @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
     @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
@@ -126,8 +136,10 @@ class Sensor():
         
         Shuts down - Abakus particle counter, Laser distance sensor
         """
-        self.abakus.stop_measurement()
-        self.laser.stop_laser()
+        self.sensor_status_dict["Abakus Particle Counter"] = self.abakus.stop_measurement()
+        self.sensor_status_dict["Laser Distance Sensor"] = self.laser.stop_laser()
+
+        return self.sensor_status_dict
     
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def abakus_producer(self, abakus_bus:Bus, delay):

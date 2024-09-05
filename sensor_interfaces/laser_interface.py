@@ -58,6 +58,32 @@ class Dimetix():
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
     
+    def initialize_laser(self, timeout=10):
+        """
+        Queries the laser until we get a valid output. If we can't get a valid reading after a set of attempts,
+        report that initialization failed.
+        
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        """
+        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
+        try:
+            self.start_laser()
+            for i in range(timeout):
+                logger.info(f"Initialization attempt {i+1}/{timeout}")
+                timestamp, data_out = self.query_distance()
+            
+                # Validity check - should be able to convert the output to a float
+                if type(timestamp) == float and float(data_out):
+                    logger.info("Abakus initialized")
+                    return 1
+
+        except Exception as e:
+            logger.info(f"Exception in Abakus initialization: {e}")
+
+        logger.info(f"Abakus initialization failed after {timeout} attempts")
+        return 0
+    
     @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
         self.ser.write(self.LASER_ON)

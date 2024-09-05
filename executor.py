@@ -60,7 +60,7 @@ class Executor():
         
         # Initialize the sensors
         self.sensor = Sensor()
-        self.sensor_init_dict = {}
+        self.sensor_status_dict = {}
 
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
@@ -91,16 +91,18 @@ class Executor():
         """Method to take each sensor through its initialization"""
         ### MIGHT WANT TO GET RID OF THE FLAG HERE, IN CASE YOU NEED TO REDO INITIALIZATION. THINK ABOUT IT
         if self.sensors_shutdown:   # If the sensors are shut down...
-            self.sensor_init_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
+            self.sensor_status_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
             self.sensors_shutdown = False   # ... and set the shutdown flag to False
 
-        return self.sensor_init_dict
+        return self.sensor_status_dict
     
     def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
         if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
-            self.sensor.shutdown_sensors() # ... shut them down
+            self.sensor_status_dict = self.sensor.shutdown_sensors() # ... shut them down
             self.sensors_shutdown = True # ... and set the shutdown flag to True
+
+        return self.sensor_status_dict
     
     @log_on_start(logging.INFO, "Starting data collection", logger=logger)
     def start_data_collection(self):

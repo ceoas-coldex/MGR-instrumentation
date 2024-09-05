@@ -53,6 +53,13 @@ class FlowMeter():
             logger.info(f"Could not connect to serial port {port}")
 
     def initialize_flowmeter(self, timeout=10):
+        """
+        Queries the flowmeter until we get a valid output. If we can't get a valid reading after a set of attempts,
+        report that initialization failed.
+        
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        """
         # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
         try:
             self.start_measurement()
@@ -60,15 +67,16 @@ class FlowMeter():
                 logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query()
             
+                # Validity check - should be getting a list with 9 elements back from the flowmeter
                 if type(timestamp) == float and len(data_out) == 9:
                     logger.info(f"Flowmeter {self.sensor_type} initialized")
-                    return True
+                    return 1
 
         except Exception as e:
             logger.info(f"Exception in Flowmeter {self.sensor_type} initialization: {e}")
 
         logger.info(f"Flowmeter {self.sensor_type} initialization failed after {timeout} attempts")
-        return False
+        return 0
     
     @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):

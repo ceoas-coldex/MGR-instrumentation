@@ -47,6 +47,31 @@ class Picarro():
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
+    def initialize_picarro(self, timeout=10):
+        """
+        Queries the picarro until we get a valid output. If we can't get a valid reading after a set of attempts,
+        report that initialization failed.
+        
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        """
+        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
+        try:
+            for i in range(timeout):
+                logger.info(f"Initialization attempt {i+1}/{timeout}")
+                timestamp, data_out = self.query()
+            
+                # Validity check - should return a list with 5 elements
+                if type(timestamp) == float and len(data_out) == 5:
+                    logger.info("Picarro initialized")
+                    return 1
+
+        except Exception as e:
+            logger.info(f"Exception in Picarro initialization: {e}")
+
+        logger.info(f"Picarro initialization failed after {timeout} attempts")
+        return 0
+    
     def _read_picarro(self):
         """Method to write the command and read back one byte at a time until an end character is reached.
             There might be an existing method that does this, but nether readline() nor read_until() did the trick.

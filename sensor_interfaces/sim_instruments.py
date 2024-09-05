@@ -47,7 +47,7 @@ class Abakus():
 
     @log_on_end(logging.INFO, "Abakus measurements stopped", logger=logger)
     def stop_measurement(self):
-        pass
+        return 0
 
     @log_on_end(logging.INFO, "Abakus queried", logger=logger)
     def query(self):
@@ -155,7 +155,7 @@ class Dimetix():
 
     @log_on_end(logging.INFO, "Dimetix laser turned off", logger=logger)
     def stop_laser(self):
-        pass
+        return 0
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):

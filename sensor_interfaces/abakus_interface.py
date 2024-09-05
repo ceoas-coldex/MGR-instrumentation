@@ -58,24 +58,31 @@ class Abakus():
 
     @log_on_start(logging.INFO, "Initializing Abakus", logger=logger)
     def initialize_abakus(self, timeout=10):
-        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
+        """
+        Queries the Abakus until we get a valid output. If we can't get a valid reading after a set of attempts,
+        report that initialization failed.
+        
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        """
         try:
             self.start_measurement()
             for i in range(timeout):
                 logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query()
                 output = data_out.split() # split into a list
-                bins = [int(i) for i in output[::2]]
+                bins = [int(i) for i in output[::2]] # grab every other element of the list to ID the bins
             
+                # Validity check - should be getting readings for 32 channels
                 if type(timestamp) == float and len(bins) == 32:
                     logger.info("Abakus initialized")
-                    return True
+                    return 1
 
         except Exception as e:
             logger.info(f"Exception in Abakus initialization: {e}")
 
         logger.info(f"Abakus initialization failed after {timeout} attempts")
-        return False
+        return 0
     
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):
@@ -90,6 +97,8 @@ class Abakus():
         self.ser.write(self.INTERRUPT_MEAS)
         self.ser.write(self.STOP_MEAS)
         self.ser.write(self.LEAVE_RC_MODE)
+
+        return 0
 
     @log_on_end(logging.INFO, "Abakus queried", logger=logger)
     def query(self):
