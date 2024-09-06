@@ -200,15 +200,43 @@ class Interpretor():
             Updates - self.laser_data (pd.df, processed_timestamp, distance reading (cm)). 
             Doesn't currently have temperature because I was getting one or the other, and prioritized distance
         """
+        # Split up the data
         try:
             timestamp, data_out = laser_data
-            output_cm = float(data_out) / 100
-            self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
-            self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = output_cm
-        except ValueError as e:
-            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+            distance, temp = data_out
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from laser reading: {e}. Probably not a tuple. Not updating measurement")
+            return
+
+        # Process distance
+        try:
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if distance[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
+            # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.
+            # We need to slice away the first three characters, strip whitespace, and divide by 100 to get distance in cm
+            else:
+                distance = distance[3:].strip()
+                distance_cm = float(distance) / 100.0
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
+        except ValueError as e:
+            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+
+        # Process temperature
+        try:
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if temp[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser temperature: {temp}. Check manual for error code. Not updating measurement")
+            # Otherwise, the laser returns successful temperature as "g0t±aaaaaaaa", where "±a" is the temp in 0.1°C.
+            # We need to slice away the first three characters, strip whitespace, and divide by 10 to get distance in °C
+            else:
+                temp = temp[3:].strip()
+                temp_c = float(temp) / 10.0
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                self.big_data["Laser Distance Sensor"]["Data"]["Temperature (C)"] = temp_c
+        except ValueError as e:
+            logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
 
     ## ------------------- PICARRO ------------------- ##
     def process_picarro_data(self, picarro_model, model):

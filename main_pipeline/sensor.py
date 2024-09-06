@@ -199,8 +199,9 @@ class Sensor():
     def read_laser(self):
         """Method that gets data from the Dimetix laser \n
             Returns - tuple (timestamp [epoch time], data_out [str])"""
-        timestamp, data_out = self.laser.query_distance()
-        return timestamp, data_out
+        timestamp, distance = self.laser.query_distance()
+        timestamp, temp = self.laser.query_temperature()
+        return timestamp, (distance, temp)
     
     ## ------------------- PICARRO ------------------- ##
     def picarro_gas_producer(self, picarro_bus:Bus, delay):

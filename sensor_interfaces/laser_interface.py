@@ -28,7 +28,7 @@ class Dimetix():
 
         self.CRLF = b'\r\n' # "Carriage return line feed", returned at the end of all sensor readings
 
-        self.RET_SUCCESS = b'g0?\r\n' # "Return successful" command from the laser
+        self.RET_SUCCESS = b'g0?\r\n' # "Return successful" command from the laser when turned on or off
 
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -54,6 +54,33 @@ class Dimetix():
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
     
+    def initialize_once(self, query_function, timeout:int, measurement:str):
+        # Try to query and get a valid distance output. If we can't get a valid reading after a set of attempts, report back that initialization failed
+        for i in range(timeout):
+            logger.info(f"Laser {measurement} initialization attempt {i+1}/{timeout}")
+            timestamp, output = query_function()
+            # Validity check: should be able to convert the output to a float
+            init_status = 0
+            try:
+                # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+                if output[0:4] == "g0@E":
+                    init_status = 3
+                # Otherwise, the laser returns successful queries as "g0x±aaaaaaaa", where "x" is specific to the measurement 
+                # and "±a" is the data. If we can slice away the first 3 characters and convert the rest to a float, we're good.
+                elif type(timestamp) == float and float(output[3:]):
+                    logger.info(f"Laser {measurement} initialized")
+                    init_status = 1
+                    return init_status
+                # If something else has gone wrong, we've probably also errored
+                else:
+                    init_status = 3
+            except Exception as e:
+                logger.warning(f"Error in laser {measurement} initialization: {e}")
+                init_status = 3
+
+        logger.warning(f"Laser {measurement} initialization failed after {i+1} attempts")
+        return init_status
+    
     def initialize_laser(self, timeout=10):
         """
         Queries the laser until we get a valid output. If we can't get a valid reading after a set of attempts,
@@ -68,27 +95,20 @@ class Dimetix():
         self.laser_status = self.start_laser() 
         # If we've successfully turned on, try querying
         if self.laser_status == 1:
-            # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed
-            for i in range(timeout+1):
-                logger.info(f"Initialization attempt {i+1}/{timeout}")
-                timestamp, data_out = self.query_distance()
-                # Validity check - should be able to convert the output to a float
-                try: 
-                    if type(timestamp) == float and float(data_out):
-                        logger.info("Laser initialized")
-                        self.laser_status = 1
-                        return 1
-                    else:
-                        self.laser_status = 3
-                except Exception as e:
-                    logger.info(f"Exception in Laser initialization: {e}")
-            
-            logger.info(f"Laser initialization failed after {i} attempts")
+            distance_status = self.initialize_once(self.query_distance, timeout, measurement="distance")
+            temp_status = self.initialize_once(self.query_temperature, timeout, measurement="temperature")
+        
+            # If distance and temperature both initialized, report that we're initialized. Otherwise report that we have an error
+            if distance_status == 1 and temp_status == 1:
+                self.laser_status = 1
+            else:
+                self.laser_status = 3
+
             return self.laser_status
         
-        # Otherwise return 0
+        # Otherwise return
         else:
-            return 0
+            return self.laser_status
 
     def start_laser(self):
         """Method to turn on the laser and make sure we've succeeded"""
@@ -132,44 +152,53 @@ class Dimetix():
         
         print(f"sending serial message took {timestamp-time1} sec")
         print(f"laser reading took {time2-timestamp} sec")
-        print(response)
-        print(response.decode())
+        
         # Decode the response
-        dist_raw = response.decode()
-        output = dist_raw[7:].strip()
-        return timestamp, output
-    
+        response = response.decode()
+
+        return timestamp, response
+
     @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
-        temp_raw = self.ser.read_until(self.CRLF)
+        timestamp = time.time()
+        response = self.ser.read_until(self.CRLF)
         # Decode the response
-        temp_raw = temp_raw.decode()
-        print(temp_raw)
-        # A successful response is "g0t+aaaaaaaa", where "a" is the temp in 0.1°C. We need to extract the temp
-        # value, strip off any white space, and divide by 10 to get the temp in °C. If we can do that, we've gotten
-        # a successful reading
-        try:
-            temp = temp_raw[3:].strip()
-            temp_c = float(temp)/10
-        # Otherwise, something is wrong with the reading. 
-        except ValueError as e:
-            logger.warning(f"Error in reading laser temperature: {temp_raw}. Check manual for the error code")
-            temp_c = 9999 # maybe this should be NAN?
-            self.laser_status = 3
-        
-        logger.info(f"Laser temperature {temp_c}°C")
+        response = response.decode()
+
+        return timestamp, response
             
 if __name__ == "__main__":
     ## ------- DATA PROCESSING FUNCTION FOR TESTING  ------- ##
-    def process_distance(data_out, timestamp):
+    def process_distance(distance, timestamp):
         try:
-            output_cm = float(data_out) / 100
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if distance[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code.")
+            # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.
+            # We need to slice away the first three characters, strip whitespace, and divide by 100 to get distance in cm
+            else:
+                distance = distance[3:].strip()
+                distance_cm = float(distance) / 100.0
+                logger.info(f"Distance measurement {distance_cm}cm, timestamp {timestamp}")
         except ValueError as e:
-            logger.error(f"Error in converting distance reading to float: {e}")
-            output_cm = 0
-        logger.info(f"Laser distance {output_cm}cm")
+            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+
+    
+    def process_temp(temp, timestamp):
+        try:
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if temp[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser temperature: {temp}. Check manual for error code. Not updating measurement")
+            # Otherwise, the laser returns successful temperature as "g0t±aaaaaaaa", where "±a" is the temp in 0.1°C.
+            # We need to slice away the first three characters, strip whitespace, and divide by 10 to get distance in °C
+            else:
+                temp = temp[3:].strip()
+                temp_c = float(temp) / 10.0
+                logger.info(f"Temp measurement {temp_c}°C, timestamp {timestamp}")
+        except ValueError as e:
+            logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
 
     ## ------- UI FOR TESTING  ------- ##
     with open("config/sensor_comms.yaml", 'r') as stream:
@@ -192,7 +221,8 @@ if __name__ == "__main__":
             timestamp, output = my_laser.query_distance()
             process_distance(output, timestamp)
         elif command == "d" or command == "D":
-            my_laser.query_temperature()
+            timestamp, output = my_laser.query_temperature()
+            process_temp(output, timestamp)
         elif command == "x" or command == "X":
             stop = True
         else:
