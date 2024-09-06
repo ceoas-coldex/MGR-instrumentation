@@ -220,6 +220,7 @@ class Interpretor():
         if model == "GAS":
             try:
                 timestamp, data_out = picarro_model
+                logger.info(data_out)
                 # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
 
                 self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
