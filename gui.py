@@ -55,10 +55,11 @@ class GUI():
         self._init_data_buffer(max_buffer_length)
 
         ## --------------------- GUI LAYOUT --------------------- ##
-        # Set up the data grid that will eventually contain sensor status / control, fow now it's empty
+        # Set up the grid that contains sensor status / control
         status_grid_frame = Frame(self.root)
         self.button_callback_dict = button_callback_dict
-        self._init_status_grid(status_grid_frame)
+        self._init_sensor_status_dict() 
+        self._init_sensor_grid(status_grid_frame)
 
         # Set up the notebook for data streaming/live plotting
         data_streaming_frame = Frame(self.root, bg=self.light_blue)
@@ -267,7 +268,7 @@ class GUI():
                 except KeyError:    # ... otherwise log an exception
                     print(f"Error updating the {name} buffer: {e}")
 
-    ## --------------------- "STATUS" GRID --------------------- ##
+    ## --------------------- STATUS GRID --------------------- ##
     
     def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given with the buttons given
@@ -301,8 +302,8 @@ class GUI():
         label=Label(frame, text=title, font=self.bold16, bg='white')
         label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
         
+        # Make the status readout and sensor control buttons
         self._make_status_readout(frame, 1, title, colspan=title_colspan)
-        print(title)
         buttons = self._make_sensor_buttons(frame, title, 2, button_rows, button_cols, button_names, button_callbacks, button_states)
         
         # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
@@ -310,24 +311,34 @@ class GUI():
         
         return buttons
     
-    def create_callback(self, sensor_name, old_callback):
-        return lambda: self._sensor_button_callback(sensor_name, old_callback)
-    
     def _make_sensor_buttons(self, root, sensor_name, row:int, button_rows:int, button_cols:int, button_names, button_callbacks, button_states):
+        """Method to make buttons for the status grid cells
+        
+        Args - 
+            - root: tkinter object
+            - sensor_name: str, name of the sensor. Should match a key in self.sensor_names
+            - row: int, row of the root grid to start the buttons on
+            - button_rows: int, how many rows of buttons
+            - button_cols: int, how many columns of buttons
+            - button_names: list of str, what text we want printed on the buttons
+            - button_callbacks: list of methods, callbacks to be assigned to the buttons
+            - button_states: list of str, initial status of the button (ACTIVE or DISABLED)
+        """
+        
         # Loop through the determined number of rows and columns, creating buttons and assigning them callbacks accordingly
-       
-        print(button_callbacks)
         i = 0
         buttons = []
         try:
             for row in range(row, button_rows+row):
                 for col in range(button_cols):
-                    test = button_callbacks[i]
-                    print(test)
-                    callback = partial(self._sensor_button_callback, sensor_name, test)
-                    button = Button(root, text=button_names[i], command=callback, 
-                                    font=self.bold16, state=button_states[i])
+                    # The callbacks have been passed in from executor.py, and directly control the sensors. Since I also want to log
+                    # the sensor status when the buttons are pushed, wrap up the callback in a functools partial() to give it a little
+                    # more functionality. Check out self._sensor_button_callback for more details
+                    callback = partial(self._sensor_button_callback, sensor_name, button_callbacks[i])
+                    # Create and place the button
+                    button = Button(root, text=button_names[i], command=callback, font=self.bold16, state=button_states[i])
                     button.grid(row=row, column=col, sticky=N, padx=10, pady=10)
+                    # Grab a hold of the button just in case we want to access it later
                     buttons.append(button)
                     i+=1
         except IndexError as e:
@@ -335,71 +346,52 @@ class GUI():
 
         return buttons
     
-    def _update_sensor_status(self):
-        """Method to update the sensor status upon initialization or shutdown"""
-        for name in self.sensor_names:
-            status = self.sensor_status_dict[name]
-            # If we're offline / failed initialization
-            if status == 0:
-                # color = "#D80F0F"
-                color = "#D55E00"
-                text = "OFFLINE"
-            # If we're online / successfully initialized
-            elif status == 1:
-                color = "#619CD2"
-                text = "ONLINE"
-            # If we're disconnected / using shadow hardware
-            elif status == 2:
-                color = "#FFC107"
-                text = "SHADOW HARDWARE"
-            # If we recieved an erroneous reading, make it obvious
-            else:
-                color = "purple"
-                text = "?????"
-
-            label = self.sensor_status_colors[name]
-            label["bg"] = color
-            label["text"] = text
-    
     def _make_status_readout(self, root, row, name, col=0, colspan=1):
-        try:
-            self.sensor_status_dict[name]
-        except KeyError:
-            return
+        """Method to build the sensor status portion of the grid
         
+            Args - 
+                - root: tkinter object
+                - row: int, row of the root grid to position the status readout
+                - name: str, which grid cell (and therefore sensor) this status reading corresponds to
+                - col: int, column of the root grid to position the sensor readout
+                - colspan: int, how many columns of the root grid it should take up
+        """
+        # We only want to report the status of sensors, not any other grid (like the title), so check if the name
+        # we've been given is in our list of sensor names. If it's not, exit
+        if name not in self.sensor_names:
+            return
+        # Make and position a frame at the given column and row - holds the rest of the tkinter objects we're making here
         frame = Frame(root, bg="white")
         frame.grid(column=col, row=row, columnspan=colspan, pady=10, padx=10)
-
+        # Make and position some text
         Label(frame, text="Status:", font=self.bold16, bg="white").grid(column=0, row=0, ipadx=5, ipady=5)
-
-        status_box = Frame(frame)
-        status_box.grid(column=1, row=0)
-
-        status_text = Label(status_box, font=self.bold16, bg="white")
-        status_text.grid(column=0, row=0, ipadx=5, ipady=5)
-
+        # Make and position some more text, but hold onto this one - we want to be able to change its color later to 
+        # represent sensor status
+        status_text = Label(frame, font=self.bold16, bg="white")
+        status_text.grid(column=1, row=0, ipadx=5, ipady=5)
         self.sensor_status_colors[name] = status_text
 
-    def _init_status_grid(self, root:Frame):
-        """Makes a grid of all the sensors. Currently a placeholder for anything we 
-        want to display about the instruments, like adding control or their status"""
-        # Initialize an empty sensor status dictionary, will be filled when the sensor initialization callback is triggered
+    def _init_sensor_status_dict(self):
+        """Method to initialize an empty sensor status dictionary based on the sensors in self.sensor_names,
+        will be filled in when a sensor button callback is triggered or self._update_sensor_status is called"""
         self.sensor_status_dict = {}
         self.sensor_status_colors = {}
         for name in self.sensor_names:
             self.sensor_status_dict.update({name:0})
             self.sensor_status_colors.update({name:None})
+    
+    def _init_sensor_grid(self, root:Frame):
+        """Makes a grid of all the sensors, with buttons to initialize/shutdown sensors, display sensor status, 
+        and start/stop data collection."""
         # Grab the number of rows we should have in our grid given the number of sensors in self.sensor_names 
-        # (this is a little unnecessary currently, since I decided one column looked better)
+        # (this is a little unnecessary currently, since I decided one column looked best)
         num_rows, num_cols = self._find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
-            
         # Make the title row
         title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols,
                                                     button_names=["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"],
                                                     button_callbacks=[self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data],
                                                     button_states=[ACTIVE, ACTIVE, DISABLED, DISABLED],
                                                    )
-
         # Make a list of all buttons that are initially disabled, but should be enabled after sensors have been initialized
         self.buttons_to_enable_after_init = [button for button in title_buttons[2:]]
         # And vice versa with shutdown
@@ -411,7 +403,8 @@ class GUI():
                 for col in range(num_cols):
                     # Grab the sensor name
                     sensor_name = self.sensor_names[i]
-                    # Grab the button names and callbacks for each sensor
+                    # Grab the button names and callbacks for each sensor (self.button_callback_dict was passed into this GUI when
+                    # the object was instantiated, and holds methods for initializing and stopping the sensors)
                     callback_dict = self.button_callback_dict[sensor_name]
                     button_names = list(callback_dict.keys())
                     button_callbacks = list(callback_dict.values())
@@ -423,11 +416,9 @@ class GUI():
                                                           button_callbacks=button_callbacks,
                                                           button_states=[ACTIVE]*len(button_names),
                                                         )
-                    # Add the buttons to the list of those we enable after sensor initialization
-                    for button in buttons:
-                        self.buttons_to_enable_after_init.append(button)
-
                     i += 1
+            # Now that we've made a status grid for each sensor, update them
+            self._update_sensor_status()
         except IndexError as e:
             print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}, that's fine")
 
@@ -456,7 +447,7 @@ class GUI():
     def _on_sensor_init(self):
         """Callback for the 'Initialize Sensors' button. Enables the other buttons and tries to call the *sensor init* method
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
-        #
+        # Enable other buttons
         for button in self.buttons_to_enable_after_init:
             button["state"] = NORMAL
         # Try to call the method that's the value of the "All Sensors":"Initialize All Sensors" key of the dictionary
@@ -513,14 +504,24 @@ class GUI():
         except TypeError as e:
             print(f"No callback found to start data collection. Probably not run from the executor script.")
 
-    def _sensor_button_callback(self, sensor_name, sensor_command):
-        status = sensor_command()
-        if sensor_name in self.sensor_names:
-            self.sensor_status_dict[sensor_name] = status
+    def _sensor_button_callback(self, button_name, button_command):
+        """
+        General callback to expand upon the methods we were passed in button_callback_dict when this class was 
+        instantiated. It runs the method, then checks to see if it corresponds to a valid sensor. If it does, the 
+        method will have returned a status value, so this updates the sensor status accordingly.
+        
+            Args -
+                - button_name (str, should be a key in self.button_callback_dict)
+                - button_command (method, should be a value in self.button_callback_dict)
+        """
+        # Activate the callback. If it's a callback for an individual sensor button (e.g "Start Laser"), the callback will
+        # return the status of the sensor. This is either 0 (offline), 1 (online and initialized), 2 (disconnected/simulated hardware)
+        status = button_command()
+        # We only want to do something with that result if it is actually an individual sensor button, so check for that here
+        if button_name in self.sensor_names:
+            # Update the dictionary that holds sensor status and refresh the GUI
+            self.sensor_status_dict[button_name] = status
             self._update_sensor_status()
-
-
-
 
     ##  --------------------- HELPER FUNCTIONS --------------------- ##
 
@@ -537,6 +538,35 @@ class GUI():
         num_rows = round(num_rows)
 
         return num_rows, num_cols
+    
+    def _update_sensor_status(self):
+        """Method to update the sensor status upon initialization or shutdown. Uses the values stored in
+        self.sensor_status_dict to set the color and text of each sensor status widget."""
+        # Loop through the sensors and grab their status from the sensor status dictionary
+        for name in self.sensor_names:
+            status = self.sensor_status_dict[name]
+            # If we're offline / failed initialization
+            if status == 0:
+                # color = "#D80F0F"
+                color = "#D55E00"
+                text = "OFFLINE"
+            # If we're online / successfully initialized
+            elif status == 1:
+                color = "#619CD2"
+                text = "ONLINE"
+            # If we're disconnected / using shadow hardware
+            elif status == 2:
+                color = "#FFC107"
+                text = "SHADOW HARDWARE"
+            # If we recieved an erroneous reading, make it obvious
+            else:
+                color = "purple"
+                text = "?????"
+
+            # Update the sensor status accordingly
+            label = self.sensor_status_colors[name] # This is a dictionary of tkinter objects
+            label["bg"] = color
+            label["text"] = text
     
     ##  --------------------- EXECUTABLES --------------------- ##
     
