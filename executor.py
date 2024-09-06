@@ -33,7 +33,7 @@ logger.addHandler(ch)
 from gui import GUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
-from main_pipeline.interpretor import Interpretor
+from main_pipeline.interpreter import Interpretor
 from main_pipeline.display import Display
 
 class Executor():

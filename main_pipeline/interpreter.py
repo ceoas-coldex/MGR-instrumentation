@@ -100,13 +100,17 @@ class Interpretor():
             if len(bins) == abakus_bin_num: 
                 # logger.info("Abakus data good, recieved 32 channels.")
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
-                self.big_data["Abakus Particle Counter"]["Data"]["bins"] = bins
-                self.big_data["Abakus Particle Counter"]["Data"]["counts/bin"] = counts
-                self.big_data["Abakus Particle Counter"]["Data"]["total counts"] = int(np.sum(counts))
+                self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
+                self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
+                self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
+
+                logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
             else:
-                raise Exception("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
-        except Exception as e:
-            logger.warning(f"Encountered exception in processing Abakus: {e}. Not updating measurement")
+                logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
+        except KeyError as e:
+            logger.warning(f"Error in saving Abakus data to big dict: {e}. Not updating measurement")
+        except TypeError as e:
+            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")
             
     ## ------------------- FLOWMETER ------------------- ##
     def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
@@ -248,7 +252,7 @@ class Interpretor():
         if model == "GAS":
             try:
                 timestamp, data_out = picarro_model
-                logger.info(data_out)
+                logger.debug(data_out)
                 # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
 
                 self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
