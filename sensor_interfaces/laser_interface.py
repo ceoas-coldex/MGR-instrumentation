@@ -23,15 +23,16 @@ class Dimetix():
         self.DIST = b's0g\r\n' # Triggers one distance measurement. Each new command cancels an active measurement
         self.TEMP = b's0t\r\n' # Triggers one temperature measurement
 
-        self.CONT_DIST = b's0h\r\n' # Triggers continuous distance measurements until STOP_CLR
-        self.TRACKING_BUFFER_ON = b"s0f+500\r\n" # Sets tracking buffer with 500ms delay
-        self.READ_BUFF = b's0q\r\n' # Gets the most recent measuremt of the buffer
-
+        self.SET_COM_SETTINGS = b's0br+07\r\n' # Sets communication settings to "7" (correct baud, parity, etc. Check docs for more)
         self.READ_ERROR = b's0re\r\n' # Read error stack
 
         self.CRLF = b'\r\n' # "Carriage return line feed", returned at the end of all sensor readings
 
+        self.RET_SUCCESS = b'g0?\r\n' # "Return successful" command from the laser
+
         self.initialize_pyserial(serial_port, baud_rate)
+
+        self.laser_status = 0 # flag to keep track internally of what the laser is doing: 0 (off), 1 (on), 3 (error)
 
     def __del__(self) -> None:
         """Deconstructor, turns off the laser and closes the serial port when this object is destroyed"""
@@ -61,35 +62,63 @@ class Dimetix():
         The initialization methods return one of three values: 
         0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
         """
-        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
-        try:
-            self.start_laser()
-            for i in range(timeout):
+        # Set communication settings
+        self.ser.write(self.SET_COM_SETTINGS) 
+        # Start the laser and grab the result - 0 (off), 1 (on)
+        self.laser_status = self.start_laser() 
+        # If we've successfully turned on, try querying
+        if self.laser_status == 1:
+            # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed
+            for i in range(timeout+1):
                 logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query_distance()
-            
                 # Validity check - should be able to convert the output to a float
-                if type(timestamp) == float and float(data_out):
-                    logger.info("Abakus initialized")
-                    return 1
+                try: 
+                    if type(timestamp) == float and float(data_out):
+                        logger.info("Laser initialized")
+                        self.laser_status = 1
+                        return 1
+                    else:
+                        self.laser_status = 3
+                except Exception as e:
+                    logger.info(f"Exception in Laser initialization: {e}")
+            
+            logger.info(f"Laser initialization failed after {i} attempts")
+            return self.laser_status
+        
+        # Otherwise return 0
+        else:
+            return 0
 
-        except Exception as e:
-            logger.info(f"Exception in Abakus initialization: {e}")
-
-        logger.info(f"Abakus initialization failed after {timeout} attempts")
-        return 0
-    
-    @log_on_end(logging.INFO, "Dimetix laser turned on", logger=logger)
     def start_laser(self):
+        """Method to turn on the laser and make sure we've succeeded"""
+        # Send the message and get the response
         self.ser.write(self.LASER_ON)
-        print(self.ser.read_until(self.CRLF))
+        response = self.ser.read_until(self.CRLF)
+        # If we've recieved anything other than a successful laser message, log that and return that we're still off
+        if response != self.RET_SUCCESS:
+            logger.warn(f"Error returned from starting Dimetix laser: {response}. Check the manual for the error code")
+        # Otherwise, log and return that we're on
+        else:
+            logger.info("Dimetix laser turned on")
+            self.laser_status = 1 # our status has changed now
+        
+        return self.laser_status
 
-    @log_on_end(logging.INFO, "Dimetix laser turned off", logger=logger)
     def stop_laser(self):
+        """Method to turn off the laser and make sure we've succeeded"""
+        # Send the message and get the response
         self.ser.write(self.STOP_CLR)
-        print(self.ser.read_until(self.CRLF))
+        response = self.ser.read_until(self.CRLF)
+        # If we've recieved anything other than a successful laser message, log and return that we've failed
+        if response != self.RET_SUCCESS:
+            logger.warn(f"Error returned from stopping Dimetix laser: {response}. Check the manual for the error code")
+        # Otherwise, log and return that we're successfully off
+        else:
+            logger.info("Dimetix laser turned off")
+            self.laser_status = 0 # our status has changed now
 
-        return 0
+        return self.laser_status
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
@@ -114,17 +143,22 @@ class Dimetix():
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
-        # temp_raw = self.ser.readline()
         temp_raw = self.ser.read_until(self.CRLF)
+        # Decode the response
         temp_raw = temp_raw.decode()
         print(temp_raw)
-        # Decode the response
+        # A successful response is "g0t+aaaaaaaa", where "a" is the temp in 0.1°C. We need to extract the temp
+        # value, strip off any white space, and divide by 10 to get the temp in °C. If we can do that, we've gotten
+        # a successful reading
         try:
-            temp_raw = temp_raw[3:].strip()
-            temp_c = float(temp_raw)/10
+            temp = temp_raw[3:].strip()
+            temp_c = float(temp)/10
+        # Otherwise, something is wrong with the reading. 
         except ValueError as e:
-            logger.error(f"Error in converting temp reading to float: {e}")
+            logger.warning(f"Error in reading laser temperature: {temp_raw}. Check manual for the error code")
             temp_c = 9999 # maybe this should be NAN?
+            self.laser_status = 3
+        
         logger.info(f"Laser temperature {temp_c}°C")
             
 if __name__ == "__main__":
@@ -140,15 +174,17 @@ if __name__ == "__main__":
     ## ------- UI FOR TESTING  ------- ##
     with open("config/sensor_comms.yaml", 'r') as stream:
         comms_config = yaml.safe_load(stream)
-    port = comms_config["Abakus Particle Counter"]["serial port"]
-    baud = comms_config["Abakus Particle Counter"]["baud rate"]
+    port = comms_config["Laser Distance Sensor"]["serial port"]
+    baud = comms_config["Laser Distance Sensor"]["baud rate"]
     my_laser = Dimetix(serial_port=port, baud_rate=baud)
 
     print("Testing serial communication\n")
     stop = False
     while not stop:
-        command = input("a: Start measurement, b: Stop measurement, c: Query dist, d: Query temp, x: Quit \n")
-        if command == "a" or command == "A":
+        command = input("z: Initialize laser, a: Start laser, b: Stop laser, c: Query dist, d: Query temp, x: Quit \n")
+        if command == "z" or command == "Z":
+            my_laser.initialize_laser()
+        elif command == "a" or command == "A":
             my_laser.start_laser()
         elif command == "b" or command == "B":
             my_laser.stop_laser()
