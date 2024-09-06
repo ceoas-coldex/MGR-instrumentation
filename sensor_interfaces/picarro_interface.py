@@ -4,14 +4,23 @@
 # must be properly configured (Picarro Utilities > Setup Tool > Port Manager) to enable the interface, see README for full docs
 #
 # Ali Jones
-# Last updated 8/23/24
+# Last updated 9/4/24
 # -------------
 
 import serial
 from serial import SerialException
 import time
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
+
+logger = logging.getLogger(__name__) # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
@@ -33,19 +42,43 @@ class Picarro():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=5)
-            logging.info(f"Connected to serial port {port} with baud {baud}")
+            self.ser = serial.Serial(port, baud, timeout=1)
+            logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
-            logging.info(f"Could not connect to serial port {port}")
+            logger.info(f"Could not connect to serial port {port}")
 
-    def _execute_command(self, command):
+    def initialize_picarro(self, timeout=10):
+        """
+        Queries the picarro until we get a valid output. If we can't get a valid reading after a set of attempts,
+        report that initialization failed.
+        
+        The initialization methods return one of three values: 
+        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        """
+        # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
+        try:
+            for i in range(timeout):
+                logger.info(f"Initialization attempt {i+1}/{timeout}")
+                timestamp, data_out = self.query()
+            
+                # Validity check - should return a list with 5 elements
+                if type(timestamp) == float and len(data_out) == 5:
+                    logger.info("Picarro initialized")
+                    return 1
+
+        except Exception as e:
+            logger.info(f"Exception in Picarro initialization: {e}")
+
+        logger.info(f"Picarro initialization failed after {timeout} attempts")
+        return 0
+    
+    def _read_picarro(self):
         """Method to write the command and read back one byte at a time until an end character is reached.
             There might be an existing method that does this, but nether readline() nor read_until() did the trick.
             
             Inputs - command (byte str with appropriate terminator)\n
             Returns - buf (byte str)"""
-        # Write the command
-        self.ser.write(command)
+        
         # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>50 loops, check
             # if that's sufficient)
         buf = b''
@@ -62,7 +95,7 @@ class Picarro():
         else:
             return buf
 
-    @log_on_end(logging.INFO, "Picarro queried")
+    @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
         """
         Queries the picarro to get the most recent measurement and timestamp. The first element of the query 
@@ -71,7 +104,9 @@ class Picarro():
 
             Returns - timestamp (float, epoch time), output (str)
         """
-        output = self._execute_command(self.QUERY).decode()
+        # Write the command
+        self.ser.write(command)
+        output = self._read_picarro(self.QUERY).decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")

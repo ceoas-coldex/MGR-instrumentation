@@ -3,7 +3,6 @@
 # -------------
 
 import time
-import numpy as np
 
 from gui import GUI
 from main_pipeline.bus import Bus
@@ -31,7 +30,7 @@ class Display():
         interp_data = interpretor_bus.read()
         # logger.info(f"Data: \n{interp_data}")
         try:
-            self.gui.update_buffer(interp_data, use_noise=True)
+            self.gui.update_buffer(interp_data, use_noise=False)
         except TypeError:
             pass
         time.sleep(delay)

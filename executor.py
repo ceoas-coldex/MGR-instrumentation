@@ -8,25 +8,15 @@
 # read /and/ write data. These generally take in sensor data, do some processing, and republish the processed data.
 # 
 # Ali Jones
-# Last updated 8/23/24
+# Last updated 9/5/24
 # -------------
 
-import numpy as np
 import time
 import concurrent.futures
 
-import pandas as pd
 import keyboard
 import os, sys
 
-from gui import GUI
-from tkinter.font import Font, BOLD
-
-import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import yaml
 
 import logging
@@ -40,6 +30,7 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
+from gui import GUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpretor import Interpretor
@@ -48,11 +39,11 @@ from main_pipeline.display import Display
 class Executor():
     """Class that handles passing the data around on all the busses."""
     def __init__(self) -> None:
-        # Set some intitial flags: don't start data collection, do start the GUI and the sensors
+        # Set some intitial flags: don't start data collection or sensors, do start the GUI
         self.data_shutdown = True
+        self.sensors_shutdown = True
         self.gui_shutdown = False
-        self.sensors_shutdown = False
-
+        
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
             big_data_dict = yaml.safe_load(stream)
@@ -60,6 +51,7 @@ class Executor():
         
         # Initialize the sensors
         self.sensor = Sensor()
+        self.sensor_status_dict = {}
 
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
@@ -82,26 +74,35 @@ class Executor():
         self.interp_delay = 0.1
         self.display_delay = 0.5
 
-    @log_on_start(logging.INFO, "Initializing sensors", logger=logger)
-    @log_on_end(logging.INFO, "Finished initializing sensors", logger=logger)
-    def _init_sensors(self):
-        pass
+    def __del__(self) -> None:
+        """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
+        self._exit_all()
+
+    def init_sensors(self):
+        """Method to take each sensor through its initialization"""
+        ### MIGHT WANT TO GET RID OF THE FLAG HERE, IN CASE YOU NEED TO REDO INITIALIZATION. THINK ABOUT IT
+        # if self.sensors_shutdown:   # If the sensors are shut down...
+        self.sensor_status_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
+        self.sensors_shutdown = False   # ... and set the shutdown flag to False
+
+        return self.sensor_status_dict
     
-    @log_on_start(logging.INFO, "Shutting down sensors", logger=logger)
-    @log_on_end(logging.INFO, "Finished shutting down sensors", logger=logger)
-    def _clean_sensor_shutdown(self):
+    def clean_sensor_shutdown(self):
         """Method to cleanly shut down sensors, if they're active"""
-        # If we haven't shut down the sensors yet, do that
-        if not self.sensors_shutdown:
-            self.sensor.shutdown_sensors()
-        self.sensors_shutdown = True
+        # if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
+        self.sensor_status_dict = self.sensor.shutdown_sensors() # ... shut them down
+        self.sensors_shutdown = True # ... and set the shutdown flag to True
+
+        return self.sensor_status_dict
     
     @log_on_start(logging.INFO, "Starting data collection", logger=logger)
-    def _start_data_collection(self):
+    def start_data_collection(self):
+        """Method that sets the flag to enter data collection mode"""
         self.data_shutdown = False
 
-    @log_on_start(logging.INFO, "Exiting data collection", logger=logger)
-    def _stop_data_collection(self):
+    @log_on_start(logging.INFO, "Stopping data collection", logger=logger)
+    def stop_data_collection(self):
+        """Method that sets the flag to exit data collection mode"""
         # If data collection hasn't already been shut down, shut it down
         if not self.data_shutdown:
             # Set the data_shutdown flag to True
@@ -113,42 +114,36 @@ class Executor():
 
     def _exit_all(self):
         """Method to stop break GUI and data collection loops, called by the 'alt+q' hotkey"""
-        self._clean_sensor_shutdown()
-        # Set the GUI shutdown flag to True
-        self.gui_shutdown = True
-        self._stop_data_collection()
-        
-    def __del__(self) -> None:
-        """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
-        self._exit_all()
+        self.clean_sensor_shutdown()
+        self.gui_shutdown = True # Set the GUI shutdown flag to True
+        self.stop_data_collection()
     
     def _set_gui_buttons(self):
         """Method that builds up a dictionary to be passed into the GUI. This dictionary holds the methods that start/stop/initialize
         sensor measurements, and will be used for button callbacks in the GUI."""
 
-        # Make a dictionary to hold the methods we're going to use as button callbacks. Sometimes
-        # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to None
+        # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
+        # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to empty dicts
         button_dict = {}
         for name in self.sensor_names:
-            button_dict.update({name:{"start":None, "stop":None}})
+            button_dict.update({name:{}})
 
-        # Add the start/stop measurement methods for the Abakus and the Laser Distance Sensor
-        button_dict["Abakus Particle Counter"]["start"] = self.sensor.abakus.start_measurement
-        button_dict["Abakus Particle Counter"]["stop"] = self.sensor.abakus.stop_measurement
-        button_dict["Laser Distance Sensor"]["start"] = self.sensor.laser.start_laser
-        button_dict["Laser Distance Sensor"]["stop"] = self.sensor.laser.stop_laser
+        # Add the start/stop measurement methods for the instruments that have those features: 
+        # The Abakus, Flowmeters, and Laser Distance Sensor
+        button_dict["Abakus Particle Counter"] = {"Start Abakus": self.sensor.abakus.initialize_abakus,
+                                                "Stop Abakus": self.sensor.abakus.stop_measurement}
 
-        # The flowmeter is really two instruments in one, so add another layer of dictionaries to capture that. The flowmeters
-        # also don't have a "stop measurement" command as far as I can tell
-        button_dict.update({"Flowmeter":{"start":{"sli2000":self.sensor.flowmeter_sli2000.start_measurement,
-                                                  "sls1500":self.sensor.flowmeter_sls1500.start_measurement},
-                                         "stop":{"sli2000":None, "sls1500":None}}})
+        button_dict["Laser Distance Sensor"] = {"Start Laser": self.sensor.laser.initialize_laser,
+                                                "Stop Laser": self.sensor.laser.stop_laser}
+        
+        button_dict["Flowmeter"] = {"Start SLI2000": self.sensor.flowmeter_sli2000.initialize_flowmeter,
+                                        "Start SLS1500": self.sensor.flowmeter_sls1500.initialize_flowmeter}
         
         # Finally, add a few general elements to the dictionary - one for initializing all sensors (self._init_sensors), 
         # one for starting (self._start_data_collection) and stopping (self._stop_data_collection) data collection 
         # and one for shutting down all sensors (self._clean_sensor_shutdown)
-        button_dict.update({"All Sensors":{"start":self._init_sensors, "stop":self._clean_sensor_shutdown}})
-        button_dict.update({"Data Collection":{"start":self._start_data_collection, "stop":self._stop_data_collection}})
+        button_dict.update({"All Sensors":{"Initialize All Sensors":self.init_sensors, "Shutdown All Sensors":self.clean_sensor_shutdown}})
+        button_dict.update({"Data Collection":{"Start Data Collection":self.start_data_collection, "Stop Data Collection":self.stop_data_collection}})
         
         return button_dict
         
@@ -167,10 +162,10 @@ class Executor():
                 time.sleep(0.1)
             except KeyboardInterrupt:
                 try:
-                    self._clean_sensor_shutdown()
+                    self.clean_sensor_shutdown()
                     sys.exit(130)
                 except SystemExit:
-                    self._clean_sensor_shutdown()
+                    self.clean_sensor_shutdown()
                     os._exit(130)
             # Note - once we enter ↓this loop, we no longer access ↑that loop. The nested loop doesn't mean we're calling gui.run() twice
             while not self.data_shutdown:
@@ -197,13 +192,13 @@ class Executor():
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
-                # prioritize shut down the sensors cleanly and killing the program
+                # prioritize shutting down the sensors cleanly and killing the program
                 except KeyboardInterrupt:
                     try:
-                        self._clean_sensor_shutdown()
+                        self.clean_sensor_shutdown()
                         sys.exit(130)
                     except SystemExit:
-                        self._clean_sensor_shutdown()
+                        self.clean_sensor_shutdown()
                         os._exit(130)
             
 if __name__ == "__main__":
