@@ -10,7 +10,7 @@ Laser Distance Sensor:
   serial port: "COM6"
   baud rate: 19200
 Abakus Particle Counter:
-  serial port: "COM8" #COM4 for lab, but that's allocated on my laptop
+  serial port: "COM4" #COM4 for lab, but that's allocated on my laptop
   baud rate: 38400
 Flowmeter SLI2000 (Green):
   serial port: "COM3"
