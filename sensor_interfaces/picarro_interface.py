@@ -79,16 +79,17 @@ class Picarro():
             Inputs - command (byte str with appropriate terminator)\n
             Returns - buf (byte str)"""
         
-        # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>50 loops, check
-            # if that's sufficient)
+        # Read the command into a buffer until we get the closing character ("\r" in binary) or we timeout (>70 loops, 
+        # the picarro usually returns 51 bytes so that should be sufficient)
         buf = b''
         char = b''
         timeout = 0
-        while char != b'\r' and timeout <= 50:
+        while char != b'\r' and timeout <= 70:
             char = self.ser.read(1)
             buf = buf + char
             timeout += 1
 
+        logger.info(f"read {timeout} bytes")
         # Check if there was an error (stored in the first 4 chars of the buffer)
         if buf[:4] == "ERR:":
             raise Exception(f"Error in Picarro communication: {buf}")
@@ -105,8 +106,8 @@ class Picarro():
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
-        self.ser.write(command)
-        output = self._read_picarro(self.QUERY).decode()
+        self.ser.write(self.QUERY)
+        output = self._read_picarro().decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")
@@ -129,6 +130,7 @@ if __name__ == "__main__":
             sample_time = output[0] # the time at which the measurement was sampled, probably different than timestamp
             print("Measurement time: ", sample_time)
             print("My timestamp: ", timestamp)
+            print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp)))
             for i, value in enumerate(output[1:]): # the gas concentrations
                 print(f"{gasses[i]} Concentration: ", value)
         elif command == "x" or command == "X":
