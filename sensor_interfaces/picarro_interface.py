@@ -25,8 +25,8 @@ logger.addHandler(ch)
 class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
         # Picarro communication codes
-        self.QUERY = str("_Meas_GetConcEx\r").encode() # gets latest measurement and timestamp
-        self.STATUS = str("_Instr_GetStatus\r").encode() # gets instrument status
+        self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
+        self.STATUS = b"_Instr_GetStatus\r\n" # gets instrument status
 
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -42,8 +42,11 @@ class Picarro():
         Inputs - port (str, serial port), baud (int, baud rate)
         """
         try:
-            self.ser = serial.Serial(port, baud, timeout=1)
+            self.ser = serial.Serial(port, baud, timeout=0.5)
             logger.info(f"Connected to serial port {port} with baud {baud}")
+            print(self.ser.writable())
+            print(self.ser.readable())
+            print(self.ser.BAUDRATES)
         except SerialException:
             logger.info(f"Could not connect to serial port {port}")
 
@@ -84,9 +87,10 @@ class Picarro():
         buf = b''
         char = b''
         timeout = 0
-        while char != b'\r' and timeout <= 70:
+        while char != b'\r' and timeout <= 5:
             char = self.ser.read(1)
             buf = buf + char
+            print(buf)
             timeout += 1
 
         logger.info(f"read {timeout} bytes")
@@ -100,13 +104,15 @@ class Picarro():
     def query(self):
         """
         Queries the picarro to get the most recent measurement and timestamp. The first element of the query 
-        is the time, and the rest are gas concentrations. As the Picarro is set up currently, they're
-        in the order ["CO2", "CH4", "CO", "H2O"]
+        is the time, and the rest are gas or isotope concentrations. As the Picarro is set up currently, they're
+        in the order ["CO2"; "CH4"; "CO"; "H2O"] for gas and [] for water. Either way, we can split them along ";"
 
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
         self.ser.write(self.QUERY)
+        print("queried")
+        print(self.ser.readline())
         output = self._read_picarro().decode()
         timestamp = time.time()
         # Split along the semicolons
@@ -121,6 +127,8 @@ if __name__ == "__main__":
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
     gasses = ["CO2", "CH4", "CO", "H2O"]
 
+    isotopes = []
+
     ## ------- UNIT TESTING  ------- ##
     stop = False
     while not stop:
@@ -132,7 +140,7 @@ if __name__ == "__main__":
             print("My timestamp: ", timestamp)
             print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp)))
             for i, value in enumerate(output[1:]): # the gas concentrations
-                print(f"{gasses[i]} Concentration: ", value)
+                print(f"data: ", value)
         elif command == "x" or command == "X":
             stop = True
         else:

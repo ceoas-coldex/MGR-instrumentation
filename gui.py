@@ -27,21 +27,25 @@ class GUI():
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("Sample MGR GUI")
-        self.width = 1700
+        self.width = 2200
         # self.height = 1000
         self.height = 1200
         self.root.geometry(f"{self.width}x{self.height}")
         self.root.resizable(False, False)
         
-        self.grid_width = 150 # px? computer screen units?
+        
+        self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
 
         # Make some default colors
         self.light_blue = "#579cba"
         self.dark_blue = "#083054"
+        self.root.configure(bg=self.light_blue)
 
         # Make some default fonts
+        self.bold20 = Font(self.root, family="Helvetica", size=20, weight=BOLD)
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
+        self.norm16 = Font(self.root, family="Helvetica", size=16)
         self.bold12 = Font(self.root, family="Helvetica", size=12, weight=BOLD)
 
         # Set some styles
@@ -56,7 +60,7 @@ class GUI():
 
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the grid that contains sensor status / control
-        status_grid_frame = Frame(self.root)
+        status_grid_frame = Frame(self.root, bg='white')
         self.button_callback_dict = button_callback_dict
         self._init_sensor_status_dict() 
         self._init_sensor_grid(status_grid_frame)
@@ -67,16 +71,20 @@ class GUI():
         self._init_data_streaming_figs()
         self._init_data_streaming_canvases()
         self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
+
+        # Set up a frame for data logging
+        logging_frame = Frame(self.root, bg=self.dark_blue)
+        self._init_logging_frame(logging_frame)
         
         # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
-        # logging_frame = Frame(self.root, bg="white")
         # b1 = self.pack_button(logging_frame, callback=None, loc='bottom', default=DISABLED)
         # b2 = self.pack_button(logging_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
 
         # pack the frames
-        status_grid_frame.pack(side="left", expand=True, fill=BOTH)
+        logging_frame.pack(side="right", expand=True, fill=BOTH, padx=5)
+        status_grid_frame.pack(side="left", expand=True, fill=BOTH, padx=5)
         data_streaming_frame.pack(side="right", expand=True, fill=BOTH)
-        # logging_frame.pack(side="bottom", expand=False, fill=X, anchor=S)
+        
         
     ## --------------------- LAYOUT --------------------- ##
     
@@ -270,7 +278,7 @@ class GUI():
 
     ## --------------------- STATUS GRID --------------------- ##
     
-    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, colspan=1, rowspan=1, color='white'):
+    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, font, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given with the buttons given
 
             Args - 
@@ -299,7 +307,7 @@ class GUI():
             title_colspan = 1
 
         # Set a title for the cell
-        label=Label(frame, text=title, font=self.bold16, bg='white')
+        label=Label(frame, text=title, font=font, bg='white')
         label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
         
         # Make the status readout and sensor control buttons
@@ -387,7 +395,7 @@ class GUI():
         # (this is a little unnecessary currently, since I decided one column looked best)
         num_rows, num_cols = self._find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
         # Make the title row
-        title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols,
+        title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols, font=self.bold20,
                                                     button_names=["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"],
                                                     button_callbacks=[self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data],
                                                     button_states=[ACTIVE, ACTIVE, DISABLED, DISABLED],
@@ -412,6 +420,7 @@ class GUI():
                     buttons = self._make_status_grid_cell(root, col=col, row=row,
                                                           colspan=num_cols,
                                                           title=sensor_name,
+                                                          font=self.bold16,
                                                           button_names=button_names,
                                                           button_callbacks=button_callbacks,
                                                           button_states=[ACTIVE]*len(button_names),
@@ -426,6 +435,26 @@ class GUI():
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
         # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
+    ## --------------------- LOGGING FRAME --------------------- ##
+    def _init_logging_frame(self, root):
+
+        Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
+
+        entry_text = ["Core Length (units)", "Core ID", "Timestamp (HH:MM:SS)"]
+        entries = []
+
+        for i, text in enumerate(entry_text):
+            Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
+            entry = Entry(root, font=self.norm16, width=15)
+            entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
+            entries.append(entry)
+
+        # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
+        root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
+
+        
+
+
     ## --------------------- CALLBACKS --------------------- ##
     
     def toggle_button(self, button: Button):
@@ -575,7 +604,11 @@ class GUI():
         self.root.destroy()
 
     def run(self):
-        self.root.update()
+        try:
+            self.root.update()
+            return True
+        except:
+            return False
 
 
 if __name__ == "__main__":
@@ -612,6 +645,8 @@ if __name__ == "__main__":
     
     app = GUI(button_callback_dict=button_dict)
 
-    while True:
-        app.run()
+    running = True
+    while running:
+        running = app.run()
         time.sleep(0.1)
+

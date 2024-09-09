@@ -1,19 +1,14 @@
 import tkinter as tk
+from tkinter import *
 
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.frame = tk.Frame(self)
-        self.frame.pack()
-        self.button = tk.Button(self.frame, text="click me",
-                             command=lambda a=1, b=2, c=3: 
-                                self.rand_func(a, b, c))
-        self.button.pack()
-        self.frame.bind("<Return>", 
-                        lambda event, a=10, b=20, c=30: 
-                            self.rand_func(a, b, c))
-        # make sure the frame has focus so the binding will work
-        self.frame.focus_set()
+
+        L1 = tk.Label(self, text="User Name")
+        L1.pack(side = LEFT)
+        E1 = Entry(self, bd =5)
+        E1.pack(side = RIGHT)
 
     def rand_func(self, a, b, c):
         print("self:", self, "a:", a, "b:", b, "c:", c)
