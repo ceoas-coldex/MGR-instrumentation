@@ -2,6 +2,9 @@ import numpy as np
 import time
 from collections import deque
 import yaml
+import pandas as pd
+import csv
+import os
 
 from functools import partial
 
@@ -32,8 +35,7 @@ class GUI():
         self.height = 1200
         self.root.geometry(f"{self.width}x{self.height}")
         self.root.resizable(False, False)
-        
-        
+
         self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
 
@@ -55,7 +57,10 @@ class GUI():
         s.configure('TNotebook', background=self.light_blue)
         s.layout("TNotebook", []) # get rid of the notebook border
 
-        ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
+        ##  --------------------- INSTRUMENTS & DATA MANAGEMENT --------------------- ##
+        self.data_dir = "data"
+        self._init_data_saving()
+
         max_buffer_length = 500 # how long we let the buffers get, helps with memory
         self._init_data_buffer(max_buffer_length)
 
@@ -75,34 +80,61 @@ class GUI():
 
         # Set up a frame for data logging
         logging_frame = Frame(self.root, bg=self.dark_blue)
-        self._init_logging_frame(logging_frame)
-        
-        # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
-        # b1 = self.pack_button(logging_frame, callback=None, loc='bottom', default=DISABLED)
-        # b2 = self.pack_button(logging_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
+        self._init_logging_panel(logging_frame)
 
         # pack the frames
         logging_frame.pack(side="right", expand=True, fill=BOTH, padx=5)
         status_grid_frame.pack(side="left", expand=True, fill=BOTH, padx=5)
         data_streaming_frame.pack(side="right", expand=True, fill=BOTH)
-        
-        
-    ## --------------------- LAYOUT --------------------- ##
-    
-    def pack_button(self, root, callback, loc:str="right", text="I'm a button :]", default=NORMAL):
-        """General method that creates and packs a button inside the given root"""
-        button = Button(root, text=text, command=callback, state=default)
-        button.pack(side=loc)
-        return button
   
-    ## --------------------- DATA STREAMING DISPLAY --------------------- ##
+    ## --------------------- DATA MANAGEMENT --------------------- ##
 
-    def _init_data_buffer(self, max_buffer_length):
+    def _config_sensor_data(self):
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
         with open("config/sensor_data.yaml", 'r') as stream:
             self.big_data_dict = yaml.safe_load(stream)
 
+    def _config_logging_notes(self):
+        # Read in the logging config file to initialize the note parameters. 
+        # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
+        with open("config/logging_data.yaml", 'r') as stream:
+            self.notes_dict = yaml.safe_load(stream)
+
+    def _init_csv_file(self, filepath, to_write):
+        # Check if we can read the file
+        try:
+            with open(filepath, 'r'):
+                pass
+        # If the file doesn't exist, create it and write in whatever we've passed as row titles
+        except FileNotFoundError:
+            with open(filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(to_write)
+    
+    def _init_data_saving(self):
+        """Method to check if today's data files have been created, and if not, creates them"""
+        # Grab the current time in YYYY-MM-DD HH:MM:SS format
+        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        # Grab only the date part of the time
+        day = datetime.split(" ")[0]
+        # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
+        self.main_filepath = f"{self.data_dir}\\{day}.csv"
+        self.notes_filepath = f"{self.data_dir}\\{day}_notes.csv"
+
+        # Read in the configuration files for the sensor and logging data
+        self._config_sensor_data()
+        self._config_logging_notes()
+        # Initialize csv files for data saving, pass in the dictionary keys as row titles
+        self._init_csv_file(self.main_filepath, self.big_data_dict.keys()) # This one will need to be changed - multiple readings per sensors
+        
+        notes_titles = list(self.notes_dict.keys())
+        notes_titles.insert(0, "Internal Timestamp (epoch)")
+        self._init_csv_file(self.notes_filepath, notes_titles)
+    
+    ## --------------------- DATA STREAMING DISPLAY --------------------- ##
+
+    def _init_data_buffer(self, max_buffer_length):
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
@@ -437,7 +469,7 @@ class GUI():
         # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
     ## --------------------- LOGGING FRAME --------------------- ##
-    def _init_logging_frame(self, root):
+    def _init_logging_panel(self, root):
 
         Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
 
@@ -458,13 +490,6 @@ class GUI():
 
 
     ## --------------------- CALLBACKS --------------------- ##
-    
-    def toggle_button(self, button: Button):
-        """Method that toggles a button between its 'normal' state and its 'disabled' state"""
-        if button["state"] == NORMAL:
-            button["state"] = DISABLED
-        else:
-            button["state"] = NORMAL
 
     def _on_mousewheel(self, event):
         """Method that scrolls the widget that currently has focus, assuming that widget has this callback bound to it"""
@@ -480,7 +505,7 @@ class GUI():
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         # Enable other buttons
         for button in self.buttons_to_enable_after_init:
-            button["state"] = NORMAL
+            self.toggle_button(button)
         # Try to call the method that's the value of the "All Sensors":"Initialize All Sensors" key of the dictionary
         try:
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Initialize All Sensors"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
@@ -499,7 +524,7 @@ class GUI():
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         # Disable other buttons
         for button in self.buttons_to_disable_after_shutdown:
-            button["state"] = DISABLED
+            self.toggle_button(button)
         # Try to call the method that's the value of the "All Sensors":"Shutdown All Sensors" key of the dictionary
         try:
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Shutdown All Sensors"]() # Yep, that again.
@@ -555,14 +580,30 @@ class GUI():
             self._update_sensor_status()
 
     def _on_log(self):
+        """Callback for the "log" button (self.init_logging_panel), logs the text entries to a csv"""
+        # Loops through the elements in self.logging_entries (tkinter Text objects), reads and clears each element
+        timestamp = time.time()
+        notes = [timestamp]
         for entry in self.logging_entries:
+            # Makes sure we're only working with tkinter Text objects, and also conveniently
+            # tells VSCode the type of the list element
             if type(entry) == Text:
-                log_val = entry.get('1.0', 'end')
+                log_val = entry.get('1.0', 'end').strip()
                 entry.delete('1.0', 'end')
-                print(log_val)
+                notes.append(log_val)
+
+        print(notes)
+        self._save_data_notes(notes)
     
     ##  --------------------- HELPER FUNCTIONS --------------------- ##
 
+    def toggle_button(self, button: Button):
+        """Method that toggles a button between its 'normal' state and its 'disabled' state"""
+        if button["state"] == NORMAL:
+            button["state"] = DISABLED
+        else:
+            button["state"] = NORMAL
+    
     def _find_grid_dims(self, num_elements, num_cols):
         """Method to determine the number of rows we need in a grid given the number of elements and the number of columns
         
@@ -605,6 +646,25 @@ class GUI():
             label = self.sensor_status_colors[name] # This is a dictionary of tkinter objects
             label["bg"] = color
             label["text"] = text
+    
+    def _save_sensor_data(self):
+        pass
+
+    def _save_data_notes(self, notes):
+        """Method to save the logged notes to a csv file"""
+        # Check if a file exists at the given path and write the notes
+        try:
+            with open(self.notes_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(notes)
+        # If it doesn't, something went wrong with initialization - remake it here
+        except FileNotFoundError:
+            with open(self.notes_filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                notes_titles = list(self.notes_dict.keys())
+                notes_titles.insert(0, "Internal Timestamp (epoch)")
+                writer.writerow(notes_titles) # give it a title
+                writer.writerow(notes) # write the notes
     
     ##  --------------------- EXECUTABLES --------------------- ##
     
