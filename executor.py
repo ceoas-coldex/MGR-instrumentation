@@ -13,6 +13,7 @@
 
 import time
 import concurrent.futures
+import multiprocessing
 
 import keyboard
 import os, sys
@@ -158,8 +159,8 @@ class Executor():
         # the sensors, processing the data, and displaying the final result.
         while not self.gui_shutdown:
             try:
-                self.gui.run()
-                time.sleep(0.1)
+                self.gui.run(0.1)
+                # time.sleep(0.1)
             except KeyboardInterrupt:
                 try:
                     self.clean_sensor_shutdown()
@@ -169,10 +170,11 @@ class Executor():
                     os._exit(130)
             # Note - once we enter ↓this loop, we no longer access ↑that loop. The nested loop doesn't mean we're calling gui.run() twice
             while not self.data_shutdown:
-                self.gui.run()
+                self.gui.run(0)
                 try:
                     with concurrent.futures.ThreadPoolExecutor() as self.executor:
                         eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+
                         eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
                         eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
                         eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
@@ -183,12 +185,12 @@ class Executor():
 
                         eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
 
-                    eAbakus.result()
-                    eFlowMeterSLI2000.result()
-                    eFlowMeterSLS1500.result()
-                    eLaser.result()
-                    ePicarroGas.result()
-                    eInterpretor.result()
+                    # eAbakus.result()
+                    # eFlowMeterSLI2000.result()
+                    # eFlowMeterSLS1500.result()
+                    # eLaser.result()
+                    # ePicarroGas.result()
+                    # eInterpretor.result()
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -

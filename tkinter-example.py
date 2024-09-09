@@ -1,18 +1,17 @@
-import tkinter as tk
-from tkinter import *
 
-class SampleApp(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-
-        L1 = tk.Label(self, text="User Name")
-        L1.pack(side = LEFT)
-        E1 = Entry(self, bd =5)
-        E1.pack(side = RIGHT)
-
-    def rand_func(self, a, b, c):
-        print("self:", self, "a:", a, "b:", b, "c:", c)
-        print (a+b+c)
-
-app = SampleApp()
-app.mainloop()
+from concurrent.futures import ProcessPoolExecutor
+from time import sleep
+ 
+values = [3,4,5,6]
+def cube(x):
+    print(f'Cube of {x}:{x*x*x}')
+ 
+ 
+if __name__ == '__main__':
+    result =[]
+    with ProcessPoolExecutor(max_workers=5) as exe:
+        exe.submit(cube,2)
+         
+        # Maps the method 'cube' with a iterable
+        result = exe.map(cube,values)
+     

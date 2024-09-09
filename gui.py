@@ -33,8 +33,12 @@ class GUI():
         self.width = 2200
         # self.height = 1000
         self.height = 1200
-        self.root.geometry(f"{self.width}x{self.height}")
-        self.root.resizable(False, False)
+
+        # Make the window fullscreen and locked to the desktop size
+        self.root.attributes('-fullscreen', True) # no toolbar / close button
+        self.root.overrideredirect(True) # can't close the window
+        self.root.state('zoomed') # full size
+        self.root.resizable(False, False) # unable to be resized
 
         self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
@@ -672,9 +676,10 @@ class GUI():
         self.root.mainloop()
         self.root.destroy()
 
-    def run(self):
+    def run(self, delay):
         try:
             self.root.update()
+            time.sleep(delay)
             return True
         except:
             return False
@@ -716,6 +721,4 @@ if __name__ == "__main__":
 
     running = True
     while running:
-        running = app.run()
-        time.sleep(0.1)
-
+        running = app.run(0.1)
