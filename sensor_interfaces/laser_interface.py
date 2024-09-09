@@ -142,6 +142,9 @@ class Dimetix():
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
+        """Method to get the most recent distance measurement from the laser sensor.
+        
+            Returns - timestamp (float, epoch time), response (str)"""
         # Get the most recent measurement from the laser sensor
         time1 = time.time()
         self.ser.write(self.DIST)
@@ -173,7 +176,7 @@ if __name__ == "__main__":
     ## ------- DATA PROCESSING FUNCTION FOR TESTING  ------- ##
     def process_distance(distance, timestamp):
         try:
-            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            # The laser formats error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
             if distance[0:4] == "g0@E":
                 logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code.")
             # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.

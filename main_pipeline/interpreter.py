@@ -104,7 +104,7 @@ class Interpretor():
                 self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
                 self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
 
-                logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
+                # logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
             else:
                 logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except KeyError as e:

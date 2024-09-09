@@ -38,6 +38,7 @@ class GUI():
         self.grid_height = 50
 
         # Make some default colors
+        self.button_blue = "#71b5cc"
         self.light_blue = "#579cba"
         self.dark_blue = "#083054"
         self.root.configure(bg=self.light_blue)
@@ -440,19 +441,20 @@ class GUI():
 
         Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
 
-        entry_text = ["Core Length (units)", "Core ID", "Timestamp (HH:MM:SS)"]
-        entries = []
+        entry_text = ["Core Length (units)", "Core ID", "Timestamp (HH:MM:SS)", "Notes"]
+        entry_heights = [1, 1, 1, 24]
+        self.logging_entries = []
 
         for i, text in enumerate(entry_text):
             Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
-            entry = Entry(root, font=self.norm16, width=15)
+            entry = Text(root, font=self.norm16, height=entry_heights[i], width=15)
             entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
-            entries.append(entry)
+            self.logging_entries.append(entry)
 
+        Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
+        
         # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
         root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
-
-        
 
 
     ## --------------------- CALLBACKS --------------------- ##
@@ -552,6 +554,13 @@ class GUI():
             self.sensor_status_dict[button_name] = status
             self._update_sensor_status()
 
+    def _on_log(self):
+        for entry in self.logging_entries:
+            if type(entry) == Text:
+                log_val = entry.get('1.0', 'end')
+                entry.delete('1.0', 'end')
+                print(log_val)
+    
     ##  --------------------- HELPER FUNCTIONS --------------------- ##
 
     def _find_grid_dims(self, num_elements, num_cols):
