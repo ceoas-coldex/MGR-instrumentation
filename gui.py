@@ -72,7 +72,7 @@ class GUI():
 
         max_buffer_length = 500 # How long we let the buffers get, helps with memory
         self._init_data_buffer(max_buffer_length)
-        self.default_plot_length = 60 # Length of time (in sec) we plot before you have to scroll back to see it
+        self.default_plot_length = 70 # Length of time (in sec?) we plot before you have to scroll back to see it
 
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the grid that contains sensor status / control
@@ -280,10 +280,11 @@ class GUI():
         # Finally, loop through all the axes and plot the updated data
         for i, ax in enumerate(axes):
             ax.plot(xdata[i], ydata[i], '.--')
+            # Cap the xbound so our plots don't get unreadable as we plot over long timespans
+            xbound = ax.get_xbound()
+            if xbound[1] - xbound[0] > self.default_plot_length:
+                ax.set_xbound(lower = xbound[1] - self.default_plot_length, upper=xdata[i][-1])
 
-            # Set the xbound to either 
-            ax.set_xbound(lower = max(ax.get_xbound()[0], xdata[i][-1]-self.default_plot_length))
-    
     def get_data(self, sensor_name):
         """Method that combs through the data buffer dictionary and pulls out the timestamp and channels corresponding
         to the given sensor_name.
