@@ -4,9 +4,6 @@ from collections import deque
 import yaml
 import pandas as pd
 import csv
-import os
-
-import concurrent.futures
 
 from functools import partial
 
@@ -20,9 +17,6 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-from blit import BlitManager
 
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
@@ -38,7 +32,6 @@ class GUI():
         self.height = 1200
 
         # Make the window fullscreen and locked to the desktop size
-        # self.root.attributes('-fullscreen', True) # no toolbar / close button
         self.root.overrideredirect(True) # can't close the window
         self.root.state('zoomed') # fullscreen
         self.root.resizable(False, False) # unable to be resized

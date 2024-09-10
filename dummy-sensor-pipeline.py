@@ -1,16 +1,13 @@
+# -------------
+# This class is a barebones example to show how the sensor>interpretor>display pipeline of the main script functions
+# -------------
+
 import numpy as np
 import time
 import concurrent.futures
 from readerwriterlock import rwlock
 import sys, os
 
-import matplotlib
-matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-
-from gui import GUI
 
 class Bus():
     """Class that sets up a bus to pass information around with read/write locking"""
@@ -60,25 +57,13 @@ class DummyInterpretor():
             pass
 
 class DummyDisplay():
-    """Class that reads the interpreted data and displays it on a barebones GUI"""
+    """Class that reads the interpreted data and prints it"""
     def __init__(self) -> None:
-
-        sensors = ["Picarro Gas", "Picarro Water", "Laser Distance Sensor", "Abakus Particle Counter",
-                        "Flowmeter SLI2000 (Green)", "Flowmeter SLS1500 (Black)", "Bronkhurst Pressure", "Melthead"]
-        start_callbacks = [None]*len(sensors)
-        stop_callbacks = [None]*len(sensors)
-
-        self.gui = GUI(sensors, start_callbacks, stop_callbacks)
-        self.x = 0
-
-        self.ani1 = FuncAnimation(self.gui.f1, self.gui.animate, interval=1000, cache_frame_data=False)
-        self.ani2 = FuncAnimation(self.gui.f2, self.gui.animate2, interval=1000, cache_frame_data=False)
+        pass
 
     def display_consumer(self, interpretor_bus:Bus, delay):
         interp_data = interpretor_bus.read()
-        self.gui.update_data1(self.x, interp_data[0])
-        self.gui.update_data2(self.x, interp_data[1])
-        self.x += 0.1
+        print(interp_data)
         
 class DummyExecutor():
     """Class that handles passing the data around on all the busses. Still needs a clean shutdown."""
@@ -96,7 +81,6 @@ class DummyExecutor():
         self.sensor_delay = 0.1
         self.interp_delay = 0.1
         self.display_delay = 0.1
-
         
     def execute(self):
         """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
@@ -104,7 +88,6 @@ class DummyExecutor():
 
         while True:
             try:
-                self.display.gui.run()
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                     eSensor = executor.submit(self.sensor.sensor_producer, self.sensor_bus, self.sensor_delay)
                     eInterpreter = executor.submit(self.interpretor.doubler_consumer_producer, self.sensor_bus, 
