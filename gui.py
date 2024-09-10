@@ -18,10 +18,11 @@ from tkinter.font import Font, BOLD
 
 import matplotlib
 matplotlib.use('TkAgg')
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+from blit import BlitManager
 
 class GUI():
     """This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
@@ -37,10 +38,12 @@ class GUI():
         self.height = 1200
 
         # Make the window fullscreen and locked to the desktop size
-        self.root.attributes('-fullscreen', True) # no toolbar / close button
+        # self.root.attributes('-fullscreen', True) # no toolbar / close button
         self.root.overrideredirect(True) # can't close the window
-        self.root.state('zoomed') # full size
+        self.root.state('zoomed') # fullscreen
         self.root.resizable(False, False) # unable to be resized
+
+        # self.root.geometry(f"{self.width}x{self.height}")
 
         self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
@@ -67,8 +70,9 @@ class GUI():
         self.data_dir = "data"
         self._init_data_saving()
 
-        max_buffer_length = 500 # how long we let the buffers get, helps with memory
+        max_buffer_length = 500 # How long we let the buffers get, helps with memory
         self._init_data_buffer(max_buffer_length)
+        self.default_plot_length = 60 # Length of time (in sec) we plot before you have to scroll back to see it
 
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the grid that contains sensor status / control
@@ -148,10 +152,10 @@ class GUI():
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
-            self.big_data_dict[name]["Time (epoch)"] = deque([], maxlen=max_buffer_length)
+            self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=max_buffer_length)
             channels = self.big_data_dict[name]["Data"].keys()
             for channel in channels:
-                self.big_data_dict[name]["Data"][channel] = deque([], maxlen=max_buffer_length)
+                self.big_data_dict[name]["Data"][channel] = deque([0.0], maxlen=max_buffer_length)
 
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
@@ -186,19 +190,23 @@ class GUI():
             # We want to make a subplot for each data channel per sensor, so grab those
             channels = list(self.big_data_dict[name]["Data"].keys())
             num_subplots = len(channels)
-            # Create a figure and size it based on the number of subplots
+            # Create a figure and size it based on the number of channels
             fig = plt.figure(name, figsize=(10.5,4*num_subplots))
+            
+            # Create a subplot for each channel, and label the axes
             self.data_streaming_figs.update({name:fig})
+            _, _, labels = self.get_data(name)
             for i in range(0, num_subplots):
                 ax = fig.add_subplot(num_subplots,1,i+1)
-                ax.plot([], [])
+                ax.set_xlabel("Time (epoch)")
+                ax.set_ylabel(labels[i])
 
             # A little cheesy - futz with the whitespace by adjusting the position of the top edge of the subplots 
             # (as a fraction of the figure height) based on how many subplots we have. For 1 subplot put it at 90% of the figure height, 
             # for 4 subplots put it at 97%, and interpolate between the two otherwise
             plt.subplots_adjust(top=np.interp(num_subplots, [1,4], [0.9,0.97]))
 
-    def _one_canvas(self, f, root, vbar:Scrollbar) -> FigureCanvasTkAgg:
+    def _one_canvas(self, f, root, vbar:Scrollbar):
         """General method to set up a canvas in a given root. I'm eventually using each canvas
         to hold a matplotlib figure for live plotting
         
@@ -215,13 +223,18 @@ class GUI():
                                       scrollregion=(0,0,0,scroll_region), # set the size of the scroll region in screen units
                                       yscrollcommand=vbar.set, # link the scrollbar to the canvas
                                       )
-        canvas.get_tk_widget().grid(row=0, column=0)
+        canvas.get_tk_widget().grid(row=1, column=0)
 
         # Set the scrollbar command and position
         vbar.config(command=canvas.get_tk_widget().yview)
-        vbar.grid(row=0, column=1, sticky=N+S)
+        vbar.grid(row=1, column=1, sticky=N+S)
         # Bind the scrollbar to the mousewheel
         canvas.get_tk_widget().bind("<MouseWheel>", self._on_mousewheel)
+
+        toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
+        toolbar.grid(row=0, column=0, pady=(10,0))
+
+        root.config(bg='white')
 
     def _init_data_streaming_canvases(self):
         """
@@ -242,30 +255,34 @@ class GUI():
             self._one_canvas(fig, window, vbar)
         
     def _update_plots(self):
-        ## Do some loops so we can simplify the actual plotting loop as much as possible 
-        # Loop through the dictionaries to pull out the plot axes
-        axes = []
-        for fig in self.data_streaming_figs.values():
-            for axis in fig.get_axes():
-                axes.append(axis)
-
-        # Loop through the sensors and grab data from their updated buffers
+        ## Do some loops so we can simplify the actual plotting loop as much as possible (& make all plots update
+        # near simultaneously)    
+        # 1. Loop through the sensors and grab both data from their updated buffers and their corresponding matplotlib figure
         xdata = []
         ydata = []
-        labels = []
+        axes = []
+        figs = []
         for name in self.sensor_names:
-            x, ys, label = self.get_data(name)
+            fig = self.data_streaming_figs[name]
+            figs.append(fig)
+            axs = fig.get_axes()
+            x, ys, _ = self.get_data(name)
+            # 2. Loop through the number of data channels present for this sensor (i.e how many deques are present in ys)
             for i, y in enumerate(ys):
                 xdata.append(x)
                 ydata.append(y)
-                labels.append(label[i])     
+                axes.append(axs[i])
+                # 3. Loop through and remove the "artists" in the current figure axis - this clears the axis without having
+                # to call axis.clear(), so preserves axis labels and, more importantly for plot zooming, axis limits and bounds
+                for artist in axs[i].lines:
+                    artist.remove()
 
-        # Loop through the axes and plot the updated data
+        # Finally, loop through all the axes and plot the updated data
         for i, ax in enumerate(axes):
-            ax.clear()
             ax.plot(xdata[i], ydata[i], '.--')
-            ax.set_ylabel(labels[i])
-            ax.set_xlabel("Time (epoch)")
+
+            # Set the xbound to either 
+            ax.set_xbound(lower = max(ax.get_xbound()[0], xdata[i][-1]-self.default_plot_length))
     
     def get_data(self, sensor_name):
         """Method that combs through the data buffer dictionary and pulls out the timestamp and channels corresponding
