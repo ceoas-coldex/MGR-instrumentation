@@ -87,7 +87,7 @@ class Sensor():
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
             big_data_dict = yaml.safe_load(stream)
-        self.sensor_names = big_data_dict.keys()
+        self.sensor_names = list(big_data_dict.keys())
 
         # Create a dictionary to store the status of each sensor (0: offline, 1: online, 2: disconnected/simulated)
         self.sensor_status_dict = {}
@@ -199,8 +199,9 @@ class Sensor():
     def read_laser(self):
         """Method that gets data from the Dimetix laser \n
             Returns - tuple (timestamp [epoch time], data_out [str])"""
-        timestamp, data_out = self.laser.query_distance()
-        return timestamp, data_out
+        timestamp, distance = self.laser.query_distance()
+        timestamp, temp = self.laser.query_temperature()
+        return timestamp, (distance, temp)
     
     ## ------------------- PICARRO ------------------- ##
     def picarro_gas_producer(self, picarro_bus:Bus, delay):

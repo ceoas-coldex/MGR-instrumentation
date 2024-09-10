@@ -22,6 +22,9 @@ Abakus Particle Counter:
   Time (epoch): []
   Data:
     Total Counts: []
+  Other:
+    Bins: []
+    Counts: []
 Flowmeter:
   Time (epoch): []
   Data:

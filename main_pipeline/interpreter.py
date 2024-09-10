@@ -100,13 +100,17 @@ class Interpretor():
             if len(bins) == abakus_bin_num: 
                 # logger.info("Abakus data good, recieved 32 channels.")
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
-                self.big_data["Abakus Particle Counter"]["Data"]["bins"] = bins
-                self.big_data["Abakus Particle Counter"]["Data"]["counts/bin"] = counts
-                self.big_data["Abakus Particle Counter"]["Data"]["total counts"] = int(np.sum(counts))
+                self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
+                self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
+                self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
+
+                # logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
             else:
-                raise Exception("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
-        except Exception as e:
-            logger.warning(f"Encountered exception in processing Abakus: {e}. Not updating measurement")
+                logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
+        except KeyError as e:
+            logger.warning(f"Error in saving Abakus data to big dict: {e}. Not updating measurement")
+        except TypeError as e:
+            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")
             
     ## ------------------- FLOWMETER ------------------- ##
     def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
@@ -200,15 +204,43 @@ class Interpretor():
             Updates - self.laser_data (pd.df, processed_timestamp, distance reading (cm)). 
             Doesn't currently have temperature because I was getting one or the other, and prioritized distance
         """
+        # Split up the data
         try:
             timestamp, data_out = laser_data
-            output_cm = float(data_out) / 100
-            self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
-            self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = output_cm
-        except ValueError as e:
-            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+            distance, temp = data_out
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from laser reading: {e}. Probably not a tuple. Not updating measurement")
+            return
+
+        # Process distance
+        try:
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if distance[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
+            # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.
+            # We need to slice away the first three characters, strip whitespace, and divide by 100 to get distance in cm
+            else:
+                distance = distance[3:].strip()
+                distance_cm = float(distance) / 100.0
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
+        except ValueError as e:
+            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+
+        # Process temperature
+        try:
+            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+            if temp[0:4] == "g0@E":
+                logger.warning(f"Recieved error message from laser temperature: {temp}. Check manual for error code. Not updating measurement")
+            # Otherwise, the laser returns successful temperature as "g0t±aaaaaaaa", where "±a" is the temp in 0.1°C.
+            # We need to slice away the first three characters, strip whitespace, and divide by 10 to get distance in °C
+            else:
+                temp = temp[3:].strip()
+                temp_c = float(temp) / 10.0
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                self.big_data["Laser Distance Sensor"]["Data"]["Temperature (C)"] = temp_c
+        except ValueError as e:
+            logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
 
     ## ------------------- PICARRO ------------------- ##
     def process_picarro_data(self, picarro_model, model):
@@ -220,6 +252,7 @@ class Interpretor():
         if model == "GAS":
             try:
                 timestamp, data_out = picarro_model
+                # logger.debug(data_out)
                 # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
 
                 self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp

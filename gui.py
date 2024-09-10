@@ -2,6 +2,11 @@ import numpy as np
 import time
 from collections import deque
 import yaml
+import pandas as pd
+import csv
+import os
+
+import concurrent.futures
 
 from functools import partial
 
@@ -26,22 +31,30 @@ class GUI():
         ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
         self.root = tk.Tk()
-        self.root.title("Sample MGR GUI")
-        self.width = 1700
+        self.root.title("MGR GUI")
+        self.width = 2200
         # self.height = 1000
         self.height = 1200
-        self.root.geometry(f"{self.width}x{self.height}")
-        self.root.resizable(False, False)
-        
-        self.grid_width = 150 # px? computer screen units?
+
+        # Make the window fullscreen and locked to the desktop size
+        self.root.attributes('-fullscreen', True) # no toolbar / close button
+        self.root.overrideredirect(True) # can't close the window
+        self.root.state('zoomed') # full size
+        self.root.resizable(False, False) # unable to be resized
+
+        self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
 
         # Make some default colors
+        self.button_blue = "#71b5cc"
         self.light_blue = "#579cba"
         self.dark_blue = "#083054"
+        self.root.configure(bg=self.light_blue)
 
         # Make some default fonts
+        self.bold20 = Font(self.root, family="Helvetica", size=20, weight=BOLD)
         self.bold16 = Font(self.root, family="Helvetica", size=16, weight=BOLD)
+        self.norm16 = Font(self.root, family="Helvetica", size=16)
         self.bold12 = Font(self.root, family="Helvetica", size=12, weight=BOLD)
 
         # Set some styles
@@ -50,13 +63,16 @@ class GUI():
         s.configure('TNotebook', background=self.light_blue)
         s.layout("TNotebook", []) # get rid of the notebook border
 
-        ##  --------------------- INSTRUMENTS & DATA BUFFER MANAGEMENT --------------------- ##
+        ##  --------------------- INSTRUMENTS & DATA MANAGEMENT --------------------- ##
+        self.data_dir = "data"
+        self._init_data_saving()
+
         max_buffer_length = 500 # how long we let the buffers get, helps with memory
         self._init_data_buffer(max_buffer_length)
 
         ## --------------------- GUI LAYOUT --------------------- ##
         # Set up the grid that contains sensor status / control
-        status_grid_frame = Frame(self.root)
+        status_grid_frame = Frame(self.root, bg='white')
         self.button_callback_dict = button_callback_dict
         self._init_sensor_status_dict() 
         self._init_sensor_grid(status_grid_frame)
@@ -66,34 +82,69 @@ class GUI():
         self._init_data_streaming_notebook(data_streaming_frame)
         self._init_data_streaming_figs()
         self._init_data_streaming_canvases()
-        self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
-        
-        # make some buttons! One toggles the other on/off, example of how to disable buttons and do callbacks with arguments
-        # logging_frame = Frame(self.root, bg="white")
-        # b1 = self.pack_button(logging_frame, callback=None, loc='bottom', default=DISABLED)
-        # b2 = self.pack_button(logging_frame, callback=lambda: self.toggle_button(b1), loc='bottom', text="I toggle the other button")
+        plt.ion() # Now that we've created the figures, turn on interactive matplotlib plotting
+
+        # Set up a frame for data logging
+        logging_frame = Frame(self.root, bg=self.dark_blue)
+        self._init_logging_panel(logging_frame)
 
         # pack the frames
-        status_grid_frame.pack(side="left", expand=True, fill=BOTH)
+        logging_frame.pack(side="right", expand=True, fill=BOTH, padx=5)
+        status_grid_frame.pack(side="left", expand=True, fill=BOTH, padx=5)
         data_streaming_frame.pack(side="right", expand=True, fill=BOTH)
-        # logging_frame.pack(side="bottom", expand=False, fill=X, anchor=S)
-        
-    ## --------------------- LAYOUT --------------------- ##
-    
-    def pack_button(self, root, callback, loc:str="right", text="I'm a button :]", default=NORMAL):
-        """General method that creates and packs a button inside the given root"""
-        button = Button(root, text=text, command=callback, state=default)
-        button.pack(side=loc)
-        return button
   
-    ## --------------------- DATA STREAMING DISPLAY --------------------- ##
+    ## --------------------- DATA MANAGEMENT --------------------- ##
 
-    def _init_data_buffer(self, max_buffer_length):
+    def _config_sensor_data(self):
+        """Method to read in and save the sensor_data configuration yaml file"""
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
         with open("config/sensor_data.yaml", 'r') as stream:
             self.big_data_dict = yaml.safe_load(stream)
 
+    def _config_logging_notes(self):
+        """Method to read in and save the logging/notes configuration yaml file"""
+        # Read in the logging config file to initialize the note parameters. 
+        # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
+        with open("config/logging_data.yaml", 'r') as stream:
+            self.notes_dict = yaml.safe_load(stream)
+
+    def _init_csv_file(self, filepath, to_write):
+        # Check if we can read the file
+        try:
+            with open(filepath, 'r'):
+                pass
+        # If the file doesn't exist, create it and write in whatever we've passed as row titles
+        except FileNotFoundError:
+            with open(filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(to_write)
+    
+    def _init_data_saving(self):
+        """Method to check if today's data files have been created, and if not, creates them
+        
+        Should maybe live in executor?"""
+        # Grab the current time in YYYY-MM-DD HH:MM:SS format
+        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        # Grab only the date part of the time
+        day = datetime.split(" ")[0]
+        # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
+        self.main_filepath = f"{self.data_dir}\\{day}.csv"
+        self.notes_filepath = f"{self.data_dir}\\{day}_notes.csv"
+
+        # Read in the configuration files for the sensor and logging data
+        self._config_sensor_data()
+        self._config_logging_notes()
+        # Initialize csv files for data saving, pass in the dictionary keys as row titles
+        self._init_csv_file(self.main_filepath, self.big_data_dict.keys()) # This one will need to be changed - multiple readings per sensors
+        
+        notes_titles = list(self.notes_dict.keys())
+        notes_titles.insert(0, "Internal Timestamp (epoch)")
+        self._init_csv_file(self.notes_filepath, notes_titles)
+    
+    ## --------------------- DATA STREAMING DISPLAY --------------------- ##
+
+    def _init_data_buffer(self, max_buffer_length):
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
@@ -138,10 +189,10 @@ class GUI():
             # Create a figure and size it based on the number of subplots
             fig = plt.figure(name, figsize=(10.5,4*num_subplots))
             self.data_streaming_figs.update({name:fig})
-            # Add the desired number of subplots to each figure
             for i in range(0, num_subplots):
-                fig.add_subplot(num_subplots,1,i+1)
-            
+                ax = fig.add_subplot(num_subplots,1,i+1)
+                ax.plot([], [])
+
             # A little cheesy - futz with the whitespace by adjusting the position of the top edge of the subplots 
             # (as a fraction of the figure height) based on how many subplots we have. For 1 subplot put it at 90% of the figure height, 
             # for 4 subplots put it at 97%, and interpolate between the two otherwise
@@ -189,37 +240,32 @@ class GUI():
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
-
-    def _init_data_streaming_animations(self, animation_delay=1000):
-        """
-        Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
         
-            Args - animation_delay (int, number of ms to delay between live plot updates) \n
-            Updates - self.streaming_anis (dict, holds the FuncAnimations)
-        """
-        self.data_streaming_anis = {}
+    def _update_plots(self):
+        ## Do some loops so we can simplify the actual plotting loop as much as possible 
+        # Loop through the dictionaries to pull out the plot axes
+        axes = []
+        for fig in self.data_streaming_figs.values():
+            for axis in fig.get_axes():
+                axes.append(axis)
+
+        # Loop through the sensors and grab data from their updated buffers
+        xdata = []
+        ydata = []
+        labels = []
         for name in self.sensor_names:
-            # For each sensor, grab the corresponding matplotlib figure and axis.
-            fig = self.data_streaming_figs[name]
-            axes = fig.get_axes()
-            # Use the figure and axis to create a FuncAnimation
-            ani = FuncAnimation(fig, self._animate_general, fargs=(name, axes), interval=animation_delay, cache_frame_data=False)
-            # Save the animation to make sure it doesn't vanish when this function ends
-            self.data_streaming_anis.update({name:ani})
+            x, ys, label = self.get_data(name)
+            for i, y in enumerate(ys):
+                xdata.append(x)
+                ydata.append(y)
+                labels.append(label[i])     
 
-    def _animate_general(self, i, sensor_name:str, axes:list):
-        """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer and plots it on the given axis
-        
-            Args - sensor_name (str, must correspond to a key in self.big_data_dict), axis (list of Axes objects)"""
-        xdata, ydata, ylabels = self.get_data(sensor_name)
-        # ydata is a list of lists, one for each channel of the sensor. Iterate through and plot them on the corresponding subplot
-        for i, y in enumerate(ydata):
-            axes[i].clear()
-            axes[i].plot(xdata, y, '.--')
-            axes[i].set_xlabel("Time (epoch)")
-            axes[i].set_ylabel(ylabels[i])
-        axes[0].set_title(sensor_name)
-        # plt.tight_layout(pad=0.25)
+        # Loop through the axes and plot the updated data
+        for i, ax in enumerate(axes):
+            ax.clear()
+            ax.plot(xdata[i], ydata[i], '.--')
+            ax.set_ylabel(labels[i])
+            ax.set_xlabel("Time (epoch)")
     
     def get_data(self, sensor_name):
         """Method that combs through the data buffer dictionary and pulls out the timestamp and channels corresponding
@@ -270,7 +316,7 @@ class GUI():
 
     ## --------------------- STATUS GRID --------------------- ##
     
-    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, colspan=1, rowspan=1, color='white'):
+    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, font, colspan=1, rowspan=1, color='white'):
         """Method to make one frame of the grid at the position given with the buttons given
 
             Args - 
@@ -299,7 +345,7 @@ class GUI():
             title_colspan = 1
 
         # Set a title for the cell
-        label=Label(frame, text=title, font=self.bold16, bg='white')
+        label=Label(frame, text=title, font=font, bg='white')
         label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
         
         # Make the status readout and sensor control buttons
@@ -387,7 +433,7 @@ class GUI():
         # (this is a little unnecessary currently, since I decided one column looked best)
         num_rows, num_cols = self._find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
         # Make the title row
-        title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols,
+        title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols, font=self.bold20,
                                                     button_names=["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"],
                                                     button_callbacks=[self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data],
                                                     button_states=[ACTIVE, ACTIVE, DISABLED, DISABLED],
@@ -412,6 +458,7 @@ class GUI():
                     buttons = self._make_status_grid_cell(root, col=col, row=row,
                                                           colspan=num_cols,
                                                           title=sensor_name,
+                                                          font=self.bold16,
                                                           button_names=button_names,
                                                           button_callbacks=button_callbacks,
                                                           button_states=[ACTIVE]*len(button_names),
@@ -426,14 +473,31 @@ class GUI():
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
         # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
+    ## --------------------- LOGGING FRAME --------------------- ##
+    def _init_logging_panel(self, root):
+
+        Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
+
+        entry_text = self.notes_dict.keys()
+        self.logging_entries = []
+
+        for i, text in enumerate(entry_text):
+            try:
+                Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
+                height = self.notes_dict[text]["entry height"]
+                entry = Text(root, font=self.norm16, height=height, width=15)
+                entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
+                self.logging_entries.append(entry)
+            except KeyError:
+                pass
+
+        Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
+        
+        # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
+        root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
+
+
     ## --------------------- CALLBACKS --------------------- ##
-    
-    def toggle_button(self, button: Button):
-        """Method that toggles a button between its 'normal' state and its 'disabled' state"""
-        if button["state"] == NORMAL:
-            button["state"] = DISABLED
-        else:
-            button["state"] = NORMAL
 
     def _on_mousewheel(self, event):
         """Method that scrolls the widget that currently has focus, assuming that widget has this callback bound to it"""
@@ -449,7 +513,7 @@ class GUI():
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         # Enable other buttons
         for button in self.buttons_to_enable_after_init:
-            button["state"] = NORMAL
+            self.toggle_button(button)
         # Try to call the method that's the value of the "All Sensors":"Initialize All Sensors" key of the dictionary
         try:
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Initialize All Sensors"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
@@ -468,7 +532,7 @@ class GUI():
         that was passed into self.button_callback_dict when this class was instantiated. If that method doesn't exist, it lets you know."""
         # Disable other buttons
         for button in self.buttons_to_disable_after_shutdown:
-            button["state"] = DISABLED
+            self.toggle_button(button)
         # Try to call the method that's the value of the "All Sensors":"Shutdown All Sensors" key of the dictionary
         try:
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Shutdown All Sensors"]() # Yep, that again.
@@ -523,8 +587,30 @@ class GUI():
             self.sensor_status_dict[button_name] = status
             self._update_sensor_status()
 
+    def _on_log(self):
+        """Callback for the "log" button (self.init_logging_panel), logs the text entries to a csv"""
+        # Loops through the elements in self.logging_entries (tkinter Text objects), reads and clears each element
+        timestamp = time.time()
+        notes = [timestamp]
+        for entry in self.logging_entries:
+            # Makes sure we're only working with tkinter Text objects, and also conveniently
+            # tells VSCode the type of the list element
+            if type(entry) == Text:
+                log_val = entry.get('1.0', 'end').strip()
+                entry.delete('1.0', 'end')
+                notes.append(log_val)
+
+        self._save_data_notes(notes)
+    
     ##  --------------------- HELPER FUNCTIONS --------------------- ##
 
+    def toggle_button(self, button: Button):
+        """Method that toggles a button between its 'normal' state and its 'disabled' state"""
+        if button["state"] == NORMAL:
+            button["state"] = DISABLED
+        else:
+            button["state"] = NORMAL
+    
     def _find_grid_dims(self, num_elements, num_cols):
         """Method to determine the number of rows we need in a grid given the number of elements and the number of columns
         
@@ -568,14 +654,39 @@ class GUI():
             label["bg"] = color
             label["text"] = text
     
+    def _save_sensor_data(self):
+        pass
+
+    def _save_data_notes(self, notes):
+        """Method to save the logged notes to a csv file"""
+        # Check if a file exists at the given path and write the notes
+        try:
+            with open(self.notes_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(notes)
+        # If it doesn't, something went wrong with initialization - remake it here
+        except FileNotFoundError:
+            with open(self.notes_filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                notes_titles = list(self.notes_dict.keys())
+                notes_titles.insert(0, "Internal Timestamp (epoch)")
+                writer.writerow(notes_titles) # give it a title
+                writer.writerow(notes) # write the notes
+    
     ##  --------------------- EXECUTABLES --------------------- ##
     
     def run_cont(self):
         self.root.mainloop()
         self.root.destroy()
 
-    def run(self):
-        self.root.update()
+    def run(self, delay):
+        self._update_plots()
+        try:
+            self.root.update()
+            time.sleep(delay)
+            return True
+        except:
+            return False
 
 
 if __name__ == "__main__":
@@ -612,6 +723,6 @@ if __name__ == "__main__":
     
     app = GUI(button_callback_dict=button_dict)
 
-    while True:
-        app.run()
-        time.sleep(0.1)
+    running = True
+    while running:
+        running = app.run(0.1)

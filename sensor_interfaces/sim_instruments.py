@@ -159,14 +159,17 @@ class Dimetix():
 
     @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
-        """Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
-        fake_laser_distance_reading = "00023" # raw serial output "g0t-00000023"
+        """Returns - timestamp (float, epoch time), fake_laser_distance_reading (str, unprocessed string)"""
+        fake_laser_distance_reading = "g0g+00000101" # raw serial output "g0t-00000023"
         timestamp = time.time()
         return timestamp, fake_laser_distance_reading
     
     @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
-        pass
+        """Returns - timestamp (float, epoch time), fake_laser_temp_reading (str, unprocessed string)"""
+        fake_laser_temp_reading = "g0t-00000023"
+        timestamp = time.time()
+        return timestamp, fake_laser_temp_reading
 
 class Bronkhorst():
     def __init__(self, serial_port, baud_rate=38400) -> None:

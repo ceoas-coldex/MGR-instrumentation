@@ -1,17 +1,20 @@
 # MGR-instrumentation
 Codebase and documentation for unified data collection of the OSU COLDEX MGR lab instrumentation
 
+## GUI
+- ctrl-tab walks you around the different widgets
+
 ## Dependencies
-- tkinter
+- imports in the virtual environment requirements.txt
 
 ### Abakus
 - Just plugged straight into my (windows10) laptop, it set up the device properly
 
-### Sensirion
+### Sensirion flow meters
 - just plugged in, took the data validation and processing from Abby's stuff
 
 ### Dimetrix laser
-- just plugged in, doesn't always give a good reading
+- just plugged in
 
 ## Running
 - Alt+q is the hotkey to stop data collection
