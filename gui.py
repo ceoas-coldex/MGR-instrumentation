@@ -82,8 +82,7 @@ class GUI():
         self._init_data_streaming_notebook(data_streaming_frame)
         self._init_data_streaming_figs()
         self._init_data_streaming_canvases()
-        # self._init_data_streaming_lines()
-        # self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
+        plt.ion() # Now that we've created the figures, turn on interactive matplotlib plotting
 
         # Set up a frame for data logging
         logging_frame = Frame(self.root, bg=self.dark_blue)
@@ -122,7 +121,9 @@ class GUI():
                 writer.writerow(to_write)
     
     def _init_data_saving(self):
-        """Method to check if today's data files have been created, and if not, creates them"""
+        """Method to check if today's data files have been created, and if not, creates them
+        
+        Should maybe live in executor?"""
         # Grab the current time in YYYY-MM-DD HH:MM:SS format
         datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         # Grab only the date part of the time
@@ -239,52 +240,16 @@ class GUI():
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
-    
-    def _init_data_streaming_animations(self, animation_delay=1000):
-        """
-        Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
-        
-            Args - animation_delay (int, number of ms to delay between live plot updates) \n
-            Updates - self.streaming_anis (dict, holds the FuncAnimations)
-        """
-        self.data_streaming_anis = {}
-        for name in self.sensor_names:
-            # For each sensor, grab the corresponding matplotlib figure and axis.
-            fig = self.data_streaming_figs[name]
-            axes = fig.get_axes()
-            # Use the figure and axis to create a FuncAnimation
-            ani = FuncAnimation(fig, self._animate_general, fargs=(name, axes), interval=animation_delay, cache_frame_data=False)
-            # Save the animation to make sure it doesn't vanish when this function ends
-            self.data_streaming_anis.update({name:ani})
-
-    def worked(self):
-        plt.ion()
-        fig = self.data_streaming_figs[name]
-        axes = fig.get_axes()
-        xdata, ydata, ylabels = self.get_data(name)
-        for i, y in enumerate(ydata):
-            axes[i].clear()
-            axes[i].plot(xdata, y)
-            fig.canvas.draw()
-            fig.canvas.flush_events()
-    
-    def _update_one_plot(self, fig, ax, x, y, label):
-        ax.clear()
-        ax.plot(x, y)
-        print(x, y)
-        fig.canvas.draw()
-        fig.canvas.flush_events()
-        plt.show()
         
     def _update_plots(self):
-        plt.ion()
+        ## Do some loops so we can simplify the actual plotting loop as much as possible 
+        # Loop through the dictionaries to pull out the plot axes
         axes = []
-        figs = []
         for fig in self.data_streaming_figs.values():
             for axis in fig.get_axes():
                 axes.append(axis)
-                figs.append(fig)
 
+        # Loop through the sensors and grab data from their updated buffers
         xdata = []
         ydata = []
         labels = []
@@ -295,38 +260,12 @@ class GUI():
                 ydata.append(y)
                 labels.append(label[i])     
 
+        # Loop through the axes and plot the updated data
         for i, ax in enumerate(axes):
             ax.clear()
             ax.plot(xdata[i], ydata[i], '.--')
-            # figs[i].canvas.draw()
-            # figs[i].canvas.flush_events()
-        
-        # plt.show()
-        
-        # for name in self.sensor_names:
-        #     fig = self.data_streaming_figs[name]
-        #     axes = fig.get_axes()
-        #     xdata, ydata, ylabels = self.get_data(name)
-        #     for i, y in enumerate(ydata):
-        #         ax = axes[i]
-        #         ax.clear()
-        #         ax.plot(xdata, y)
-        #         # fig.canvas.draw()
-        #         fig.canvas.flush_events()
-    
-    def _animate_general(self, i, sensor_name:str, axes:list):
-        """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer and plots it on the given axis
-        
-            Args - sensor_name (str, must correspond to a key in self.big_data_dict), axis (list of Axes objects)"""
-        xdata, ydata, ylabels = self.get_data(sensor_name)
-        # ydata is a list of lists, one for each channel of the sensor. Iterate through and plot them on the corresponding subplot
-        for i, y in enumerate(ydata):
-            axes[i].clear()
-            axes[i].plot(xdata, y, '.--')
-            axes[i].set_xlabel("Time (epoch)")
-            axes[i].set_ylabel(ylabels[i])
-        axes[0].set_title(sensor_name)
-        # plt.tight_layout(pad=0.25)
+            ax.set_ylabel(labels[i])
+            ax.set_xlabel("Time (epoch)")
     
     def get_data(self, sensor_name):
         """Method that combs through the data buffer dictionary and pulls out the timestamp and channels corresponding
@@ -661,7 +600,6 @@ class GUI():
                 entry.delete('1.0', 'end')
                 notes.append(log_val)
 
-        print(notes)
         self._save_data_notes(notes)
     
     ##  --------------------- HELPER FUNCTIONS --------------------- ##

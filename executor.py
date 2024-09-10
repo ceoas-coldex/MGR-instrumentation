@@ -73,11 +73,12 @@ class Executor():
         # Set the delay times (sec)
         self.sensor_delay = 0.5
         self.interp_delay = 0.1
-        self.display_delay = 0.5
+        self.display_delay = 0.1
 
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
         self._exit_all()
+
 
     def init_sensors(self):
         """Method to take each sensor through its initialization"""
