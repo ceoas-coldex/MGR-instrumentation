@@ -6,6 +6,8 @@ import pandas as pd
 import csv
 import os
 
+import concurrent.futures
+
 from functools import partial
 
 import tkinter as tk
@@ -80,7 +82,8 @@ class GUI():
         self._init_data_streaming_notebook(data_streaming_frame)
         self._init_data_streaming_figs()
         self._init_data_streaming_canvases()
-        self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
+        # self._init_data_streaming_lines()
+        # self._init_data_streaming_animations(animation_delay=1000) #1s of delay in between drawing frames, adjust later
 
         # Set up a frame for data logging
         logging_frame = Frame(self.root, bg=self.dark_blue)
@@ -185,10 +188,10 @@ class GUI():
             # Create a figure and size it based on the number of subplots
             fig = plt.figure(name, figsize=(10.5,4*num_subplots))
             self.data_streaming_figs.update({name:fig})
-            # Add the desired number of subplots to each figure
             for i in range(0, num_subplots):
-                fig.add_subplot(num_subplots,1,i+1)
-            
+                ax = fig.add_subplot(num_subplots,1,i+1)
+                ax.plot([], [])
+
             # A little cheesy - futz with the whitespace by adjusting the position of the top edge of the subplots 
             # (as a fraction of the figure height) based on how many subplots we have. For 1 subplot put it at 90% of the figure height, 
             # for 4 subplots put it at 97%, and interpolate between the two otherwise
@@ -236,7 +239,7 @@ class GUI():
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
-
+    
     def _init_data_streaming_animations(self, animation_delay=1000):
         """
         Initializes a matplotlib FuncAnimation for each sensor and stores it in a dictionary.
@@ -254,6 +257,63 @@ class GUI():
             # Save the animation to make sure it doesn't vanish when this function ends
             self.data_streaming_anis.update({name:ani})
 
+    def worked(self):
+        plt.ion()
+        fig = self.data_streaming_figs[name]
+        axes = fig.get_axes()
+        xdata, ydata, ylabels = self.get_data(name)
+        for i, y in enumerate(ydata):
+            axes[i].clear()
+            axes[i].plot(xdata, y)
+            fig.canvas.draw()
+            fig.canvas.flush_events()
+    
+    def _update_one_plot(self, fig, ax, x, y, label):
+        ax.clear()
+        ax.plot(x, y)
+        print(x, y)
+        fig.canvas.draw()
+        fig.canvas.flush_events()
+        plt.show()
+        
+    def _update_plots(self):
+        plt.ion()
+        axes = []
+        figs = []
+        for fig in self.data_streaming_figs.values():
+            for axis in fig.get_axes():
+                axes.append(axis)
+                figs.append(fig)
+
+        xdata = []
+        ydata = []
+        labels = []
+        for name in self.sensor_names:
+            x, ys, label = self.get_data(name)
+            for i, y in enumerate(ys):
+                xdata.append(x)
+                ydata.append(y)
+                labels.append(label[i])     
+
+        for i, ax in enumerate(axes):
+            ax.clear()
+            ax.plot(xdata[i], ydata[i], '.--')
+            # figs[i].canvas.draw()
+            # figs[i].canvas.flush_events()
+        
+        # plt.show()
+        
+        # for name in self.sensor_names:
+        #     fig = self.data_streaming_figs[name]
+        #     axes = fig.get_axes()
+        #     xdata, ydata, ylabels = self.get_data(name)
+        #     for i, y in enumerate(ydata):
+        #         ax = axes[i]
+        #         ax.clear()
+        #         ax.plot(xdata, y)
+        #         # fig.canvas.draw()
+        #         fig.canvas.flush_events()
+    
     def _animate_general(self, i, sensor_name:str, axes:list):
         """Method to pass into FuncAnimation, grabs data from the appropriate sensor buffer and plots it on the given axis
         
@@ -682,6 +742,7 @@ class GUI():
         self.root.destroy()
 
     def run(self, delay):
+        self._update_plots()
         try:
             self.root.update()
             time.sleep(delay)

@@ -31,6 +31,7 @@ class Display():
         # logger.info(f"Data: \n{interp_data}")
         try:
             self.gui.update_buffer(interp_data, use_noise=False)
+            # self.gui._update_plots()
         except TypeError:
             pass
         time.sleep(delay)
