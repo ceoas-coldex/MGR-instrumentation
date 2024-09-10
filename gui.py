@@ -29,7 +29,7 @@ class GUI():
         ##  --------------------- SIZE & FORMATTING --------------------- ##
         # Make the window and set some size parameters
         self.root = tk.Tk()
-        self.root.title("Sample MGR GUI")
+        self.root.title("MGR GUI")
         self.width = 2200
         # self.height = 1000
         self.height = 1200
@@ -94,12 +94,14 @@ class GUI():
     ## --------------------- DATA MANAGEMENT --------------------- ##
 
     def _config_sensor_data(self):
+        """Method to read in and save the sensor_data configuration yaml file"""
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
         with open("config/sensor_data.yaml", 'r') as stream:
             self.big_data_dict = yaml.safe_load(stream)
 
     def _config_logging_notes(self):
+        """Method to read in and save the logging/notes configuration yaml file"""
         # Read in the logging config file to initialize the note parameters. 
         # Creates an empty dictionary with keys to assign timestamps and data readings to each sensor
         with open("config/logging_data.yaml", 'r') as stream:
@@ -477,15 +479,18 @@ class GUI():
 
         Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
 
-        entry_text = ["Core Length (units)", "Core ID", "Timestamp (HH:MM:SS)", "Notes"]
-        entry_heights = [1, 1, 1, 24]
+        entry_text = self.notes_dict.keys()
         self.logging_entries = []
 
         for i, text in enumerate(entry_text):
-            Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
-            entry = Text(root, font=self.norm16, height=entry_heights[i], width=15)
-            entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
-            self.logging_entries.append(entry)
+            try:
+                Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
+                height = self.notes_dict[text]["entry height"]
+                entry = Text(root, font=self.norm16, height=height, width=15)
+                entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
+                self.logging_entries.append(entry)
+            except KeyError:
+                pass
 
         Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
         

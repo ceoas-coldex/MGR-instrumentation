@@ -160,7 +160,6 @@ class Executor():
         while not self.gui_shutdown:
             try:
                 self.gui.run(0.1)
-                # time.sleep(0.1)
             except KeyboardInterrupt:
                 try:
                     self.clean_sensor_shutdown()
@@ -185,12 +184,8 @@ class Executor():
 
                         eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
 
-                    # eAbakus.result()
-                    # eFlowMeterSLI2000.result()
-                    # eFlowMeterSLS1500.result()
-                    # eLaser.result()
-                    # ePicarroGas.result()
-                    # eInterpretor.result()
+                    # Block until we get a result - only need to do this with the highest level, I think, but could call 
+                    # it for all of them if you want to be sure it's all getting processed
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
