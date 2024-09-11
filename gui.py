@@ -1,3 +1,8 @@
+# -------------
+# This is the Graphical User Interface (GUI) - true to its name, many graphs and user interface going on here!
+# I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain. 
+# -------------
+
 import numpy as np
 import time
 from collections import deque
@@ -34,7 +39,6 @@ fh.setFormatter(formatter)
 class GUI():
     """
     This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.  
-        I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain. 
         
         Args - 
             - **sensor_button_callback_dict**: dict of methods, where key-value pairs are *'Button Title':callback_function*. 
@@ -295,7 +299,7 @@ class GUI():
                 new_time = new_data[name]["Time (epoch)"]  
                 self.big_data_dict[name]["Time (epoch)"].append(new_time)
             except KeyError as e:   # ... otherwise log an exception
-                print(f"Error updating the {name} buffer: {e}")
+                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
             
             # Grab and append the data from each channel
             channels = list(self.big_data_dict[name]["Data"].keys())
@@ -308,7 +312,7 @@ class GUI():
                     ch_data = new_data[name]["Data"][channel] + noise
                     self.big_data_dict[name]["Data"][channel].append(ch_data)
                 except KeyError:    # ... otherwise log an exception
-                    print(f"Error updating the {name} buffer: {e}")
+                    logger.warning(f"Error updating the {name} buffer data: {e}")
 
     ## --------------------- STATUS GRID --------------------- ##
     
@@ -343,7 +347,7 @@ class GUI():
                     buttons.append(button)
                     i+=1
         except IndexError as e:
-            print(f"Exception in building status grid buttons: {e}. Your number of buttons probably doesn't divide evenly by 2, that's fine")
+            logger.warning(f"Exception in building status grid buttons: {e}. Your number of buttons probably doesn't divide evenly by {button_rows}, that's fine")
 
         return buttons
     
@@ -460,7 +464,7 @@ class GUI():
             # Now that we've made a status grid for each sensor, update them
             self._update_sensor_status()
         except IndexError as e:
-            print(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}, that's fine")
+            logger.warning(f"Exception in building status grid loop: {e}. Probably your sensors don't divide evenly by {num_cols}, that's fine")
 
         # Make the grid stretchy if the window is resized, with all the columns and rows stretching by the same weight
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
@@ -491,11 +495,11 @@ class GUI():
             self.notes_filepath = f"{directory}\\{date}_{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
-            print(f"Error in loading data_saving config file: {e}. Saving to current working directory")
+            logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
             self.notes_filepath = f"{date}_notes.csv"
         # If we can't read the dictonary keys, note that and set the filepath to the current working directory
         except KeyError as e:
-            print(f"Key error in reading data_saving config file: {e}. Saving to current working directory")
+            logger.warning(f"Error in reading data_saving config file: {e}. Saving to current working directory")
             self.notes_filepath = f"{date}_notes.csv"
 
     def _config_notes_entries(self):
@@ -511,7 +515,7 @@ class GUI():
             with open("config/log_entries.yaml", 'r') as stream:
                 self.notes_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
-            print(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
+            logger.warning(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
             self.notes_dict = {}
     
     def _config_notes(self):
@@ -552,9 +556,9 @@ class GUI():
 
         # Unless we can't read the dictionary key. In that case, note the error and skip this entry
         except KeyError as e:
-            print(f"Key error in initializing logging & notes: {e}")
+            logger.warning(f"Error in reading logging & notes config file: {e}")
         except UnboundLocalError as e:
-            print(f"Error in initializing logging & notes: {e}")
+            logger.warning(f"Error in initializing logging & notes: {e}")
         
 
     ## --------------------- CALLBACKS --------------------- ##
@@ -566,7 +570,7 @@ class GUI():
             widget = self.root.focus_get()
             widget.yview_scroll(-1*scroll_speed, "units")
         except Exception as e:
-            print(f"Exception in mousewheel callback: {e}")
+            logger.info(f"Exception in mousewheel callback: {e}")
 
     def _on_sensor_init(self):
         """Callback for the 'Initialize Sensors' button. Enables the other buttons and tries to call the *sensor init* method
@@ -579,9 +583,9 @@ class GUI():
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Initialize All Sensors"]() # <- Oh that looks cursed. This calls the method that lives in the dictionary
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"Key Error {e}, _on_sensor_init")
+            logger.warning(f"Error in reading dictionary: {e}, _on_sensor_init")
         except TypeError as e:
-            print(f"No callback found to initialize sensors. Probably not run from the executor script.")
+            logger.warning(f"No callback found to initialize sensors. Probably not run from the executor script.")
 
         self._update_sensor_status()
 
@@ -598,9 +602,9 @@ class GUI():
             self.sensor_status_dict = self.button_callback_dict["All Sensors"]["Shutdown All Sensors"]() # Yep, that again.
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"Key Error {e}, _on_sensor_shutdown")
+            logger.warning(f"Error in reading dictionary: {e}, _on_sensor_shutdown")
         except TypeError as e:
-            print(f"No callback found to shutdown sensors. Probably not run from the executor script.")
+            logger.warning(f"No callback found to shutdown sensors. Probably not run from the executor script.")
 
         self._update_sensor_status()
     
@@ -612,9 +616,9 @@ class GUI():
             self.button_callback_dict["Data Collection"]["Start Data Collection"]()
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"Key Error {e}, _on_start_data")
+            logger.warning(f"Error in reading dictionary: {e}, _on_start_data")
         except TypeError as e:
-            print(f"No callback found to start data collection. Probably not run from the executor script.")
+            logger.warning(f"No callback found to start data collection. Probably not run from the executor script.")
 
     def _on_stop_data(self):
         """Callback for the 'Stop Data Collection' button. Tries to call the *stop data collection* method
@@ -624,9 +628,9 @@ class GUI():
             self.button_callback_dict["Data Collection"]["Stop Data Collection"]()
         # If that key or method doesn't exist, we likely haven't run this script from executor.py. If we have, check executor._set_gui_buttons()
         except KeyError as e:
-            print(f"Key Error {e}, _on_stop_data")
+            logger.warning(f"Error in reading dictionary: {e}, _on_stop_data")
         except TypeError as e:
-            print(f"No callback found to start data collection. Probably not run from the executor script.")
+            logger.warning(f"No callback found to start data collection. Probably not run from the executor script.")
 
     def _sensor_button_callback(self, button_name, button_command):
         """
