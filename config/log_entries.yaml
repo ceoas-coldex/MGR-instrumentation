@@ -1,0 +1,10 @@
+# This file holds the entries we want in the logging panel of the GUI
+---
+Core Length (units):
+  entry height: 1 # size in screen units we want this entry taking up in the GUI. Think 'lines of text'
+Core ID:
+  entry height: 1
+Timestamp (HH:MM:SS):
+  entry height: 1
+Notes:
+  entry height: 24

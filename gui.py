@@ -3,7 +3,6 @@ import time
 from collections import deque
 import yaml
 import csv
-
 from functools import partial
 
 import tkinter as tk
@@ -16,6 +15,17 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib.pyplot as plt
+
+import logging
+from logdecorator import log_on_start , log_on_end , log_on_error
+
+logger = logging.getLogger("executor") # set up a logger for this module
+logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+ch = logging.StreamHandler() # create a handler
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 class GUI():
     """
@@ -33,16 +43,12 @@ class GUI():
         # Make the window and set some size parameters
         self.root = tk.Tk()
         self.root.title("MGR GUI")
-        self.width = 2200
-        # self.height = 1000
-        self.height = 1200
-
-        # Make the window fullscreen and locked to the desktop size
+        
+        # Make the window fullscreen and locked to the desktop size - moving the window around is blocking,
+        # so this makes it less likely someone will accidentally pause data collection
         self.root.overrideredirect(True) # can't close the window
         self.root.state('zoomed') # fullscreen
         self.root.resizable(False, False) # unable to be resized
-
-        # self.root.geometry(f"{self.width}x{self.height}")
 
         self.grid_width = 100 # px? computer screen units?
         self.grid_height = 50
@@ -66,7 +72,7 @@ class GUI():
         s.layout("TNotebook", []) # get rid of the notebook border
 
         ##  --------------------- INSTRUMENTS & DATA MANAGEMENT --------------------- ##
-        self.data_dir = "data"
+        # self.data_dir = "data"
         # self._init_data_saving()
 
         self.max_buffer_length = 5000 # How long we let the buffers get, helps with memory
@@ -74,7 +80,7 @@ class GUI():
         self._init_data_buffer()
 
         ## --------------------- GUI LAYOUT --------------------- ##
-        # Set up the grid that contains sensor status / control
+        # Set up the panel that contains sensor status / control
         status_grid_frame = Frame(self.root, bg='white')
         self.button_callback_dict = sensor_button_callback_dict
         self._init_sensor_status_dict() 
@@ -87,12 +93,12 @@ class GUI():
         self._init_data_streaming_canvases()
         plt.ion() # Now that we've created the figures, turn on interactive matplotlib plotting
 
-        # Set up a frame for manual logging & note taking
+        # Set up a panel for manual logging & note taking
         self._config_notes()
         logging_frame = Frame(self.root, bg=self.dark_blue)
         self._init_notes_panel(logging_frame)
 
-        # pack the frames
+        # Position the frames
         logging_frame.pack(side="right", expand=True, fill=BOTH, padx=5)
         status_grid_frame.pack(side="left", expand=True, fill=BOTH, padx=5)
         data_streaming_frame.pack(side="right", expand=True, fill=BOTH)
@@ -457,36 +463,75 @@ class GUI():
         # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
-    def _config_notes(self):
-        """Method to read in the logging/notes configuration yaml file and set up a csv to save manual logs/notes"""
-        # Read in the logging config file to initialize the note parameters. 
-        with open("config/logging_data.yaml", 'r') as stream:
-            self.notes_dict = yaml.safe_load(stream)
-
-        # Set up the filepath
+    
+    def _config_notes_directory(self):
+        """
+        Method to read the data_saving.yaml config file and set the notes/logs filepath accordingly. If
+        it can't find that file, it defaults to the current working directory.
+        
+        Updates - 
+            - self.notes_filepath: str, where the notes/logs get saved    
+        """
+        # Set up the first part of the file name - the current date
         # Grab the current time in YYYY-MM-DD HH:MM:SS format
         datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
         # Grab only the date part of the time
-        day = datetime.split(" ")[0]
-        # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
-        self.notes_filepath = f"{self.data_dir}\\{day}_notes.csv"
+        date = datetime.split(" ")[0]
+        # Try to read in the data saving config file to get the directory and filename suffix
+        try:
+            with open("config/data_saving.yaml", 'r') as stream:
+                saving_config_dict = yaml.safe_load(stream)
+            # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
+            directory = saving_config_dict["Notes"]["Directory"]
+            suffix = saving_config_dict["Notes"]["Suffix"]
+            self.notes_filepath = f"{directory}\\{date}_{suffix}.csv"
+        # If we can't find the file, note that and set the filepath to the current working directory
+        except FileNotFoundError as e:
+            print(f"Error in loading data_saving config file: {e}. Saving to current working directory")
+            self.notes_filepath = f"{date}_notes.csv"
+        # If we can't read the dictonary keys, note that and set the filepath to the current working directory
+        except KeyError as e:
+            print(f"Key error in reading data_saving config file: {e}. Saving to current working directory")
+            self.notes_filepath = f"{date}_notes.csv"
 
+    def _config_notes_entries(self):
+        """
+        Method to read in the log_entries.yaml config file and grab onto that dictionary. If it can't
+        find that file, it returns an empty dictionary - no logging entries will be displayed.
+        
+        Updates - 
+            - self.notes_dict: dict, entries to display on the logging panel
+        """
+        # Read in the logging config file to initialize the notes entries 
+        try:
+            with open("config/log_entries.yaml", 'r') as stream:
+                self.notes_dict = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            print(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
+            self.notes_dict = {}
+    
+    def _config_notes(self):
+        """Method to read in the logging/notes configuration yaml file and set up a csv to save manual logs/notes"""
+        # Configure the data saving directory and the desired entries for the notes panel
+        self._config_notes_directory()
+        self._config_notes_entries()
         # Add one more entry for keeping track of the time.time() timestamp
         notes_titles = list(self.notes_dict.keys())
         notes_titles.insert(0, "Internal Timestamp (epoch)")
+        # Initialize a csv file to save the notes
         self._init_csv_file(self.notes_filepath, notes_titles)
     
     def _init_notes_panel(self, root):
         """Method to set up a panel with text entry for manual logging and note taking. This gets filled based on
-        the logging_data.yaml config file, and saves entries to a notetaking csv (set up in self._config_notes)"""
+        the log_entries.yaml config file, and saves entries to a notetaking csv (set up in self._config_notes)"""
         # Make a title
         Label(root, text="Notes & Logs", font=self.bold20, bg='white', width=15).grid(column=0, row=0, columnspan=2, sticky=N, pady=10)
         # Grab the elements we want logging entries for (based on the config file)
         entry_text = self.notes_dict.keys()
         self.logging_entries = []
         # For each desired logging entry, try to set up a tkinter Text widget
-        for i, text in enumerate(entry_text):
-            try:
+        try:
+            for i, text in enumerate(entry_text):
                 # Give the logging entry a title
                 Label(root, text=f"{text}:", font=self.bold16, bg='white', width=19, justify=LEFT, anchor=W).grid(column=0, row=i+1, sticky=N+W, padx=(25,5), pady=2.5, ipady=2.5)
                 # Set up the text widget
@@ -495,13 +540,18 @@ class GUI():
                 entry.grid(column=1, row=i+1, sticky=N+W, padx=(0,15), pady=2.5, ipady=2.5)
                 # Hold onto the widget so we can read and clear it later
                 self.logging_entries.append(entry)
-            # Unless we can't read the dictionary key. In that case, note the error and skip this entry
-            except KeyError as e:
-                print(f"Key error in initializing logging & notes: {e}")
-        # Make a Tkinter button with a callback that saves the data entries when presseed
-        Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
-        # Make the elements stretchy if the window is resized, with up to 2 columns stretching by the same weight
-        root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
+        
+            # Make a Tkinter button with a callback that saves the data entries when presseed
+            Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
+            # Make the elements stretchy if the window is resized, with up to 2 columns stretching by the same weight
+            root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
+
+        # Unless we can't read the dictionary key. In that case, note the error and skip this entry
+        except KeyError as e:
+            print(f"Key error in initializing logging & notes: {e}")
+        except UnboundLocalError as e:
+            print(f"Error in initializing logging & notes: {e}")
+        
 
     ## --------------------- CALLBACKS --------------------- ##
 

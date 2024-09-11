@@ -1,9 +1,0 @@
----
-Core Length (units):
-  entry height: 1 # size in screen units we want this entry taking up in the GUI
-Core ID:
-  entry height: 1
-Timestamp (HH:MM:SS):
-  entry height: 1
-Notes:
-  entry height: 24
