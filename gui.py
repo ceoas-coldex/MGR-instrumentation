@@ -78,7 +78,7 @@ class GUI():
         status_grid_frame = Frame(self.root, bg='white')
         self.button_callback_dict = sensor_button_callback_dict
         self._init_sensor_status_dict() 
-        self._init_sensor_grid(status_grid_frame)
+        self._init_sensor_panel(status_grid_frame)
 
         # Set up the notebook for data streaming/live plotting
         data_streaming_frame = Frame(self.root, bg=self.light_blue)
@@ -101,7 +101,12 @@ class GUI():
     ## --------------------- DATA INPUT & STREAMING DISPLAY --------------------- ##
 
     def _init_data_buffer(self):
-        """Method to read in and save the sensor_data configuration yaml file"""
+        """Method to read in and save the sensor_data configuration yaml file
+        
+        Updates - 
+            - self.big_data_dict: dict, holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
+            - self.sensor_names: list, sensor names that correspond to the buffer dict keys
+        """
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
         with open("config/sensor_data.yaml", 'r') as stream:
@@ -184,8 +189,7 @@ class GUI():
         # Initialize and render a matplotlib embedded canvas
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
-        # Set up the scroll region of the canvas - trying to be clever here by making the scroll region good for an 
-        # arbitrary number of subplots. Somewhat unnecessary, but works
+        # Set up the scroll region of the canvas based on the screen size scaled by the number of subplots
         num_subplots = len(f.get_axes())
         scroll_region = num_subplots*self.root.winfo_screenheight() / 2.4 # Magic number! Found that 2.4 was good purely by guess and check
         # Configure the canvas
@@ -298,47 +302,6 @@ class GUI():
 
     ## --------------------- STATUS GRID --------------------- ##
     
-    def _make_status_grid_cell(self, root, title, col, row, button_callbacks, button_names, button_states, font, colspan=1, rowspan=1, color='white'):
-        """Method to make one frame of the grid at the position given with the buttons given
-
-            Args - 
-                - root (tkinter object), 
-                - title (str, cell title), 
-                - col (int, position in root grid), row (int, position in root grid),
-                - button_callbacks (list, methods to give the buttons, can be empty), 
-                - button_names (list of str, names of the buttons),
-                - button_states (list of str, ACTIVE or DISABLED), 
-                - colspan (int, column span in root grid), rowspan (int, row span in root grid)
-        """  
-        # Make a frame at the position we want and make it fill the space (sticky in all directions)
-        frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
-        frame.grid(column=col, row=row, columnspan=colspan, rowspan=rowspan, sticky=NSEW)
-        # Make it stretchy if the window is resized
-        frame.columnconfigure(0, weight=1)
-        frame.rowconfigure(0, weight=1)
-
-        # If we have more than 4 buttons to put in this cell, split them up into 2 columns and determine how many rows we need
-        if len(button_names) >= 4:
-            button_rows, button_cols = self._find_grid_dims(num_elements = len(button_names), num_cols=2) 
-            title_colspan = 2
-        # Otherwise, keep everything in 1 column
-        else:
-            button_rows, button_cols = self._find_grid_dims(num_elements = len(button_names), num_cols=1) 
-            title_colspan = 1
-
-        # Set a title for the cell
-        label=Label(frame, text=title, font=font, bg='white')
-        label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
-        
-        # Make the status readout and sensor control buttons
-        self._make_status_readout(frame, 1, title, colspan=title_colspan)
-        buttons = self._make_sensor_buttons(frame, title, 2, button_rows, button_cols, button_names, button_callbacks, button_states)
-        
-        # Note 9-3: might want to add a flag in each sensor to disable querying while off, just to stop quite as much serial communication. 
-        # But it also might not matter if sending the "query" command while the sensor is off doesn't hurt anything
-        
-        return buttons
-    
     def _make_sensor_buttons(self, root, sensor_name, row:int, button_rows:int, button_cols:int, button_names, button_callbacks, button_states):
         """Method to make buttons for the status grid cells
         
@@ -408,14 +371,52 @@ class GUI():
             self.sensor_status_dict.update({name:0})
             self.sensor_status_colors.update({name:None})
     
-    def _init_sensor_grid(self, root:Frame):
-        """Makes a grid of all the sensors, with buttons to initialize/shutdown sensors, display sensor status, 
-        and start/stop data collection."""
+    def _make_status_panel_cell(self, root, title, col, row, button_callbacks, button_names, button_states, font, colspan=1, rowspan=1, color='white'):
+        """Method to make one frame of the sensor status panel at the position given with the buttons given
+
+            Args - 
+                - root (tkinter object), 
+                - title (str, cell title), 
+                - col (int, position in root grid), row (int, position in root grid),
+                - button_callbacks (list, methods to give the buttons, can be empty), 
+                - button_names (list of str, names of the buttons),
+                - button_states (list of str, ACTIVE or DISABLED), 
+                - colspan (int, column span in root grid), rowspan (int, row span in root grid)
+        """  
+        # Make a frame at the position we want and make it fill the space (sticky in all directions)
+        frame = Frame(root, relief=RAISED, borderwidth=1.25, bg=color, highlightcolor='blue')
+        frame.grid(column=col, row=row, columnspan=colspan, rowspan=rowspan, sticky=NSEW)
+        # Make it stretchy if the window is resized
+        frame.columnconfigure(0, weight=1)
+        frame.rowconfigure(0, weight=1)
+        # If we have more than 4 buttons to put in this cell, split them up into 2 columns and determine how many rows we need
+        if len(button_names) >= 4:
+            button_rows, button_cols = self._find_grid_dims(num_elements = len(button_names), num_cols=2) 
+            title_colspan = 2
+        # Otherwise, keep everything in 1 column
+        else:
+            button_rows, button_cols = self._find_grid_dims(num_elements = len(button_names), num_cols=1) 
+            title_colspan = 1
+        # Set a title for the cell
+        label=Label(frame, text=title, font=font, bg='white')
+        label.grid(row=0, column=0, columnspan=title_colspan, sticky=N, pady=20)
+        # Make the status readout and sensor control buttons
+        self._make_status_readout(frame, 1, title, colspan=title_colspan)
+        buttons = self._make_sensor_buttons(frame, title, 2, button_rows, button_cols, button_names, button_callbacks, button_states)
+                
+        return buttons
+    
+    def _init_sensor_panel(self, root:Frame):
+        """Makes a panel of all the sensors, with buttons to initialize/shutdown sensors, display sensor status, 
+        and start/stop data collection.
+        
+        Args - 
+            root: Tkinter frame, parent for the sensor status panel"""
         # Grab the number of rows we should have in our grid given the number of sensors in self.sensor_names 
         # (this is a little unnecessary currently, since I decided one column looked best)
         num_rows, num_cols = self._find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
         # Make the title row
-        title_buttons = self._make_status_grid_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols, font=self.bold20,
+        title_buttons = self._make_status_panel_cell(root, title="Sensor Status & Control", col=0, row=0, colspan=num_cols, font=self.bold20,
                                                     button_names=["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"],
                                                     button_callbacks=[self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data],
                                                     button_states=[ACTIVE, ACTIVE, DISABLED, DISABLED],
@@ -437,7 +438,7 @@ class GUI():
                     button_names = list(callback_dict.keys())
                     button_callbacks = list(callback_dict.values())
                     # Make the cell (makes buttons and status indicator)
-                    buttons = self._make_status_grid_cell(root, col=col, row=row,
+                    buttons = self._make_status_panel_cell(root, col=col, row=row,
                                                           colspan=num_cols,
                                                           title=sensor_name,
                                                           font=self.bold16,
@@ -455,7 +456,7 @@ class GUI():
         root.columnconfigure(np.arange(num_cols).tolist(), weight=1, minsize=self.grid_width)
         # root.rowconfigure(np.arange(1,num_rows+1).tolist(), weight=1, minsize=self.grid_height) # "+1" for the title row
  
-    ## --------------------- LOGGING FRAME --------------------- ##
+    ## --------------------- LOGGING & NOTETAKING --------------------- ##
     def _config_notes(self):
         """Method to read in the logging/notes configuration yaml file and set up a csv to save manual logs/notes"""
         # Read in the logging config file to initialize the note parameters. 
@@ -501,7 +502,6 @@ class GUI():
         Button(root, text="LOG", font=self.bold16, bg=self.button_blue, width=15, command=self._on_log).grid(column=0, row=i+3, columnspan=2, pady=30)
         # Make the elements stretchy if the window is resized, with up to 2 columns stretching by the same weight
         root.columnconfigure(np.arange(2).tolist(), weight=1, minsize=self.grid_width)
-
 
     ## --------------------- CALLBACKS --------------------- ##
 
@@ -661,9 +661,6 @@ class GUI():
             label["bg"] = color
             label["text"] = text
     
-    def _save_sensor_data(self):
-        pass
-
     def _save_data_notes(self, notes):
         """Method to save the logged notes to a csv file"""
         # Check if a file exists at the given path and write the notes
