@@ -13,13 +13,17 @@ import yaml
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logger = logging.getLogger(__name__) # set up a logger for this module
-logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
-ch = logging.StreamHandler() # create a handler
-ch.setLevel(logging.DEBUG)
+# Set up a logger for this module
+logger = logging.getLogger(__name__)
+# Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+logger.setLevel(logging.DEBUG)
+# Create a handler that saves logs to the log folder named as the current date
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+# Create a formatter to specify our log format
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+fh.setFormatter(formatter)
 
 # Custom imports
 from main_pipeline.bus import Bus
@@ -75,6 +79,7 @@ except SerialException:
 
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
+    @log_on_end(logging.INFO, "Sensor class initiated", logger=logger)
     def __init__(self) -> None:
         # Initialize the sensors with the appropriate serial port and baud rate (set in config/sensor_comms.yaml, make sure the dictionary keys here match)
         self.abakus = Abakus(serial_port=comms_config["Abakus Particle Counter"]["serial port"], baud_rate=comms_config["Abakus Particle Counter"]["baud rate"])

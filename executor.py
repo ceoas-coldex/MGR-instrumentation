@@ -21,22 +21,27 @@ import yaml
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logger = logging.getLogger("executor") # set up a logger for this module
-logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
-ch = logging.StreamHandler() # create a handler
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-
 from gui import GUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpreter import Interpretor
 from main_pipeline.display import Display
 
+# Set up a logger for this module
+logger = logging.getLogger("executor")
+# Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+logger.setLevel(logging.DEBUG)
+# Create a handler that saves logs to the log folder named as the current date
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+# Create a formatter to specify our log format
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+fh.setFormatter(formatter)
+
 class Executor():
     """Class that handles passing the data around on all the busses."""
+    @log_on_end(logging.INFO, "Executor class initiated", logger=logger)
     def __init__(self) -> None:
         # Set some intitial flags: don't start data collection or sensors, do start the GUI
         self.data_shutdown = True
@@ -75,7 +80,7 @@ class Executor():
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
         self._exit_all()
-
+    
     def init_csv(self, filepath, to_write):
         # Check if we can read the file
         try:
@@ -135,7 +140,7 @@ class Executor():
             # Set the data_shutdown flag to True
             self.data_shutdown = True
             # probably save the data file here
-
+            
             # Shutdown the threadpool executor
             self.executor.shutdown(wait=False, cancel_futures=True)
 
