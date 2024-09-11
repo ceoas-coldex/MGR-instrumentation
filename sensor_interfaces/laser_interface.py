@@ -6,13 +6,17 @@ import yaml
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-logger = logging.getLogger(__name__) # set up a logger for this module
-logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
-ch = logging.StreamHandler() # create a handler
-ch.setLevel(logging.DEBUG)
+# Set up a logger for this module
+logger = logging.getLogger(__name__)
+# Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+logger.setLevel(logging.DEBUG)
+# Create a handler that saves logs to the log folder named as the current date
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+# Create a formatter to specify our log format
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+fh.setFormatter(formatter)
 
 class Dimetix():
     def __init__(self, serial_port="COM8", baud_rate=19200) -> None:
@@ -52,7 +56,7 @@ class Dimetix():
                                      bytesize=serial.SEVENBITS, parity=serial.PARITY_EVEN, stopbits=serial.STOPBITS_ONE)
             logger.info(f"Connected to serial port {port} with baud {baud}")
         except SerialException:
-            logger.info(f"Could not connect to serial port {port}")
+            logger.warning(f"Could not connect to serial port {port}")
     
     def initialize_once(self, query_function, timeout:int, measurement:str):
         # Try to query and get a valid distance output. If we can't get a valid reading after a set of attempts, report back that initialization failed
@@ -97,7 +101,6 @@ class Dimetix():
         if self.laser_status == 1:
             distance_status = self.initialize_once(self.query_distance, timeout, measurement="distance")
             temp_status = self.initialize_once(self.query_temperature, timeout, measurement="temperature")
-        
             # If distance and temperature both initialized, report that we're initialized. Otherwise report that we have an error
             if distance_status == 1 and temp_status == 1:
                 self.laser_status = 1
@@ -105,7 +108,6 @@ class Dimetix():
                 self.laser_status = 3
 
             return self.laser_status
-        
         # Otherwise return
         else:
             return self.laser_status
@@ -117,7 +119,7 @@ class Dimetix():
         response = self.ser.read_until(self.CRLF)
         # If we've recieved anything other than a successful laser message, log that and return that we're still off
         if response != self.RET_SUCCESS:
-            logger.warn(f"Error returned from starting Dimetix laser: {response}. Check the manual for the error code")
+            logger.warning(f"Error returned from starting Dimetix laser: {response}. Check the manual for the error code")
         # Otherwise, log and return that we're on
         else:
             logger.info("Dimetix laser turned on")
@@ -132,7 +134,7 @@ class Dimetix():
         response = self.ser.read_until(self.CRLF)
         # If we've recieved anything other than a successful laser message, log and return that we've failed
         if response != self.RET_SUCCESS:
-            logger.warn(f"Error returned from stopping Dimetix laser: {response}. Check the manual for the error code")
+            logger.warning(f"Error returned from stopping Dimetix laser: {response}. Check the manual for the error code")
         # Otherwise, log and return that we're successfully off
         else:
             logger.info("Dimetix laser turned off")
@@ -140,7 +142,7 @@ class Dimetix():
 
         return self.laser_status
 
-    @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
+    # @log_on_end(logging.INFO, "Dimetix laser queried distance", logger=logger)
     def query_distance(self):
         """Method to get the most recent distance measurement from the laser sensor.
         

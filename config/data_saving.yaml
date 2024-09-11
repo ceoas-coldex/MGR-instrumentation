@@ -1,0 +1,9 @@
+# This file sets the directories where sensor data and logged notes get stored, as well as any desired suffixes for the
+# file names. By default, the main sensor data is stored as "YYYY-MM-DD.csv" and the notes as "YYYY-MM-DD_notes.csv"
+---
+Sensor Data:
+  Directory: "C:\\Users\\alicl\\Documents\\GitHub\\MGR-instrumentation\\data"
+  Suffix: ""
+Notes:
+  Directory: "C:\\Users\\alicl\\Documents\\GitHub\\MGR-instrumentation\\data"
+  Suffix: "notes"

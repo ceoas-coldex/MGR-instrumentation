@@ -1,5 +1,9 @@
 # -------------
 # The bus!
+#
+# Not much going on here, just a small class with two methods. This can read and write a message (with
+# locking, so we don't get errors if two calls try to read/write at the same time) so is really handy
+# for passing information around between classes and methods.
 # -------------
 
 from readerwriterlock import rwlock

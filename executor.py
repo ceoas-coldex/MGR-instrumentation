@@ -13,23 +13,13 @@
 
 import time
 import concurrent.futures
-import multiprocessing
-
 import keyboard
 import os, sys
-
+import csv
 import yaml
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
-
-logger = logging.getLogger("executor") # set up a logger for this module
-logger.setLevel(logging.DEBUG) # set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
-ch = logging.StreamHandler() # create a handler
-ch.setLevel(logging.DEBUG)
-formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 from gui import GUI
 from main_pipeline.bus import Bus
@@ -37,18 +27,30 @@ from main_pipeline.sensor import Sensor
 from main_pipeline.interpreter import Interpretor
 from main_pipeline.display import Display
 
+# Set up a logger for this module
+logger = logging.getLogger("executor")
+# Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+logger.setLevel(logging.DEBUG)
+# Create a handler that saves logs to the log folder named as the current date
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+# Create a formatter to specify our log format
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+fh.setFormatter(formatter)
+
 class Executor():
     """Class that handles passing the data around on all the busses."""
+    @log_on_end(logging.INFO, "Executor class initiated", logger=logger)
     def __init__(self) -> None:
         # Set some intitial flags: don't start data collection or sensors, do start the GUI
         self.data_shutdown = True
         self.sensors_shutdown = True
         self.gui_shutdown = False
         
-        # Read in the sensor config file to grab a list of all the sensors we're working with
-        with open("config/sensor_data.yaml", 'r') as stream:
-            big_data_dict = yaml.safe_load(stream)
-        self.sensor_names = big_data_dict.keys()
+        # Initialize data management
+        self.data_dir = "data" # Data storage directory, should yaml this
+        self.init_data_saving()
         
         # Initialize the sensors
         self.sensor = Sensor()
@@ -56,7 +58,7 @@ class Executor():
 
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
-        self.gui = GUI(button_callback_dict=button_callbacks)
+        self.gui = GUI(sensor_button_callback_dict=button_callbacks)
 
         # Initialize the rest of the process
         self.interpretor = Interpretor()
@@ -78,22 +80,50 @@ class Executor():
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
         self._exit_all()
+    
+    def init_csv(self, filepath, to_write):
+        # Check if we can read the file
+        try:
+            with open(filepath, 'r'):
+                pass
+        # If the file doesn't exist, create it and write in whatever we've passed as row titles
+        except FileNotFoundError:
+            with open(filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(to_write)
+    
+    def init_data_saving(self):
+        """Method to set up data storage and configure internal data management"""
+        # Read in the sensor config file to grab a list of all the sensors we're working with
+        with open("config/sensor_data.yaml", 'r') as stream:
+            big_data_dict = yaml.safe_load(stream)
+        self.sensor_names = big_data_dict.keys()
 
+        # Set up csv data storage: check if the data file has been created, and if not, create it
+        # Grab the current time in YYYY-MM-DD HH:MM:SS format
+        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        # Grab only the date part of the datetime
+        date = datetime.split(" ")[0]
+        # Create a filepath in the data saving directory with the date (may change to hour depending on size, access reqs, etc)
+        self.data_filepath = f"{self.data_dir}\\{date}.csv"
+
+        self.init_csv(self.data_filepath, self.sensor_names)
 
     def init_sensors(self):
         """Method to take each sensor through its initialization"""
-        ### MIGHT WANT TO GET RID OF THE FLAG HERE, IN CASE YOU NEED TO REDO INITIALIZATION. THINK ABOUT IT
-        # if self.sensors_shutdown:   # If the sensors are shut down...
-        self.sensor_status_dict = self.sensor.initialize_sensors()    # ... initialize them and grab the initialization results
-        self.sensors_shutdown = False   # ... and set the shutdown flag to False
+        # Initialize sensors, grab their initialization results...
+        self.sensor_status_dict = self.sensor.initialize_sensors()
+        # ...and update the shutdown flag
+        self.sensors_shutdown = False
 
         return self.sensor_status_dict
     
     def clean_sensor_shutdown(self):
-        """Method to cleanly shut down sensors, if they're active"""
-        # if not self.sensors_shutdown:   # If we haven't shut down the sensors yet... 
-        self.sensor_status_dict = self.sensor.shutdown_sensors() # ... shut them down
-        self.sensors_shutdown = True # ... and set the shutdown flag to True
+        """Method to cleanly shut down sensors"""
+        # Shut down sensors, grab their shutdown results...
+        self.sensor_status_dict = self.sensor.shutdown_sensors()
+        # ...and update the shutdown flag
+        self.sensors_shutdown = True
 
         return self.sensor_status_dict
     
@@ -110,7 +140,7 @@ class Executor():
             # Set the data_shutdown flag to True
             self.data_shutdown = True
             # probably save the data file here
-
+            
             # Shutdown the threadpool executor
             self.executor.shutdown(wait=False, cancel_futures=True)
 
@@ -122,7 +152,9 @@ class Executor():
     
     def _set_gui_buttons(self):
         """Method that builds up a dictionary to be passed into the GUI. This dictionary holds the methods that start/stop/initialize
-        sensor measurements, and will be used for button callbacks in the GUI."""
+        sensor measurements, and will be used for button callbacks in the GUI.
+        
+        Could shoop some of this into a yaml, but I don't know if that makes things much clearer. Might just be more prone to key errors"""
 
         # Initialize an empty dictionary to hold the methods we're going to use as button callbacks. Sometimes
         # these don't exist (e.g the Picarro doesn't have start/stop, only query), so initialize them to empty dicts
@@ -130,7 +162,7 @@ class Executor():
         for name in self.sensor_names:
             button_dict.update({name:{}})
 
-        # Add the start/stop measurement methods for the instruments that have those features: 
+        # Add the button text and the start/stop measurement methods for instruments that have those features: 
         # The Abakus, Flowmeters, and Laser Distance Sensor
         button_dict["Abakus Particle Counter"] = {"Start Abakus": self.sensor.abakus.initialize_abakus,
                                                 "Stop Abakus": self.sensor.abakus.stop_measurement}
