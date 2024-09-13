@@ -9,6 +9,7 @@ from collections import deque
 import yaml
 import csv
 from functools import partial
+import copy
 
 import tkinter as tk
 from tkinter import *
@@ -147,21 +148,46 @@ class GUI():
         Updates - 
             - self.data_streaming_windows: dict, all tkinter frames in the notebook, can be referenced for plotting, labeling, etc
         """
+        # Create a list of pages we want notebook tabs
+        self.data_streaming_pages = copy.copy(self.sensor_names)
+        self.data_streaming_pages.insert(0, "All")
+        
         # Create a tkinter Notebook
         notebook = Notebook(root)
-        # For each sensor...
         self.data_streaming_windows = {}
-        for name in self.sensor_names:
-            # ...add a frame to the notebook for each sensor
+        # For each page we want to stream data for:
+        for name in self.data_streaming_pages:
+            # 1. Add a frame to the notebook for each sensor
             window = Frame(notebook)
             window.configure(background=self.light_blue)
             window.grid(column=0, row=1, sticky=NSEW)
             notebook.add(window, text=name)
-            # ...and append the frames to a dict so we can access them later
+            # 2. And append the frames to a dict so we can access them later
             self.data_streaming_windows.update({name:window})
         # Position the notebook
         notebook.pack(padx=2, pady=1, expand = True)
     
+    def _init_data_main_page_fig(self):
+        with open("config/main_page_plots.yaml", 'r') as stream:
+            self.main_page_plots = yaml.safe_load(stream)
+
+        num_subplots = 0
+        y_axis_labels = []
+        for key in self.main_page_plots.keys():
+            num_subplots += 1
+            main_page_plot_titles = self.main_page_plots[key]
+            for title in main_page_plot_titles:
+                y_axis_labels.append(title)
+
+        fig = plt.figure("All", figsize=(10.5, 4*num_subplots))
+        self.data_streaming_figs.update({"All": fig})
+        for i in range(num_subplots):
+            ax = fig.add_subplot(num_subplots,1,i+1)
+            ax.set_xlabel("Time (epoch)")
+            ax.set_ylabel(y_axis_labels[i])
+
+        self.data_streaming_figs.update({"All":fig})
+
     def _init_data_streaming_figs(self):
         """Method to initialize matplotlib figures and axes for each sensor. These get saved and called later for live plotting
         
@@ -189,7 +215,9 @@ class GUI():
             # for 4 subplots put it at 97%, and interpolate between the two otherwise
             plt.subplots_adjust(top=np.interp(num_subplots, [1,4], [0.9,0.97]))
 
-    def _one_canvas(self, f, root, vbar:Scrollbar):
+        self._init_data_main_page_fig()
+
+    def _one_canvas(self, f, root, vbar:Scrollbar, row=1, column=0, scroll=True):
         """
         General method to set up a matplotlib embedded canvas in a given root. We're using each canvas
         to hold a matplotlib figure for live plotting
@@ -203,24 +231,27 @@ class GUI():
         # Initialize and render a matplotlib embedded canvas
         canvas = FigureCanvasTkAgg(f, root)
         canvas.draw()
-        # Set up the scroll region of the canvas based on the screen size scaled by the number of subplots
-        num_subplots = len(f.get_axes())
-        scroll_region = num_subplots*self.root.winfo_screenheight() / 2.4 # Magic number! Found that 2.4 was good purely by guess and check
-        # Configure the canvas
-        canvas.get_tk_widget().config(scrollregion=(0,0,0,scroll_region), # set the size of the scroll region in screen units
-                                      yscrollcommand=vbar.set, # link the scrollbar to the canvas
-                                      )
-        canvas.get_tk_widget().grid(row=1, column=0)
-        # Set the scrollbar command and position
-        vbar.config(command=canvas.get_tk_widget().yview)
-        vbar.grid(row=1, column=1, sticky=N+S)
-        # Bind the scrollbar to the mousewheel by triggering a callback whenever tkinter registers a <MouseWheel> event
-        canvas.get_tk_widget().bind("<MouseWheel>", self._on_mousewheel)
-        # Set up the navigation toolbar for the canvas (allows you to pan, zoom, save plots, etc)
-        toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
-        toolbar.grid(row=0, column=0, pady=(10,0))
+        # Position the canvas
+        canvas.get_tk_widget().grid(row=row, column=column)
         # Make the parent object colored white. For funsies
-        root.config(bg='white')
+        root.config(bg=self.dark_blue)
+        
+        if scroll:
+            # Set up the scroll region of the canvas based on the screen size scaled by the number of subplots
+            num_subplots = len(f.get_axes())
+            scroll_region = num_subplots*self.root.winfo_screenheight() / 2.4 # Magic number! Found that 2.4 was good purely by guess and check
+            # Configure the canvas
+            canvas.get_tk_widget().config(scrollregion=(0,0,0,scroll_region), # set the size of the scroll region in screen units
+                                        yscrollcommand=vbar.set, # link the scrollbar to the canvas
+                                        )
+            # Set the scrollbar command and position
+            vbar.config(command=canvas.get_tk_widget().yview)
+            vbar.grid(row=1, column=1, sticky=N+S)
+            # Bind the scrollbar to the mousewheel by triggering a callback whenever tkinter registers a <MouseWheel> event
+            canvas.get_tk_widget().bind("<MouseWheel>", self._on_mousewheel)
+            # Set up the navigation toolbar for the canvas (allows you to pan, zoom, save plots, etc)
+            toolbar = NavigationToolbar2Tk(canvas, root, pack_toolbar=False)
+            toolbar.grid(row=0, column=0, pady=(10,0))
 
     def _init_data_streaming_canvases(self):
         """
@@ -231,7 +262,8 @@ class GUI():
         It might not look like anything is getting saved here, but Tkinter handles parent/child relationships internally,
         so the canvases exist wherever Tkinter keeps the frames
         """
-        for name in self.sensor_names:
+
+        for i, name in enumerate(self.data_streaming_pages):
             # Grab the appropriate matplotlib figure and root window (a tkinter frame)
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
@@ -239,6 +271,10 @@ class GUI():
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
+
+            # # Add a canvas to the main window, which handles its own scrollbar separately so don't scroll here
+            # self._one_canvas(fig, all_canvas, row=i+1, vbar=None, scroll=False)
+
         
     def _update_plots(self):
         """Method that updates the data streaming plots with data stored in self.big_data_dict, should be called as frequently as possible.
@@ -248,7 +284,7 @@ class GUI():
         for name in self.sensor_names:
             fig = self.data_streaming_figs[name]
             axs = fig.get_axes()
-            x, ys, _ = self.get_sensor_data(name)
+            x, ys, labels = self.get_sensor_data(name)
             # 2. Loop through the number of data channels present for this sensor (i.e how many deques are present in ys)
             for i, y in enumerate(ys):
                 # 3. Loop through and remove the "artists" in the current figure axis - this clears the axis without having
@@ -698,7 +734,7 @@ class GUI():
             # If we're offline / failed initialization
             if status == 0:
                 # color = "#D80F0F"
-                color = "#D55E00"
+                color = "#AF5189"
                 text = "OFFLINE"
             # If we're online / successfully initialized
             elif status == 1:
@@ -708,6 +744,10 @@ class GUI():
             elif status == 2:
                 color = "#FFC107"
                 text = "SHADOW HARDWARE"
+            elif status == 3:
+                color = "#D55E00"
+                text = "ERROR"
+                
             # If we recieved an erroneous reading, make it obvious
             else:
                 color = "purple"

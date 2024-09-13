@@ -94,20 +94,31 @@ class Display():
             self.csv_filepath = f"{date}_notes.csv"
     
     def save_data(self, data_dict):
+        """Method to save the passed in directory to a csv file
+        
+        Args -
+            - data_dict: dict, must have the same key-value pairs as the expected dictionary from config/sensor_data.yaml"""
         to_write = []
-        for name in self.sensor_names:
-            sensor_timestamp = data_dict[name]["Time (epoch)"]
-            to_write.append(sensor_timestamp)
-            channel_data = data_dict[name]["Data"].values()
-            for data in channel_data:
-                to_write.append(data)
+        try:
+            for name in self.sensor_names:
+                sensor_timestamp = data_dict[name]["Time (epoch)"]
+                to_write.append(sensor_timestamp)
+                channel_data = data_dict[name]["Data"].values()
+                for data in channel_data:
+                    to_write.append(data)
+        except KeyError as e:
+            logger.warning(f"Error in reading data dictionary: {e}")
 
-        with open(self.csv_filepath, 'a') as csvfile:
-            writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
-            writer.writerow(to_write)
+        try:
+            with open(self.csv_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(to_write)
+        except FileNotFoundError as e:
+            logger.warning(f"Error in accessing csv to save data: {e}")
     
     def display_consumer(self, interpretor_bus:Bus, delay):
-        """Method to read the processed data published by the interpretor class and update the appropriate buffers for plotting"""
+        """Method to read the processed data published by the interpretor class, save it to a csv, and update 
+        the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
         # logger.info(f"Data: \n{interp_data}")
         try:

@@ -91,7 +91,7 @@ class Dimetix():
         report that initialization failed.
         
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize/error)
         """
         # Set communication settings
         self.ser.write(self.SET_COM_SETTINGS) 

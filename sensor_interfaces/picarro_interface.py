@@ -60,7 +60,7 @@ class Picarro():
         report that initialization failed.
         
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize/error)
         """
         # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
         try:
@@ -77,7 +77,7 @@ class Picarro():
             logger.info(f"Exception in Picarro initialization: {e}")
 
         logger.info(f"Picarro initialization failed after {timeout} attempts")
-        return 0
+        return 3
     
     def _read_picarro(self):
         """Method to write the command and read back one byte at a time until an end character is reached.

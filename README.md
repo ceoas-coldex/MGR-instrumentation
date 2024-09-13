@@ -1,10 +1,11 @@
 # MGR-instrumentation
 Codebase and documentation for unified data collection of the OSU COLDEX MGR lab instrumentation
 
-## GUI
-- ctrl-tab walks you around the different widgets
+## Overview
 
-## Dependencies
+## Getting Started
+
+### Dependencies
 - imports in the virtual environment requirements.txt
 
 ### Abakus
@@ -16,12 +17,18 @@ Codebase and documentation for unified data collection of the OSU COLDEX MGR lab
 ### Dimetrix laser
 - just plugged in
 
-## Running
-- Alt+q is the hotkey to stop data collection and kill the GUI
+## GUI
+- ctrl-tab walks you around the different widgets
+- Alt+q is the hotkey to kill the GUI, cleanly shuts down sensors and stops data collection
 
-## To add a new sensor
+## Data Management
+
+## Modification Instructions
+### To add a new sensor
 - sensor_comms.yaml
 - sensor_data.yaml
 - executor._set_gui_buttons
 - sensor -> new method for initializing, querying, shutting down, etc
+
+
 
