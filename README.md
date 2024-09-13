@@ -17,7 +17,7 @@ Codebase and documentation for unified data collection of the OSU COLDEX MGR lab
 - just plugged in
 
 ## Running
-- Alt+q is the hotkey to stop data collection
+- Alt+q is the hotkey to stop data collection and kill the GUI
 
 ## To add a new sensor
 - sensor_comms.yaml

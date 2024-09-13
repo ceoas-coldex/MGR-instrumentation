@@ -50,7 +50,7 @@ class Executor():
         
         # Initialize data management
         self.data_dir = "data" # Data storage directory, should yaml this
-        self.init_data_saving()
+        self.load_sensor_names()
         
         # Initialize the sensors
         self.sensor = Sensor()
@@ -62,7 +62,7 @@ class Executor():
 
         # Initialize the rest of the process
         self.interpretor = Interpretor()
-        self.display = Display(self.gui)  # Pass the GUI into the display class
+        self.display = Display(self.gui)  # Pass the GUI and data saving filepath into the display class
 
         # Initialize the busses
         self.abakus_bus = Bus()
@@ -81,33 +81,15 @@ class Executor():
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
         self._exit_all()
     
-    def init_csv(self, filepath, to_write):
-        # Check if we can read the file
-        try:
-            with open(filepath, 'r'):
-                pass
-        # If the file doesn't exist, create it and write in whatever we've passed as row titles
-        except FileNotFoundError:
-            with open(filepath, 'x') as csvfile:
-                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
-                writer.writerow(to_write)
-    
-    def init_data_saving(self):
-        """Method to set up data storage and configure internal data management"""
+    def load_sensor_names(self):
         # Read in the sensor config file to grab a list of all the sensors we're working with
-        with open("config/sensor_data.yaml", 'r') as stream:
-            big_data_dict = yaml.safe_load(stream)
-        self.sensor_names = big_data_dict.keys()
-
-        # Set up csv data storage: check if the data file has been created, and if not, create it
-        # Grab the current time in YYYY-MM-DD HH:MM:SS format
-        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        # Grab only the date part of the datetime
-        date = datetime.split(" ")[0]
-        # Create a filepath in the data saving directory with the date (may change to hour depending on size, access reqs, etc)
-        self.data_filepath = f"{self.data_dir}\\{date}.csv"
-
-        self.init_csv(self.data_filepath, self.sensor_names)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                big_data_dict = yaml.safe_load(stream)
+            self.sensor_names = big_data_dict.keys()
+        except FileNotFoundError as e:
+            logger.critical(f"Error in reading sensor data configuration file: {e}")
+            raise Exception
 
     def init_sensors(self):
         """Method to take each sensor through its initialization"""

@@ -472,7 +472,7 @@ class GUI():
  
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
     
-    def _config_notes_directory(self):
+    def _load_notes_directory(self):
         """
         Method to read the data_saving.yaml config file and set the notes/logs filepath accordingly. If
         it can't find that file, it defaults to the current working directory.
@@ -492,7 +492,7 @@ class GUI():
             # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
             directory = saving_config_dict["Notes"]["Directory"]
             suffix = saving_config_dict["Notes"]["Suffix"]
-            self.notes_filepath = f"{directory}\\{date}_{suffix}.csv"
+            self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
             logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
@@ -502,7 +502,7 @@ class GUI():
             logger.warning(f"Error in reading data_saving config file: {e}. Saving to current working directory")
             self.notes_filepath = f"{date}_notes.csv"
 
-    def _config_notes_entries(self):
+    def _load_notes_entries(self):
         """
         Method to read in the log_entries.yaml config file and grab onto that dictionary. If it can't
         find that file, it returns an empty dictionary - no logging entries will be displayed.
@@ -521,8 +521,8 @@ class GUI():
     def _config_notes(self):
         """Method to read in the logging/notes configuration yaml file and set up a csv to save manual logs/notes"""
         # Configure the data saving directory and the desired entries for the notes panel
-        self._config_notes_directory()
-        self._config_notes_entries()
+        self._load_notes_directory()
+        self._load_notes_entries()
         # Add one more entry for keeping track of the time.time() timestamp
         notes_titles = list(self.notes_dict.keys())
         notes_titles.insert(0, "Internal Timestamp (epoch)")
@@ -560,7 +560,6 @@ class GUI():
         except UnboundLocalError as e:
             logger.warning(f"Error in initializing logging & notes: {e}")
         
-
     ## --------------------- CALLBACKS --------------------- ##
 
     def _on_mousewheel(self, event):
@@ -735,7 +734,7 @@ class GUI():
                 writer.writerow(notes_titles) # give it a title
                 writer.writerow(notes) # write the notes
 
-    def _init_csv_file(self, filepath, to_write):
+    def _init_csv_file(self, filepath, header):
         # Check if we can read the file
         try:
             with open(filepath, 'r'):
@@ -744,7 +743,7 @@ class GUI():
         except FileNotFoundError:
             with open(filepath, 'x') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
-                writer.writerow(to_write)
+                writer.writerow(header)
     
     ##  --------------------- EXECUTABLES --------------------- ##
     
