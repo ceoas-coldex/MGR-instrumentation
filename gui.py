@@ -179,7 +179,7 @@ class GUI():
             for title in main_page_plot_titles:
                 y_axis_labels.append(title)
 
-        fig = plt.figure("All", figsize=(10.5, 4*num_subplots))
+        fig = plt.figure("All", figsize=(9, 4*num_subplots))
         self.data_streaming_figs.update({"All": fig})
         for i in range(num_subplots):
             ax = fig.add_subplot(num_subplots,1,i+1)
@@ -200,7 +200,7 @@ class GUI():
             channels = list(self.big_data_dict[name]["Data"].keys())
             num_subplots = len(channels)
             # Create a figure and size it based on the number of channels
-            fig = plt.figure(name, figsize=(10.5,4*num_subplots))
+            fig = plt.figure(name, figsize=(9,4*num_subplots))
             
             # Create a subplot for each channel, and label the axes
             self.data_streaming_figs.update({name:fig})
@@ -299,15 +299,15 @@ class GUI():
                     axs[i].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
 
                 # If we also need to plot on the main page, do that here
-                if name in self.main_page_plots:
-                    if channels[i] in self.main_page_plots[name]:
-                        axs2[j].plot(x, y, '.--')
+                # if name in self.main_page_plots:
+                #     if channels[i] in self.main_page_plots[name]:
+                #         axs2[j].plot(x, y, '.--')
 
-                        xlim = axs2[j].get_xlim()
-                        if (xlim[1] - xlim[0]) >= self.default_plot_length:
-                            axs2[j].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
+                #         xlim = axs2[j].get_xlim()
+                #         if (xlim[1] - xlim[0]) >= self.default_plot_length:
+                #             axs2[j].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
 
-                        j+=1
+                #         j+=1
 
     def get_sensor_data(self, sensor_name):
         """

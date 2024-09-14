@@ -155,8 +155,8 @@ class Dimetix():
         response = self.ser.read_until(self.CRLF)
         time2 = time.time()
         
-        print(f"sending serial message took {timestamp-time1} sec")
-        print(f"laser reading took {time2-timestamp} sec")
+        # print(f"sending serial message took {timestamp-time1} sec")
+        # print(f"laser reading took {time2-timestamp} sec")
         
         # Decode the response
         response = response.decode()

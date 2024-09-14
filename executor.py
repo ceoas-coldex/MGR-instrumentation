@@ -201,7 +201,7 @@ class Executor():
 
                     # Block until we get a result - only need to do this with the highest level, I think, but could call 
                     # it for all of them if you want to be sure it's all getting processed
-                    # eDisplay.result()
+                    eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
                 # prioritize shutting down the sensors cleanly and killing the program
