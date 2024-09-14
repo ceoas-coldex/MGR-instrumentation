@@ -263,7 +263,7 @@ class GUI():
         so the canvases exist wherever Tkinter keeps the frames
         """
 
-        for i, name in enumerate(self.data_streaming_pages):
+        for name in self.data_streaming_pages:
             # Grab the appropriate matplotlib figure and root window (a tkinter frame)
             fig = self.data_streaming_figs[name]
             window = self.data_streaming_windows[name]
@@ -272,31 +272,42 @@ class GUI():
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
 
-            # # Add a canvas to the main window, which handles its own scrollbar separately so don't scroll here
-            # self._one_canvas(fig, all_canvas, row=i+1, vbar=None, scroll=False)
-
         
     def _update_plots(self):
         """Method that updates the data streaming plots with data stored in self.big_data_dict, should be called as frequently as possible.
         Called in self.run() when the GUI gets updated"""
         # A bunch of loops!
         # 1. Loop through the sensors and grab both their corresponding matplotlib figure/axes and data from their updated buffers
+        j = 0
+
         for name in self.sensor_names:
             fig = self.data_streaming_figs[name]
             axs = fig.get_axes()
-            x, ys, labels = self.get_sensor_data(name)
+
+            if name in self.main_page_plots:
+                main_page_fig = self.data_streaming_figs["All"]
+                axs2 = main_page_fig.get_axes()
+            
+            x, ys, channels = self.get_sensor_data(name)
             # 2. Loop through the number of data channels present for this sensor (i.e how many deques are present in ys)
             for i, y in enumerate(ys):
-                # 3. Loop through and remove the "artists" in the current figure axis - this clears the axis without having
-                # to call axis.clear(), so preserves axis labels and, more importantly for plot zooming, axis limits and bounds
-                for artist in axs[i].lines:
-                    artist.remove()
                 # Finally, plot the updated data...
                 axs[i].plot(x, y, '.--')
                 # ...and cap the x limits so our plots don't get unreadable as we plot over long timespans.
                 xlim = axs[i].get_xlim()
                 if (xlim[1] - xlim[0]) >= self.default_plot_length:
                     axs[i].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
+
+                # If we also need to plot on the main page, do that here
+                if name in self.main_page_plots:
+                    if channels[i] in self.main_page_plots[name]:
+                        axs2[j].plot(x, y, '.--')
+
+                        xlim = axs2[j].get_xlim()
+                        if (xlim[1] - xlim[0]) >= self.default_plot_length:
+                            axs2[j].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
+
+                        j+=1
 
     def get_sensor_data(self, sensor_name):
         """

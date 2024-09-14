@@ -123,7 +123,7 @@ class Display():
         # logger.info(f"Data: \n{interp_data}")
         try:
             self.gui.update_buffer(interp_data, use_noise=True)
-            self.save_data(interp_data)
+            # self.save_data(interp_data)
         except TypeError:
             pass
         time.sleep(delay)

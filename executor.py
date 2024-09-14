@@ -73,9 +73,9 @@ class Executor():
         self.main_interp_bus = Bus()
 
         # Set the delay times (sec)
-        self.sensor_delay = 0.5
+        self.sensor_delay = 0.3
         self.interp_delay = 0.1
-        self.display_delay = 0.1
+        self.display_delay = 0.3
 
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
@@ -201,7 +201,7 @@ class Executor():
 
                     # Block until we get a result - only need to do this with the highest level, I think, but could call 
                     # it for all of them if you want to be sure it's all getting processed
-                    eDisplay.result()
+                    # eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -
                 # prioritize shutting down the sensors cleanly and killing the program
