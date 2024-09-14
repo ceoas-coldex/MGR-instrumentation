@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+# fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh = logging.StreamHandler()
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -29,8 +30,9 @@ fh.setFormatter(formatter)
 class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
         # Picarro communication codes
-        self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
-        self.STATUS = b"_Instr_GetStatus\r\n" # gets instrument status
+        # self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
+        self.QUERY = b'_Meas_GetConc\r\n' # gets latest measurement and timestamp
+        self.STATUS = b'_Instr_GetStatus\r\n' # gets instrument status
 
         self.initialize_pyserial(serial_port, baud_rate)
 
@@ -48,9 +50,9 @@ class Picarro():
         try:
             self.ser = serial.Serial(port, baud, timeout=0.5)
             logger.info(f"Connected to serial port {port} with baud {baud}")
-            print(self.ser.writable())
-            print(self.ser.readable())
-            print(self.ser.BAUDRATES)
+            # print(self.ser.writable())
+            # print(self.ser.readable())
+            # print(self.ser.BAUDRATES)
         except SerialException:
             logger.warning(f"Could not connect to serial port {port}")
 
@@ -126,7 +128,7 @@ class Picarro():
     
 
 if __name__ == "__main__":
-    my_picarro = Picarro()
+    my_picarro = Picarro(serial_port="COM9", baud_rate=19200)
     # order of the gas measurements returned by query()
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
     gasses = ["CO2", "CH4", "CO", "H2O"]
