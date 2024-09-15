@@ -73,9 +73,9 @@ class Executor():
         self.main_interp_bus = Bus()
 
         # Set the delay times (sec)
-        self.sensor_delay = 0.3
+        self.sensor_delay = 0.5
         self.interp_delay = 0.1
-        self.display_delay = 0.3
+        self.display_delay = 0.5
 
     def __del__(self) -> None:
         """Destructor, makes sure the sensors shut down cleanly when this object is destroyed"""
