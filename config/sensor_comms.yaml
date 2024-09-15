@@ -21,7 +21,7 @@ Flowmeter SLI2000 (Green):
 Flowmeter SLS1500 (Black):
   serial port: "COM5" # lab computer
   baud rate: 115200
-# Bronkhorst Pressure:
-#   serial port:
-#   baud rate:
+Bronkhorst Pressure:
+  serial port: "COM3" #laptop
+  baud rate: 38400
 # Melthead:
