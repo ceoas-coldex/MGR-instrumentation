@@ -60,7 +60,7 @@ class Executor():
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
         self.gui = GUI(sensor_button_callback_dict=button_callbacks)
-        self.test_gui = TestGUI()
+        # self.test_gui = TestGUI()
 
         # Initialize the rest of the process
         self.interpretor = Interpretor()
@@ -72,6 +72,7 @@ class Executor():
         self.flowmeter_sls1500_bus = Bus()
         self.laser_bus = Bus()
         self.picarro_gas_bus = Bus()
+        self.bronkhorst_bus = Bus()
         self.main_interp_bus = Bus()
 
         # Set the delay times (sec)
@@ -192,16 +193,17 @@ class Executor():
                 # self.test_gui.run()
                 try:
                     with concurrent.futures.ThreadPoolExecutor() as self.executor:
-                        # self.gui.run(0.05)
+                        self.gui.run(0.05)
                         eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
 
                         eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
                         eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
                         eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
                         ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-                        
+                        eBronkhorst = self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
                         eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
-                                                    self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.main_interp_bus, self.interp_delay)
+                                                    self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
+                                                    self.main_interp_bus, self.interp_delay)
 
                         eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
 

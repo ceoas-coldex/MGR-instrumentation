@@ -34,8 +34,11 @@ from main_pipeline.bus import Bus
 # This allows us to have the entire process running even if we only want a few sensors online
 
 # Load the sensor comms configuration file - dictionary with sensor serial ports and baud rates
-with open("config/sensor_comms.yaml", 'r') as stream:
-    comms_config = yaml.safe_load(stream)
+try:
+    with open("config/sensor_comms.yaml", 'r') as stream:
+        comms_config = yaml.safe_load(stream)
+except FileNotFoundError as e:
+    logger.error(f"Error in loading the sensor_comms configuration file: {e} Check your file storage and directories")
 
 # Picarro Gas
 try:
@@ -45,6 +48,8 @@ try:
 except SerialException:
     from sensor_interfaces.sim_instruments import Picarro
     logger.info(f"Couldn't find Picarro at port {comms_config['Picarro Gas']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.warning(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 # Abakus 
 try:
@@ -53,7 +58,9 @@ try:
     logger.info(f"Successfully connected to port {comms_config['Abakus Particle Counter']['serial port']}, using real Abakus hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import Abakus
-    logger.info(f"Couldn't find Abakus at port {comms_config['Abakus Particle Counter']['serial port']}, shadowing sensor calls with substitute functions")
+    logger.warning(f"Couldn't find Abakus at port {comms_config['Abakus Particle Counter']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 # Flowmeter - they both need to be plugged in for this to work
 try:
@@ -64,8 +71,10 @@ try:
                 f"{comms_config['Flowmeter SLS1500 (Black)']['serial port']}, using real Flowmeter hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import FlowMeter
-    logger.info(f"Couldn't find Flowmeter at port {comms_config['Flowmeter SLI2000 (Green)']['serial port']} and " + 
+    logger.warning(f"Couldn't find Flowmeter at port {comms_config['Flowmeter SLI2000 (Green)']['serial port']} and " + 
                 f"{comms_config['Flowmeter SLS1500 (Black)']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 # Laser
 try:
@@ -74,8 +83,20 @@ try:
     logger.info(f"Successfully connected to port {comms_config['Laser Distance Sensor']['serial port']}, using real Dimetix hardware")
 except SerialException:
     from sensor_interfaces.sim_instruments import Dimetix
-    logger.info(f"Couldn't find Dimetix laser at port {comms_config['Laser Distance Sensor']['serial port']}, shadowing sensor calls with substitute functions")
+    logger.warning(f"Couldn't find Dimetix laser at port {comms_config['Laser Distance Sensor']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
+# Bronkhorst
+try:
+    serial.Serial(port=comms_config['Bronkhorst Pressure']['serial port'], baudrate=comms_config['Bronkhorst Pressure']['baud rate'])
+    from sensor_interfaces.bronkhorst_interface import Bronkhorst
+    logger.info(f"Successfully connected to port {comms_config['Bronkhorst Pressure']['serial port']}, using real Bronkhorst hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import Bronkhorst
+    logger.warning(f"Couldn't find Bronkhorst at port {comms_config['Bronkhorst Pressure']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
@@ -88,6 +109,7 @@ class Sensor():
         self.laser = Dimetix(serial_port=comms_config["Laser Distance Sensor"]["serial port"], baud_rate=comms_config["Laser Distance Sensor"]["baud rate"])
         self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
         # self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
+        self.bronkhorst = Bronkhorst(serial_port=comms_config["Bronkhorst Pressure"]["serial port"], baud_rate=comms_config["Bronkhorst Pressure"]["baud rate"])
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         with open("config/sensor_data.yaml", 'r') as stream:
@@ -116,6 +138,7 @@ class Sensor():
         self.sensor_status_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
         self.sensor_status_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
         self.sensor_status_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
+        self.sensor_status_dict["Bronkhorst Pressure"] = self.bronkhorst.initialize_bronkhorst()
 
         # The flowmeters are a little special, since it's two sensors in one - deal with that here
         # Initialize and grab the results of flowmeter initialization
@@ -202,7 +225,8 @@ class Sensor():
         time.sleep(delay)
 
     def read_laser(self):
-        """Method that gets data from the Dimetix laser \n
+        """Method that gets data from the Dimetix laser
+
             Returns - tuple (timestamp [epoch time], data_out [str])"""
         timestamp, distance = self.laser.query_distance()
         timestamp, temp = self.laser.query_temperature()
@@ -222,7 +246,8 @@ class Sensor():
         time.sleep(delay)
 
     def read_picarro(self, picarro_model):
-        """Method that gets data from a Picarro, specified by the model \n
+        """Method that gets data from a Picarro, specified by the model
+
             Returns - tuple (timestamp[float, epoch time], data_out[str])"""
         if picarro_model == "GAS":
             timestamp, data_out = self.gas_picarro.query()
@@ -232,4 +257,18 @@ class Sensor():
             timestamp = [0.0]
             data_out = ["0"]
 
+        return timestamp, data_out
+
+    ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
+    def bronkhorst_producer(self, bronkhorst_bus:Bus, delay):
+        """Method that writes bronkhorst data to its bus"""
+        data = self.read_bronkhorst()
+        bronkhorst_bus.write(data)
+        time.sleep(delay)
+
+    def read_bronkhorst(self):
+        """Method that gets data from the Bronkhorst pressure sensor
+
+            Returns - tuple (timestamp [epoch time], data_out [(bytestr, bytestr)])"""
+        timestamp, data_out = self.bronkhorst.query()
         return timestamp, data_out

@@ -129,7 +129,7 @@ class Display():
         # logger.info(f"Data: \n{interp_data}")
         try:
             tstart = time.time()
-            # self.gui.update_buffer(interp_data, use_noise=True)
+            self.gui.update_buffer(interp_data, use_noise=True)
             tend = time.time()
             print(f"updaing buffer took {tend-tstart} seconds")
             self.save_data(interp_data)

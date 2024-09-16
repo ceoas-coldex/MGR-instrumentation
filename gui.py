@@ -274,7 +274,7 @@ class GUI():
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
         
-    def _update_plots(self):
+    def _update_plots_1(self):
         
         for name in self.sensor_names:
             fig = self.data_streaming_figs[name]
@@ -305,7 +305,7 @@ class GUI():
                 # you can put a pause in if you want to slow things down
                 plt.pause(.1)
     
-    def _update_plots_1(self):
+    def _update_plots(self):
         tstart = time.time()
         """Method that updates the data streaming plots with data stored in self.big_data_dict, should be called as frequently as possible.
         Called in self.run() when the GUI gets updated"""

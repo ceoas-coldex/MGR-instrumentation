@@ -38,7 +38,7 @@ class Abakus():
     def initialize_abakus(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -75,9 +75,9 @@ class Picarro():
     def initialize_picarro(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
-        
-        Returns - 2
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
+            
+            Returns - 2
         """
         logger.info("Initialized Picarro")
         return 2
@@ -106,7 +106,7 @@ class FlowMeter():
     def initialize_flowmeter(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -146,7 +146,7 @@ class Dimetix():
     def initialize_laser(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -180,9 +180,28 @@ class Bronkhorst():
         """Not yet done. Fake hardware, pretends to do everything the real Dimetix laser class does"""
         self.initialize_pyserial(serial_port, baud_rate)
 
-    def initialize_pyserial(port, baud):
+    def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    @log_on_start(logging.INFO, "Initializing Bronkhorst")
+    def initialize_bronkhorst(self):
+        """
+        The initialization methods return one of three values: 
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
+            
+            Returns - 2
+        """
+        logger.info("Bronkhorst initialized")
+        return 2
+    
     # @log_on_end(logging.INFO, "Bronkhorst queried", logger=logger)
     def query(self):
-        pass
+        """Returns - timestamp (float, epoch time), output ((bytestr, bytestr), chained responses for setpoint & measure and 
+            fmeasure  & temperature)"""
+        setpoint_and_meas = ':0A800281215DC001217CE0'
+        fmeas_and_temp = ':0E8002A1404479C0E0214741C80000'
+        timestamp = time.time()
+
+        output = (setpoint_and_meas, fmeas_and_temp)
+        
+        return timestamp, output
