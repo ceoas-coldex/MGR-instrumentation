@@ -22,6 +22,7 @@ import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
 from gui import GUI
+from gui2 import TestGUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpreter import Interpretor
@@ -59,6 +60,7 @@ class Executor():
         # Set up the GUI
         button_callbacks = self._set_gui_buttons()
         self.gui = GUI(sensor_button_callback_dict=button_callbacks)
+        self.test_gui = TestGUI()
 
         # Initialize the rest of the process
         self.interpretor = Interpretor()
@@ -175,6 +177,7 @@ class Executor():
         while not self.gui_shutdown:
             try:
                 self.gui.run(0.1)
+                # self.test_gui.run()
             except KeyboardInterrupt:
                 try:
                     self.clean_sensor_shutdown()
@@ -184,9 +187,12 @@ class Executor():
                     os._exit(130)
             # Note - once we enter ↓this loop, we no longer access ↑that loop. The nested loop doesn't mean we're calling gui.run() twice
             while not self.data_shutdown:
-                self.gui.run(0)
+                
+                self.gui.run(0.05)
+                # self.test_gui.run()
                 try:
                     with concurrent.futures.ThreadPoolExecutor() as self.executor:
+                        # self.gui.run(0.05)
                         eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
 
                         eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
@@ -201,6 +207,11 @@ class Executor():
 
                     # Block until we get a result - only need to do this with the highest level, I think, but could call 
                     # it for all of them if you want to be sure it's all getting processed
+                    # eAbakus.result()
+                    # eFlowMeterSLI2000.result()
+                    # eFlowMeterSLS1500.result()
+                    # eLaser.result()
+                    # eInterpretor.result()
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -

@@ -207,8 +207,10 @@ class GUI():
             _, _, labels = self.get_sensor_data(name)
             for i in range(0, num_subplots):
                 ax = fig.add_subplot(num_subplots,1,i+1)
+                ax.plot(time.time(), 0)
                 ax.set_xlabel("Time (epoch)")
                 ax.set_ylabel(labels[i])
+                ax.set_xlim([time.time(), time.time()+(5*60)])
 
             # A little cheesy - futz with the whitespace by adjusting the position of the top edge of the subplots 
             # (as a fraction of the figure height) based on how many subplots we have. For 1 subplot put it at 90% of the figure height, 
@@ -271,9 +273,40 @@ class GUI():
             vbar = Scrollbar(window, orient=VERTICAL)
             # Make a canvas to hold the figure in the window, and set up the scrollbar
             self._one_canvas(fig, window, vbar)
-
         
     def _update_plots(self):
+        
+        for name in self.sensor_names:
+            fig = self.data_streaming_figs[name]
+            axs = fig.get_axes()
+            x, ys, channels = self.get_sensor_data(name)
+
+            for i, ax in enumerate(axs):
+                (ln,) = ax.get_lines()
+                # get copy of entire figure (everything inside fig.bbox) sans animated artist
+                # bg = fig.canvas.copy_from_bbox(fig.bbox)
+                # draw the animated artist, this uses a cached renderer
+                # ax.draw_artist(ln)
+                # # show the result to the screen, this pushes the updated RGBA buffer from the
+                # # renderer to the GUI framework so you can see it
+                # fig.canvas.blit(fig.bbox)
+
+                # # reset the background back in the canvas state, screen unchanged
+                # fig.canvas.restore_region(bg)
+                # update the artist, neither the canvas state nor the screen have changed
+                ln.set_xdata(x)
+                ln.set_ydata(ys[i])
+                # re-render the artist, updating the canvas state, but not the screen
+                ax.draw_artist(ln)
+                # copy the image to the GUI state, but screen might not be changed yet
+                fig.canvas.blit(fig.bbox)
+                # flush any pending GUI events, re-painting the screen if needed
+                # fig.canvas.flush_events()
+                # you can put a pause in if you want to slow things down
+                plt.pause(.1)
+    
+    def _update_plots_1(self):
+        tstart = time.time()
         """Method that updates the data streaming plots with data stored in self.big_data_dict, should be called as frequently as possible.
         Called in self.run() when the GUI gets updated"""
         # A bunch of loops!
@@ -284,9 +317,8 @@ class GUI():
             fig = self.data_streaming_figs[name]
             axs = fig.get_axes()
 
-            if name in self.main_page_plots:
-                main_page_fig = self.data_streaming_figs["All"]
-                axs2 = main_page_fig.get_axes()
+            main_page_fig = self.data_streaming_figs["All"]
+            axs2 = main_page_fig.get_axes()
             
             x, ys, channels = self.get_sensor_data(name)
             # 2. Loop through the number of data channels present for this sensor (i.e how many deques are present in ys)
@@ -298,8 +330,9 @@ class GUI():
                 if (xlim[1] - xlim[0]) >= self.default_plot_length:
                     axs[i].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
 
-                # If we also need to plot on the main page, do that here
-                # if name in self.main_page_plots:
+                # # If we also need to plot on the main page, do that here
+                # # if name in self.main_page_plots:
+                # try: 
                 #     if channels[i] in self.main_page_plots[name]:
                 #         axs2[j].plot(x, y, '.--')
 
@@ -308,6 +341,12 @@ class GUI():
                 #             axs2[j].set_xlim([x[-1] - self.default_plot_length, x[-1] + 1]) 
 
                 #         j+=1
+                # except KeyError:
+                #     pass
+            print(f"buffer length: {len(y)}")
+
+        tend = time.time()
+        print(f"updating plots took {tend-tstart} seconds")
 
     def get_sensor_data(self, sensor_name):
         """
@@ -326,9 +365,8 @@ class GUI():
         # Pull out the keys under the "Data" subsection of the sensor to get a list of the channel names
         channels = list(self.big_data_dict[sensor_name]["Data"].keys())
         # For each channel, grab the data and append to a list
-        y_data = []
-        for channel in channels:
-            y_data.append(self.big_data_dict[sensor_name]["Data"][channel])
+        y_data = [self.big_data_dict[sensor_name]["Data"][channel] for channel in channels]
+
         return x_data, y_data, channels
 
     def update_buffer(self, new_data:dict, use_noise=False):
@@ -803,9 +841,13 @@ class GUI():
         self.root.destroy()
 
     def run(self, delay):
-        self._update_plots()
+        # self._update_plots()
         try:
+            tstart = time.time()
             self.root.update()
+            self.root.after(50, self._update_plots)
+            tend = time.time()
+            print(f"updating tkinter took {tend-tstart} seconds")
             time.sleep(delay)
             return True
         except:

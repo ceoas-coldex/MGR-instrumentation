@@ -5,6 +5,7 @@
 import time
 import yaml
 import csv
+import pandas as pd
 
 from gui import GUI
 from main_pipeline.bus import Bus
@@ -98,6 +99,9 @@ class Display():
         
         Args -
             - data_dict: dict, must have the same key-value pairs as the expected dictionary from config/sensor_data.yaml"""
+        
+        # print(pd.DataFrame(data_dict))
+        tstart = time.time()
         to_write = []
         try:
             for name in self.sensor_names:
@@ -115,15 +119,21 @@ class Display():
                 writer.writerow(to_write)
         except FileNotFoundError as e:
             logger.warning(f"Error in accessing csv to save data: {e}")
-    
+        tend = time.time()
+        print(f"saving data took {tend-tstart} seconds")
+
     def display_consumer(self, interpretor_bus:Bus, delay):
         """Method to read the processed data published by the interpretor class, save it to a csv, and update 
         the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
         # logger.info(f"Data: \n{interp_data}")
         try:
-            self.gui.update_buffer(interp_data, use_noise=False)
-            # self.save_data(interp_data)
+            tstart = time.time()
+            # self.gui.update_buffer(interp_data, use_noise=True)
+            tend = time.time()
+            print(f"updaing buffer took {tend-tstart} seconds")
+            self.save_data(interp_data)
+            
         except TypeError:
             pass
         time.sleep(delay)
