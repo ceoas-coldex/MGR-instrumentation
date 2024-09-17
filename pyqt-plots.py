@@ -202,21 +202,18 @@ class ApplicationWindow(QWidget):
         # Position the panel at the top of the window
         left_layout.setAlignment(QtCore.Qt.AlignTop)
 
-    def _make_title_control_layout(self, parent:QGridLayout, title_buttons:dict):
+    def _make_title_control_layout(self, parent:QGridLayout, title_buttons:dict, colspan=2):
         # Set the title
         label = QLabel(self)
         label.setText("Sensor Status & Control")
         label.setFont(self.bold16)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         # label.setMargin()
-        colspan = 2
         parent.addWidget(label, 0, 0, 1, colspan) # args: widget, row, column, rowspan, columnspan
 
-        # Make a list of buttons we want...
-        # title_buttons = ["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"]
-        # title_button_callbacks = []
         num_rows, num_cols = find_grid_dims(num_elements=len(title_buttons), num_cols=colspan)
-        # ...and create, position, and assign a callback for each of them
+
+        # For all the buttons we want (stored in the title_buttons dict) create, position, and assign a callback for each
         i = 0
         title_button_text = list(title_buttons.keys())
         for row in range(1, num_rows+1): # Adjusting for the title
@@ -237,7 +234,7 @@ class ApplicationWindow(QWidget):
         return start_next_row, colspan
     
     def _make_sensor_control_layout(self, parent:QGridLayout, sensor_buttons:dict, starting_row, colspan):
-        
+        self.sensor_status_display = {}
         num_rows, num_cols = find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
         i = 0
         elements_per_row = 4
@@ -252,6 +249,14 @@ class ApplicationWindow(QWidget):
                 title.setStyleSheet("padding-top:10px")
                 parent.addWidget(title, row, col, 1, colspan)
 
+                status = QLabel(self)
+                status.setText("OFFLINE")
+                status.setFont(self.norm12)
+                status.setStyleSheet("background-color:#AF5189; margin:10px")
+                status.setAlignment(Qt.AlignCenter)
+                parent.addWidget(status, row+1, col, 1, colspan)
+                self.sensor_status_display.update({sensor:status})
+                
                 try:
                     buttons = sensor_buttons[sensor]
                     c = 0
@@ -260,17 +265,10 @@ class ApplicationWindow(QWidget):
                         b.setText(button)
                         b.setFont(self.norm12)
                         b.pressed.connect(sensor_buttons[sensor][button])
-                        parent.addWidget(b, row+1, col+c)
+                        parent.addWidget(b, row+2, col+c)
                         c+=1
                 except KeyError:
                     print("no command buttons for this sensor")
-
-                status = QLabel(self)
-                status.setText("OFFLINE")
-                status.setFont(self.norm12)
-                status.setStyleSheet("background-color:#AF5189; margin:10px")
-                status.setAlignment(Qt.AlignCenter)
-                parent.addWidget(status, row+2, col, 1, colspan)
 
                 line = QFrame(self)
                 line.setFrameShape(QFrame.HLine)
@@ -298,16 +296,51 @@ class ApplicationWindow(QWidget):
         return title_buttons, sensor_buttons
     
     def _on_sensor_init(self):
-        pass
+        self.sensor_status_dict = self.sensor.initialize_sensors()
+        self._update_sensor_status()
 
     def _on_sensor_shutdown(self):
-        pass
+        self.sensor_status_dict = self.sensor.shutdown_sensors()
+        self._update_sensor_status()
     
     def _on_start_data(self):
         self.plotting = True
         
     def _on_stop_data(self):
         self.plotting = False
+
+    def _update_sensor_status(self):
+        """Method to update the sensor status upon initialization or shutdown. Uses the values stored in
+        self.sensor_status_dict to set the color and text of each sensor status widget."""
+        # Loop through the sensors and grab their status from the sensor status dictionary
+        for name in self.sensor_names:
+            status = self.sensor_status_dict[name]
+            # If we're offline
+            if status == 0:
+                # color = "#D80F0F"
+                color = "#AF5189"
+                text = "OFFLINE"
+            # If we're online / successfully initialized
+            elif status == 1:
+                color = "#619CD2"
+                text = "ONLINE"
+            # If we're disconnected / using shadow hardware
+            elif status == 2:
+                color = "#FFC107"
+                text = "SHADOW HARDWARE"
+            # IF we failed initialization / there's some other error going on
+            elif status == 3:
+                color = "#D55E00"
+                text = "ERROR"
+            # If we recieved an erroneous reading, make it obvious
+            else:
+                color = "purple"
+                text = "?????"
+
+            # Update the sensor status accordingly
+            status = self.sensor_status_display[name] # This is a dictionary of QLabels
+            status.setText(text)
+            status.setStyleSheet(f"background-color:{color}; margin:10px")
 
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
     def build_notes_layout(self, right_layout:QLayout):
