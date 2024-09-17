@@ -14,6 +14,7 @@ import time
 from collections import deque
 from functools import partial
 import csv
+import concurrent.futures
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -30,6 +31,9 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 fh.setFormatter(formatter)
 
 from main_pipeline.sensor import Sensor
+from main_pipeline.interpreter import Interpretor
+from main_pipeline.display import Display
+from main_pipeline.bus import Bus
 
 # pyqt threading
 class WorkerSignals(QObject):
@@ -94,6 +98,22 @@ class ApplicationWindow(QWidget):
         super().__init__()
 
         self.sensor = Sensor()
+        self.interpretor = Interpretor()
+        self.display = Display()
+
+        # Initialize the busses
+        self.abakus_bus = Bus()
+        self.flowmeter_sli2000_bus = Bus()
+        self.flowmeter_sls1500_bus = Bus()
+        self.laser_bus = Bus()
+        self.picarro_gas_bus = Bus()
+        self.bronkhorst_bus = Bus()
+        self.main_interp_bus = Bus()
+
+        # Set the delay times (sec)
+        self.sensor_delay = 0.3
+        self.interp_delay = 0.1
+        self.display_delay = 0.1
         
         # Window settings
         self.setGeometry(50, 50, 2000, 1200) # Set window size (x-coord, y-coord, width, height)
@@ -130,9 +150,14 @@ class ApplicationWindow(QWidget):
         self.threadpool = QThreadPool()
             
         # Initiate the timer
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_plots)
-        self.timer.start(50)
+        self.plots_timer = QTimer()
+        self.plots_timer.timeout.connect(self.update_plots)
+        self.plots_timer.start(250)
+
+        self.execution_timer = QTimer()
+        self.execution_timer.timeout.connect(self.run_data_collection)
+        self.execution_timer.start(250)
+
         
         # Show the window
         self.show()
@@ -192,8 +217,8 @@ class ApplicationWindow(QWidget):
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
     
-    ## --------------------- SENSOR STATUS & CONTROL --------------------- ##    
-
+    ## --------------------- SENSOR STATUS & CONTROL --------------------- ## 
+       
     def build_control_layout(self, left_layout:QLayout):
         title_button_info, sensor_button_info = self._define_button_callbacks()
         start_next_row, title_colspan = self._make_title_control_layout(left_layout, title_button_info)
@@ -307,17 +332,19 @@ class ApplicationWindow(QWidget):
         self.title_buttons["Stop Data Collection"].setEnabled(True)
 
     def _on_sensor_shutdown(self):
-        self.plotting = False
+        self.data_collection = False
         self.sensor_status_dict = self.sensor.shutdown_sensors()
         self._update_sensor_status()
         self.title_buttons["Start Data Collection"].setEnabled(False)
         self.title_buttons["Stop Data Collection"].setEnabled(False)
     
     def _on_start_data(self):
-        self.plotting = True
+        self.data_collection = True
+        # worker = Worker(self.run_data_collection())
+        # self.threadpool.start(worker)
         
     def _on_stop_data(self):
-        self.plotting = False
+        self.data_collection = False
 
     def _update_sensor_status(self):
         """Method to update the sensor status upon initialization or shutdown. Uses the values stored in
@@ -353,6 +380,7 @@ class ApplicationWindow(QWidget):
             status.setStyleSheet(f"background-color:{color}; margin:10px")
 
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
+
     def build_notes_layout(self, right_layout:QLayout):
         # Set the title
         label = QLabel(self)
@@ -440,44 +468,135 @@ class ApplicationWindow(QWidget):
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         center_layout.addWidget(label)
 
-        # Set the plotting button
-        self.plotting = False
-        # b = QPushButton("Start plotting")
-        # b.pressed.connect(self.start_plots)
-        # center_layout.addWidget(b)
+        # Initialize the plotting flag
+        self.data_collection = False
 
         # Make the dropdown
-        combobox = QComboBox()
-        combobox.addItems(self.sensor_names)
-        center_layout.addWidget(combobox)
+        self.combobox = QComboBox()
+        self.combobox.addItems(self.sensor_names)
+        self.combobox.currentIndexChanged.connect(self.display_sensor_plot)
+        center_layout.addWidget(self.combobox)
 
-        # Set the plots
-        self.plots = {"test":[]}
-        for i in range(5):
-            n = int(np.random.randint(1,3))
-            x_init = [[0]]*n
-            y_init = [[0]]*n
-            fig = MyFigureCanvas(x_init, y_init, num_subplots=n, buffer_length=self.max_buffer_length)
-            toolbar = NavigationToolbar(fig, self, False)
-            self.plots["test"].append(fig)
-            center_layout.addWidget(toolbar, alignment=Qt.AlignHCenter)
-            center_layout.addWidget(fig, alignment=Qt.AlignHCenter)
+        self.plot_stack = QStackedWidget(self)
+
+        self.plots = {}
+        for sensor in self.sensor_names:
+            parent = QWidget(self)
+
+
+            num_subplots = len(self.big_data_dict[sensor]["Data"])
+            fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,
+                                 y_init=[[0]]*num_subplots,
+                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
+                                 num_subplots=num_subplots,
+                                 buffer_length=self.max_buffer_length)
+            toolbar = NavigationToolbar(canvas=fig, parent=self, coordinates=False)
+            fig.setParent(parent)
+            toolbar.setParent(parent)
+
+            self.plot_stack.addWidget(parent)
+            self.plots.update({sensor: fig})
+
+        center_layout.addWidget(self.plot_stack)
+        
+        # # Set the plots
+        # self.plots = {"test":[]}
+        # for i in range(5):
+        #     n = int(np.random.randint(1,3))
+        #     x_init = [[0]]*n
+        #     y_init = [[0]]*n
+        #     fig = MyFigureCanvas(x_init, y_init, num_subplots=n, buffer_length=self.max_buffer_length)
+        #     toolbar = NavigationToolbar(fig, self, False)
+        #     self.plots["test"].append(fig)
+        #     center_layout.addWidget(toolbar, alignment=Qt.AlignHCenter)
+        #     center_layout.addWidget(fig, alignment=Qt.AlignHCenter)
     
-    def start_plots(self):
-        """Set the plotting flag to True"""
-        self.plotting = True
+    def display_sensor_plot(self, i):
+        self.plot_stack.setCurrentIndex(i)
 
     def update_plots(self):
         """Method to update the plots with new data"""
-        if self.plotting:
-            for i, fig in enumerate(self.plots["test"]):
-                fig.update_data() # If left blank, udates and plots with random data
+        if self.data_collection:
+            sensor = self.combobox.currentText()
+            fig = self.plots[sensor]
+            if type(fig) == MyFigureCanvas:
+
+                num_subplots = len(self.big_data_dict[sensor]["Data"].keys())
+
+                # print(list(self.big_data_dict[sensor]["Data"].values()))
+                # print([self.big_data_dict[sensor]["Time (epoch)"]]*num_subplots)
+
+                fig.update_data(x_new=[self.big_data_dict[sensor]["Time (epoch)"]]*num_subplots,
+                                y_new=list(self.big_data_dict[sensor]["Data"].values()))
                 fig.update_canvas()
+
+            # for plot in self.plots:
+            #     fig = self.plots[plot]
+            #     fig.update_data() # If left blank, udates and plots with random data
+            #     fig.update_canvas()
+
+    ## --------------------- DATA COLLECTION PIPELINE --------------------- ##
+    def run_data_collection(self):
+        if self.data_collection:
+            with concurrent.futures.ThreadPoolExecutor() as self.executor:
+                eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+
+                eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
+                eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
+                eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
+                ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+                eBronkhorst = self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
+                eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                                            self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
+                                            self.main_interp_bus, self.interp_delay)
+
+                eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
+
+
+            data = eDisplay.result()
+            print(data)
+            self.update_buffer(data, use_noise=False)
+            # print(self.big_data_dict)
+
+    def update_buffer(self, new_data:dict, use_noise=False):
+        """Method to update the self.big_data_dict buffer with new data from the sensor pipeline. This gets called from executor.py
+        
+        Args - 
+            - new_data: dict, most recent data update. Should have the same key/value structure as big_data_dict
+            - use_noise: bool, adds some random noise if true. For testing
+        """
+        # For each sensor name, grab the timestamp and the data from each sensor channel. If it's in a list, take the
+        # first index, otherwise, append the dictionary value directly
+        for name in self.sensor_names:
+            # Grab and append the timestamp
+            try:    # Check if the dictionary key exists... 
+                new_time = new_data[name]["Time (epoch)"]  
+                self.big_data_dict[name]["Time (epoch)"].append(new_time)
+            except KeyError as e:   # ... otherwise log an exception
+                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+            except TypeError as e:  # Sometimes due to threading shenanigans it comes through as "NoneType", check for that too
+                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+            
+            # Grab and append the data from each channel
+            channels = list(self.big_data_dict[name]["Data"].keys())
+            for channel in channels:
+                if use_noise: # If we're using noise, set that (mostly useful for visual plot verification with simulated sensors)
+                    noise = np.random.rand()
+                else:
+                    noise = 0
+                try:    # Check if the dictionary key exists... 
+                    ch_data = new_data[name]["Data"][channel] + noise
+                    self.big_data_dict[name]["Data"][channel].append(ch_data)
+                except KeyError:    # ... otherwise log an exception
+                    logger.warning(f"Error updating the {name} buffer data: {e}")
+                except TypeError as e: 
+                    logger.warning(f"Error updating the {name} buffer data: {e}")
 
 
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
-    def __init__(self, x_init:deque, y_init:deque, num_subplots=1, x_range=60, buffer_length=5000) -> None:
+    def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60, buffer_length=5000) -> None:
         """
         :param x_init:          
         :param y_init:          Initial y-data
@@ -495,10 +614,15 @@ class MyFigureCanvas(FigureCanvas):
 
         # Store a figure axis for the number of subplots set
         self.axs = []
-        for i in range(1, num_subplots+1):
-            ax = self.figure.add_subplot(num_subplots, 1, i)
+        for i in range(0, num_subplots):
+            ax = self.figure.add_subplot(num_subplots+1, 1, i+1)
             self.axs.append(ax)
-        self.draw()    
+            ax.set_xlabel(xlabels[i])
+            ax.set_ylabel(ylabels[i])
+
+        self.figure.set_figheight(5*num_subplots)
+        self.figure.tight_layout(pad=2)
+        self.draw()   
 
     def update_data(self, x_new=None, y_new=None):
         """Method to update the variables to plot. If nothing is given, get fake ones for testing"""    

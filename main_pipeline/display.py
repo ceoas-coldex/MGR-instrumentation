@@ -28,9 +28,9 @@ fh.setFormatter(formatter)
 class Display():
     """Class that reads the interpreted data and displays it on the GUI"""
     @log_on_end(logging.INFO, "Display class initiated", logger=logger)
-    def __init__(self, gui:GUI) -> None:
+    def __init__(self) -> None:
         # Store the GUI
-        self.gui = gui
+        # self.gui = gui
 
         self.init_data_saving()
 
@@ -126,14 +126,15 @@ class Display():
         """Method to read the processed data published by the interpretor class, save it to a csv, and update 
         the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
-        # logger.info(f"Data: \n{interp_data}")
-        try:
-            tstart = time.time()
-            self.gui.update_buffer(interp_data, use_noise=True)
-            tend = time.time()
-            print(f"updaing buffer took {tend-tstart} seconds")
-            self.save_data(interp_data)
+        # print(f"Data: \n{interp_data}")
+        # try:
+        #     tstart = time.time()
+        #     self.gui.update_buffer(interp_data, use_noise=True)
+        #     tend = time.time()
+        #     print(f"updaing buffer took {tend-tstart} seconds")
+        #     self.save_data(interp_data)
             
-        except TypeError:
-            pass
+        # except TypeError:
+        #     pass
         time.sleep(delay)
+        return interp_data

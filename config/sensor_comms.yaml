@@ -8,8 +8,8 @@ Picarro Water:
   serial port: "COM9"
   baud rate: 19200
 Laser Distance Sensor:
-  # serial port: "COM8" # laptop
-  serial port: "COM6" # lab computer
+  serial port: "COM8" # laptop
+  # serial port: "COM6" # lab computer
   baud rate: 19200
 Abakus Particle Counter:
   serial port: "COM9" # laptop
