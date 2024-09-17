@@ -84,30 +84,93 @@ class Worker(QRunnable):
         # Retrieve args/kwargs here; and fire processing using them
         self.fn(*self.args, **self.kwargs)
 
-class ApplicationWindow(QtWidgets.QMainWindow):
+class ApplicationWindow(QWidget):
     '''
     The PyQt5 main window.
 
     '''
     def __init__(self):
         super().__init__()
+        
         # 1. Window settings
         # self.setGeometry(300, 300, 800, 400)
         self.setWindowTitle("Matplotlib live plot in PyQt")
-        self.frm = QFrame(self)
-        self.frm.setStyleSheet("QWidget { background-color: #eeeeec; }")
-        self.lyt = QVBoxLayout()
-        self.frm.setLayout(self.lyt)
-        self.setCentralWidget(self.frm)
 
+        # Set some fonts
+        self.bold16 = QFont("Helvetica", 16, 5)
+
+        main_layout = QHBoxLayout()
+        left_layout = QVBoxLayout()
+        center_layout = QVBoxLayout()
+        right_layout = QVBoxLayout()
+
+        self.build_plotting_layout(center_layout)
+        self.build_control_layout(left_layout)
+
+
+        ## Left layout
+        
+
+        ## Right layout
+        label = QLabel(self)
+        label.setText("Notes & Logs")
+        label.setFont(self.bold16)
+        label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        right_layout.addWidget(label)
+
+        main_layout.addLayout(left_layout)
+        main_layout.addLayout(center_layout)
+        main_layout.addLayout(right_layout)
+
+        self.setLayout(main_layout)
+        self.setGeometry(300, 50, 10, 1200)
+
+        
         self.threadpool = QThreadPool()
 
-        # 2. Place the matplotlib figure
+        # self.build_plotting_layout()
+        # self.build_control_layout()
+            
+        # Initiate the timer
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_plots)
+        self.timer.start(50)
+
+        # self.setCentralWidget(self.center_frame)
+        # self.setCentralWidget(self.left_frame)
+        
+        # 3. Show
+        self.show()
+
+    
+    ## --------------------- SENSOR STATUS & CONTROL --------------------- ##    
+
+    def build_control_layout(self, left_layout:QLayout):
+        # Set the title
+        label = QLabel(self)
+        label.setText("Sensor Status & Control")
+        label.setFont(self.bold16)
+        label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        left_layout.addWidget(label)
+
+    
+    ## --------------------- DATA INPUT & STREAMING DISPLAY --------------------- ##
+
+    def build_plotting_layout(self, center_layout:QLayout):
+        ### Center layout
+        label = QLabel(self)
+        label.setText("Live Sensor Data")
+        label.setFont(self.bold16)
+        label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        center_layout.addWidget(label)
+
+        # Set the plotting button
         self.plotting = False
         b = QPushButton("Start plotting")
         b.pressed.connect(self.start_plots)
-        self.lyt.addWidget(b)
+        center_layout.addWidget(b)
 
+        # Set the plots
         self.plots = {"test":[]}
         for i in range(5):
             n = int(np.random.randint(1,3))
@@ -117,34 +180,25 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             fig = MyFigureCanvas(x_init, y_init, num_subplots=n)
             toolbar = NavigationToolbar(fig, self, False)
             self.plots["test"].append(fig)
-            self.lyt.addWidget(toolbar, alignment=Qt.AlignHCenter)
-            self.lyt.addWidget(fig, alignment=Qt.AlignHCenter)
-            
-            
-        # Initiate the timer
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_plots)
-        self.timer.start(50)
-        
-        # 3. Show
-        self.show()
+            center_layout.addWidget(toolbar, alignment=Qt.AlignHCenter)
+            center_layout.addWidget(fig, alignment=Qt.AlignHCenter)
     
     def start_plots(self):
+        """Set the plotting flag to True"""
         self.plotting = True
 
     def update_plots(self):
+        """Method to update the plots with new data"""
         if self.plotting:
             for i, fig in enumerate(self.plots["test"]):
-                fig.update_data()
-                fig.update_canvas() # Any other args, kwargs are passed to the run function
+                fig.update_data() # If left blank, udates and plots with random data
+                fig.update_canvas()
 
-                # Execute
-                # self.threadpool.start(worker)
-
+    
 
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
-    def __init__(self, x_init, y_init, num_subplots=1, x_range=60, buffer_length=5000) -> None:
+    def __init__(self, x_init:deque, y_init:deque, num_subplots=1, x_range=60, buffer_length=5000) -> None:
         """
         :param x_init:          
         :param y_init:          Initial y-data
@@ -153,10 +207,8 @@ class MyFigureCanvas(FigureCanvas):
 
         """
         super().__init__(plt.Figure())
-        
-        # self.x_data = deque([], maxlen=buffer_length)
-        # self.y_data = deque([], maxlen=buffer_length)
 
+        # Initialize constructor arguments
         self.x_data = x_init
         self.y_data = y_init
         self.x_range = x_range
@@ -169,7 +221,8 @@ class MyFigureCanvas(FigureCanvas):
             self.axs.append(ax)
         self.draw()    
 
-    def update_data(self, x_new=None, y_new=None):        
+    def update_data(self, x_new=None, y_new=None):
+        """Method to update the variables to plot. If nothing is given, get fake ones for testing"""    
         if x_new is None:
             new_x = self.x_data[0][-1]+1
             for i in range(self.num_subplots):
@@ -185,10 +238,12 @@ class MyFigureCanvas(FigureCanvas):
 
     def update_canvas(self) -> None:
         """Method to update the plots based on the buffers stored in self.x_data and self.y_data"""
-
+        # Loop through the number of subplots in this figure
         for i, ax in enumerate(self.axs):
+            # Clear the figure without resetting the axis bounds or ticks
             for artist in ax.lines:
                 artist.remove()
+            # Plot the updated data and make sure we aren't either plotting offscreen or letting the x axis get too long
             ax.plot(self.x_data[i], self.y_data[i])
             xlim = ax.get_xlim()
             if (xlim[1] - xlim[0]) >= self.x_range:
