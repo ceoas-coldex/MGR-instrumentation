@@ -33,12 +33,11 @@ class Interpretor():
 
        self._initialize_data_storage()
 
-    
     def _initialize_data_storage(self):
         """
             Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
             updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
-            initializing all values
+            initializing all values to zero.
         """
         # Read in the sensor data config file to initialize the data buffer. 
         with open("config/sensor_data.yaml", 'r') as stream:
@@ -201,7 +200,7 @@ class Interpretor():
             n = binary
         return n
     
-    # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
+    ## ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
     def process_laser_data(self, laser_data):
         """
         Method to process data from querying the laser. It doesn't always like to return a valid result, but
@@ -277,7 +276,7 @@ class Interpretor():
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
 
-    ## ------------------- PICARRO ------------------- ##
+    ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
     def process_bronkhorst_data(self, bronkhorst_data):
         """Method to process Bronkhorst output when querying setpoint/measurement and fmeasure/temperature, modify if
         we add query values. I /really/ didn't want to write a general function for any potential bronkhorst return"""
