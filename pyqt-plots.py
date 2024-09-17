@@ -1,22 +1,4 @@
-#####################################################################################
-#                                                                                   #
-#                PLOT A LIVE GRAPH IN A PYQT WINDOW                                 #
-#                EXAMPLE 1 (modified for extra speed)                               #
-#               --------------------------------------                              #
-# This code is inspired on:                                                         #
-# https://matplotlib.org/3.1.1/gallery/user_interfaces/embedding_in_qt_sgskip.html  #
-# and on:                                                                           #
-# https://bastibe.de/2013-05-30-speeding-up-matplotlib.html                         #
-#                                                                                   #
-#####################################################################################
 
-from __future__ import annotations
-# from typing import *
-import sys
-import os
-import traceback
-import time
-# from matplotlib.backends.qt_compat import QtCore, QtWidgets
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -24,11 +6,30 @@ from PyQt5.QtCore import *
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT  as NavigationToolbar
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import numpy as np
+import yaml
 
+import sys
+import time
 from collections import deque
+from functools import partial
+import csv
 
+import logging
+from logdecorator import log_on_start , log_on_end , log_on_error
+# Set up a logger for this module
+logger = logging.getLogger(__name__)
+# Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
+logger.setLevel(logging.DEBUG)
+# Create a handler that saves logs to the log folder named as the current date
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
+# Create a formatter to specify our log format
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
+fh.setFormatter(formatter)
+
+# pyqt threading
 class WorkerSignals(QObject):
     '''
     Defines the signals available from a running worker thread.
@@ -52,7 +53,6 @@ class WorkerSignals(QObject):
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)
     progress = pyqtSignal(int)
-
 
 class Worker(QRunnable):
     '''
@@ -84,76 +84,242 @@ class Worker(QRunnable):
         # Retrieve args/kwargs here; and fire processing using them
         self.fn(*self.args, **self.kwargs)
 
+# main window
 class ApplicationWindow(QWidget):
-    '''
-    The PyQt5 main window.
+    """The PyQt5 main window"""
 
-    '''
     def __init__(self):
         super().__init__()
         
-        # 1. Window settings
-        # self.setGeometry(300, 300, 800, 400)
-        self.setWindowTitle("Matplotlib live plot in PyQt")
+        # Window settings
+        self.setGeometry(50, 50, 2000, 1200) # Set window size (x-coord, y-coord, width, height)
+        self.setWindowTitle("MGR App")
 
         # Set some fonts
-        self.bold16 = QFont("Helvetica", 16, 5)
+        self.bold16 = QFont("Helvetica", 16)
+        self.bold16.setBold(True)
+        self.norm16 = QFont("Helvetica", 16)
+        self.bold12 = QFont("Helvetica", 12)
+        self.bold12.setBold(True)
+        self.norm12 = QFont("Helvetica", 12)
 
         main_layout = QHBoxLayout()
-        left_layout = QVBoxLayout()
+        left_layout = QGridLayout()
         center_layout = QVBoxLayout()
         right_layout = QVBoxLayout()
 
+        self.max_buffer_length = 5000
+        self._load_notes_directory()
+        self._load_notes_entries()
+        self._init_data_buffer()
+
         self.build_plotting_layout(center_layout)
         self.build_control_layout(left_layout)
-
-
-        ## Left layout
-        
-
-        ## Right layout
-        label = QLabel(self)
-        label.setText("Notes & Logs")
-        label.setFont(self.bold16)
-        label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        right_layout.addWidget(label)
+        self.build_notes_layout(right_layout)
 
         main_layout.addLayout(left_layout)
         main_layout.addLayout(center_layout)
         main_layout.addLayout(right_layout)
 
         self.setLayout(main_layout)
-        self.setGeometry(300, 50, 10, 1200)
-
         
         self.threadpool = QThreadPool()
-
-        # self.build_plotting_layout()
-        # self.build_control_layout()
             
         # Initiate the timer
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_plots)
         self.timer.start(50)
-
-        # self.setCentralWidget(self.center_frame)
-        # self.setCentralWidget(self.left_frame)
         
-        # 3. Show
+        # Show the window
         self.show()
 
+    ## --------------------- FILE DIRECTORY & DATA INITS --------------------- ## 
+    
+    def _load_notes_directory(self):
+        """
+        Method to read the data_saving.yaml config file and set the notes/logs filepath accordingly. If
+        it can't find that file, it defaults to the current working directory.
+        
+        Updates - 
+            - self.notes_filepath: str, where the notes/logs get saved    
+        """
+        # Set up the first part of the file name - the current date
+        # Grab the current time in YYYY-MM-DD HH:MM:SS format
+        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        # Grab only the date part of the time
+        date = datetime.split(" ")[0]
+        # Try to read in the data saving config file to get the directory and filename suffix
+        try:
+            with open("config/data_saving.yaml", 'r') as stream:
+                saving_config_dict = yaml.safe_load(stream)
+            # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
+            directory = saving_config_dict["Notes"]["Directory"]
+            suffix = saving_config_dict["Notes"]["Suffix"]
+            self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
+        # If we can't find the file, note that and set the filepath to the current working directory
+        except FileNotFoundError as e:
+            logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
+            self.notes_filepath = f"{date}_notes.csv"
+        # If we can't read the dictonary keys, note that and set the filepath to the current working directory
+        except KeyError as e:
+            logger.warning(f"Error in reading data_saving config file: {e}. Saving to current working directory")
+            self.notes_filepath = f"{date}_notes.csv"
+    
+    def _init_data_buffer(self):
+        """Method to read in and save the sensor_data configuration yaml file
+        
+        Updates - 
+            - self.big_data_dict: dict, holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
+            - self.sensor_names: list, sensor names that correspond to the buffer dict keys
+        """
+        # Read in the sensor data config file to initialize the data buffer. 
+        # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
+        with open("config/sensor_data.yaml", 'r') as stream:
+            self.big_data_dict = yaml.safe_load(stream)
+
+        # Comb through the keys, set the timestamp to the current time and the data to zero
+        sensor_names = self.big_data_dict.keys()
+        for name in sensor_names:
+            self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=self.max_buffer_length)
+            channels = self.big_data_dict[name]["Data"].keys()
+            for channel in channels:
+                self.big_data_dict[name]["Data"][channel] = deque([0.0], maxlen=self.max_buffer_length)
+
+        # Grab the names of the sensors from the dictionary
+        self.sensor_names = list(sensor_names)
     
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ##    
 
     def build_control_layout(self, left_layout:QLayout):
+        row, colspan = self._make_title_control_layout(left_layout)
+        self._make_sensor_control_layout(left_layout, row+1, colspan)
+
+        # Position the panel at the top of the window
+        left_layout.setAlignment(QtCore.Qt.AlignTop)
+
+    def _make_title_control_layout(self, parent:QGridLayout):
         # Set the title
         label = QLabel(self)
         label.setText("Sensor Status & Control")
         label.setFont(self.bold16)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        left_layout.addWidget(label)
+        # label.setMargin()
+        colspan = 2
+        parent.addWidget(label, 0, 0, 1, colspan) # args: widget, row, column, rowspan, columnspan
 
+        # Make a list of buttons we want...
+        title_buttons = ["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"]
+        title_button_callbacks = []
+        num_rows, num_cols = find_grid_dims(num_elements=len(title_buttons), num_cols=colspan)
+        # ...and create, position, and assign a callback for each of them
+        i = 0
+        for row in range(1, num_rows+1): # Adjusting for the title
+            for col in range(num_cols):
+                button = QPushButton(self)
+                button.setText(title_buttons[i])
+                button.setFont(self.norm12)
+                # button.pressed.connect(title_button_callbacks[i])
+                parent.addWidget(button, row, col)
+                i+=1
+
+        return row, colspan
     
+    def _make_sensor_control_layout(self, parent:QGridLayout, starting_row, colspan):
+        
+        num_rows, num_cols = find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
+        i = 0
+        for row in range(starting_row, num_rows+starting_row):
+            for col in range(num_cols):
+                label = QLabel(self)
+                label.setFont(self.bold12)
+                label.setText(self.sensor_names[i])
+                label.setAlignment(Qt.AlignHCenter)
+                parent.addWidget(label, row, col, 1, colspan)
+                i+=1
+
+
+
+
+    ## --------------------- LOGGING & NOTETAKING --------------------- ##
+    def build_notes_layout(self, right_layout:QLayout):
+        # Set the title
+        label = QLabel(self)
+        label.setText("Notes & Logs")
+        label.setFont(self.bold16)
+        label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        right_layout.addWidget(label)
+        
+        self.logging_entries = {}
+        self.lineedits = []
+        for note in self.notes_dict:
+            line = QLineEdit(self)
+            line.setFont(self.norm12)
+            line.setPlaceholderText(note)
+            line.setTextMargins(10, 10, 10, 10)
+            # When the user has finished editing the line, pass the line object and the title to self._save_notes
+            line.editingFinished.connect(partial(self._save_notes, line, note))
+            line.setMaximumWidth(700)
+            right_layout.addWidget(line, alignment=Qt.AlignTop)
+
+        # Make a button to save the text entries to a csv
+        log_button = QPushButton(self)
+        log_button.setText("LOG")
+        log_button.setFont(self.bold12)
+        log_button.pressed.connect(self._log_notes)
+        right_layout.addWidget(log_button, alignment=QtCore.Qt.AlignTop)
+
+        # Position the panel at the top of the window
+        right_layout.setAlignment(QtCore.Qt.AlignTop)
+
+    def _save_notes(self, line:QLineEdit, note_title:str):
+        """Method to hold onto the values entered into the logging panel"""
+        self.logging_entries.update({note_title: line.text()})
+        self.lineedits.append(line)
+
+    def _log_notes(self):
+        """Callback for the 'log' button (self.init_logging_panel), logs the text entries (self.logging_entries) to a csv"""
+        # Loops through the elements in self.logging_entries (tkinter Text objects), reads and clears each element
+        timestamp = time.time()
+        self.logging_entries.update({"Timestamp (epoch)": timestamp})
+
+        # Check if a file exists at the given path and write the notes
+        try:
+            with open(self.notes_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(self.logging_entries.values())
+        # If it doesn't, something went wrong with initialization - remake it here
+        except FileNotFoundError:
+            with open(self.notes_filepath, 'x') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                notes_titles = list(self.notes_dict.keys())
+                notes_titles.append("Internal Timestamp (epoch)")
+                writer.writerow(notes_titles) # give it a title
+                writer.writerow(self.logging_entries.values()) # write the notes
+
+        # Clear the dictionary of notes and the text entries on the screen
+        self.logging_entries.clear()
+        for line in self.lineedits:
+            line.clear()
+        
+
+    def _load_notes_entries(self):
+        """
+        Method to read in the log_entries.yaml config file and grab onto that dictionary. If it can't
+        find that file, it returns an empty dictionary - no logging entries will be displayed.
+        
+        Updates - 
+            - self.notes_dict: dict, entries to display on the logging panel
+        """
+        # Read in the logging config file to initialize the notes entries 
+        try:
+            with open("config/log_entries.yaml", 'r') as stream:
+                self.notes_dict = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.warning(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
+            self.notes_dict = {}
+    
+
+
     ## --------------------- DATA INPUT & STREAMING DISPLAY --------------------- ##
 
     def build_plotting_layout(self, center_layout:QLayout):
@@ -176,8 +342,7 @@ class ApplicationWindow(QWidget):
             n = int(np.random.randint(1,3))
             x_init = [[0]]*n
             y_init = [[0]]*n
-            print(f"init: {x_init, y_init}")
-            fig = MyFigureCanvas(x_init, y_init, num_subplots=n)
+            fig = MyFigureCanvas(x_init, y_init, num_subplots=n, buffer_length=self.max_buffer_length)
             toolbar = NavigationToolbar(fig, self, False)
             self.plots["test"].append(fig)
             center_layout.addWidget(toolbar, alignment=Qt.AlignHCenter)
@@ -194,7 +359,6 @@ class ApplicationWindow(QWidget):
                 fig.update_data() # If left blank, udates and plots with random data
                 fig.update_canvas()
 
-    
 
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
@@ -262,6 +426,22 @@ class MyFigureCanvas(FigureCanvas):
         # self.draw()
         # self.update()
         # self.flush_events()
+
+## --------------------- HELPER FUNCTIONS --------------------- ##
+
+def find_grid_dims(num_elements, num_cols):
+    """Method to determine the number of rows we need in a grid given the number of elements and the number of columns
+    
+        Returns - num_rows (int), num_cols (int)"""
+
+    num_rows = num_elements / num_cols
+    # If the last number of the fraction is a 5, add 0.1. This is necessary because Python defaults to 
+    # "bankers rounding" (rounds 2.5 down to 2, for example) so would otherwise give us too few rows
+    if str(num_rows).split('.')[-1] == '5':
+        num_rows += 0.1
+    num_rows = round(num_rows)
+
+    return num_rows, num_cols
 
 # Data source
 # ------------
