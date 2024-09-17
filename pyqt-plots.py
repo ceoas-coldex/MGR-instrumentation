@@ -195,14 +195,14 @@ class ApplicationWindow(QWidget):
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ##    
 
     def build_control_layout(self, left_layout:QLayout):
-        title_buttons, sensor_buttons = self._define_button_callbacks()
-        start_next_row, title_colspan = self._make_title_control_layout(left_layout, title_buttons)
-        self._make_sensor_control_layout(left_layout, sensor_buttons, starting_row=start_next_row, colspan=title_colspan)
+        title_button_info, sensor_button_info = self._define_button_callbacks()
+        start_next_row, title_colspan = self._make_title_control_layout(left_layout, title_button_info)
+        self._make_sensor_control_layout(left_layout, sensor_button_info, starting_row=start_next_row, colspan=title_colspan)
 
         # Position the panel at the top of the window
         left_layout.setAlignment(QtCore.Qt.AlignTop)
 
-    def _make_title_control_layout(self, parent:QGridLayout, title_buttons:dict, colspan=2):
+    def _make_title_control_layout(self, parent:QGridLayout, title_button_info:dict, colspan=2):
         # Set the title
         label = QLabel(self)
         label.setText("Sensor Status & Control")
@@ -211,18 +211,22 @@ class ApplicationWindow(QWidget):
         # label.setMargin()
         parent.addWidget(label, 0, 0, 1, colspan) # args: widget, row, column, rowspan, columnspan
 
-        num_rows, num_cols = find_grid_dims(num_elements=len(title_buttons), num_cols=colspan)
+        num_rows, num_cols = find_grid_dims(num_elements=len(title_button_info), num_cols=colspan)
 
         # For all the buttons we want (stored in the title_buttons dict) create, position, and assign a callback for each
         i = 0
-        title_button_text = list(title_buttons.keys())
-        for row in range(1, num_rows+1): # Adjusting for the title
+        title_button_text = list(title_button_info.keys())
+        self.title_buttons = {} # hold onto the buttons for later
+        for row in range(1, num_rows+1): # Adjusting for the title row
             for col in range(num_cols):
+                button_text = title_button_text[i]
                 button = QPushButton(self)
-                button.setText(title_button_text[i])
+                button.setText(button_text)
                 button.setFont(self.norm12)
-                button.pressed.connect(title_buttons[title_button_text[i]])
+                button.pressed.connect(title_button_info[button_text]["callback"])
+                button.setEnabled(title_button_info[button_text]["enabled"])
                 parent.addWidget(button, row, col)
+                self.title_buttons.update({button_text:button})
                 i+=1
 
         line = QFrame(self)
@@ -280,8 +284,9 @@ class ApplicationWindow(QWidget):
         title_buttons = {}
         title_button_names = ["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"]
         title_button_callbacks = [self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data]
-        for name, callback in zip(title_button_names, title_button_callbacks):
-            title_buttons.update({name: callback})
+        title_button_enabled = [True, True, False, False]
+        for name, callback, enabled in zip(title_button_names, title_button_callbacks, title_button_enabled):
+            title_buttons.update({name: {"callback":callback, "enabled":enabled}})
 
         sensor_buttons = {}
         for name in self.sensor_names:
@@ -298,10 +303,15 @@ class ApplicationWindow(QWidget):
     def _on_sensor_init(self):
         self.sensor_status_dict = self.sensor.initialize_sensors()
         self._update_sensor_status()
+        self.title_buttons["Start Data Collection"].setEnabled(True)
+        self.title_buttons["Stop Data Collection"].setEnabled(True)
 
     def _on_sensor_shutdown(self):
+        self.plotting = False
         self.sensor_status_dict = self.sensor.shutdown_sensors()
         self._update_sensor_status()
+        self.title_buttons["Start Data Collection"].setEnabled(False)
+        self.title_buttons["Stop Data Collection"].setEnabled(False)
     
     def _on_start_data(self):
         self.plotting = True
