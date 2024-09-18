@@ -1,150 +1,53 @@
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-import time
-import traceback, sys
+class MyMainWindow(QMainWindow):
+    def __init__(self, parent=None):
+        QMainWindow.__init__(self, parent)
 
+        # Create the tabbed widget
+        self.central = QTabWidget(self)
+        self.setCentralWidget(self.central)
 
-class WorkerSignals(QObject):
-    '''
-    Defines the signals available from a running worker thread.
+        # Create a new tab
+        self.tab1 = QWidget()
+        # Tab has a vertical layout
+        self.vbox = QVBoxLayout(self.tab1)
+        # Tab children: two groups containing a grid of labels and textboxes
+        self.group1 = QGroupBox("Group 1")
+        self.textBox1 = QLineEdit(self.group1)
+        self.textBox2 = QLineEdit(self.group1)
+        self.fillGroup(self.group1, self.textBox1, self.textBox2)
+        self.group2 = QGroupBox("Group 2")
+        self.textBox3 = QLineEdit(self.group2)
+        self.textBox4 = QLineEdit(self.group2)
+        self.fillGroup(self.group2, self.textBox3, self.textBox4)
+        # Add tab children to the tab layout
+        self.vbox.addWidget(self.group1)
+        self.vbox.addWidget(self.group2)
+        # Append tab to the tabbed widget
+        self.central.addTab(self.tab1, "Tab 1")
 
-    Supported signals are:
+        # Create a new tab and append it to the tabbed widget
+        self.tab2 = QWidget()
+        self.central.addTab(self.tab2, "Tab 2")
 
-    finished
-        No data
+    def fillGroup(self, group, box1, box2) :
+        """Arrange the groupbox content in a grid layout"""
 
-    error
-        tuple (exctype, value, traceback.format_exc() )
+        grid = QGridLayout(group)
+        label1 = QLabel("Input 1:", group)
+        grid.addWidget(label1, 0, 0)
+        grid.addWidget(box1, 0, 1)
+        label2 = QLabel("Input 2:", self.group1)
+        grid.addWidget(label2, 1, 0)
+        grid.addWidget(box2, 1, 1)
 
-    result
-        object data returned from processing, anything
-
-    progress
-        int indicating % progress
-
-    '''
-    finished = pyqtSignal()
-    error = pyqtSignal(tuple)
-    result = pyqtSignal(object)
-    progress = pyqtSignal(int)
-
-
-class Worker(QRunnable):
-    '''
-    Worker thread
-
-    Inherits from QRunnable to handle worker thread setup, signals and wrap-up.
-
-    :param callback: The function callback to run on this worker thread. Supplied args and
-                     kwargs will be passed through to the runner.
-    :type callback: function
-    :param args: Arguments to pass to the callback function
-    :param kwargs: Keywords to pass to the callback function
-
-    '''
-
-    def __init__(self, fn, *args, **kwargs):
-        super(Worker, self).__init__()
-
-        # Store constructor arguments (re-used for processing)
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-        self.signals = WorkerSignals()
-
-        # Add the callback to our kwargs
-        self.kwargs['progress_callback'] = self.signals.progress
-
-    @pyqtSlot()
-    def run(self):
-        '''
-        Initialise the runner function with passed args, kwargs.
-        '''
-
-        # Retrieve args/kwargs here; and fire processing using them
-        try:
-            result = self.fn(*self.args, **self.kwargs)
-        except:
-            traceback.print_exc()
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
-        else:
-            self.signals.result.emit(result)  # Return the result of the processing
-        finally:
-            self.signals.finished.emit()  # Done
-
-
-
-class MainWindow(QMainWindow):
-
-
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
-
-        self.counter = 0
-
-        layout = QVBoxLayout()
-
-        self.l = QLabel("Start")
-        b = QPushButton("DANGER!")
-        b.pressed.connect(self.oh_no)
-
-        b2 = QPushButton("Also danger?")
-        b2.pressed.connect(self.oh_no)
-
-        layout.addWidget(self.l)
-        layout.addWidget(b)
-        layout.addWidget(b2)
-
-        w = QWidget()
-        w.setLayout(layout)
-
-        self.setCentralWidget(w)
-
-        self.show()
-
-        self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
-
-        self.timer = QTimer()
-        self.timer.setInterval(1000)
-        self.timer.timeout.connect(self.recurring_timer)
-        self.timer.start()
-
-    def execute_this_fn(self, progress_callback):
-        for n in range(0, 5):
-            time.sleep(1)
-            progress_callback.emit(int(n*100/4))
-
-        return "Done."
-
-    def print_output(self, s):
-        print(s)
-
-    def thread_complete(self):
-        print("THREAD COMPLETE!")
-
-    def progress_fn(self, n):
-        print("%d%% done" % n)
-
-    def oh_no(self):
-        # Pass the function to execute
-        worker = Worker(self.execute_this_fn) # Any other args, kwargs are passed to the run function
-        worker.signals.result.connect(self.print_output)
-        worker.signals.finished.connect(self.thread_complete)
-        worker.signals.progress.connect(self.progress_fn)
-
-        # Execute
-        self.threadpool.start(worker)
-
-
-    def recurring_timer(self):
-        self.counter +=1
-        self.l.setText("Counter: %d" % self.counter)
-
-
-app = QApplication([])
-window = MainWindow()
-app.exec_()
+if __name__ == "__main__":
+    import sys
+    app = QApplication(sys.argv)
+    ui = MyMainWindow()
+    ui.show()
+    sys.exit(app.exec_())

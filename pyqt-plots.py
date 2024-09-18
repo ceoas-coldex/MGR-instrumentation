@@ -472,26 +472,27 @@ class ApplicationWindow(QWidget):
         self.data_collection = False
 
         # Make the dropdown
-        self.combobox = QComboBox()
-        self.combobox.addItems(self.sensor_names)
-        self.combobox.currentIndexChanged.connect(self.display_sensor_plot)
-        center_layout.addWidget(self.combobox)
+        # self.combobox = QComboBox()
+        # self.combobox.addItems(self.sensor_names)
+        # self.combobox.currentIndexChanged.connect(self.display_sensor_plot)
+        # center_layout.addWidget(self.combobox)
 
         self.plot_stack = QStackedWidget(self)
 
         self.plot_tab = QTabWidget(self)
 
+        # self.plot_tab.currentChanged.connect(self.display_sensor_plot)
+
         self.plots = {}
         for sensor in self.sensor_names:
 
-            parent = QWidget(self)
-            parent_vbox = QVBoxLayout(parent)
+            # parent = QWidget(self)
+            # parent_vbox = QVBoxLayout(parent)
 
-            # # Create a new tab
-            # tab = QWidget()
-            # # Tab has a vertical layout
-            # tab_vbox = QVBoxLayout(tab)
-
+            # Create a new tab
+            tab = QWidget(self)
+            # Tab has a vertical layout
+            tab_vbox = QVBoxLayout(tab)
 
             num_subplots = len(self.big_data_dict[sensor]["Data"])
             fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,
@@ -502,13 +503,13 @@ class ApplicationWindow(QWidget):
                                  buffer_length=self.max_buffer_length)
             toolbar = NavigationToolbar(canvas=fig, parent=self, coordinates=False)
 
-            parent_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
-            parent_vbox.addWidget(fig)
+            tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
+            tab_vbox.addWidget(fig)
 
-            self.plot_stack.addWidget(parent)
+            self.plot_tab.addTab(tab, sensor)
             self.plots.update({sensor: fig})
 
-        center_layout.addWidget(self.plot_stack)
+        center_layout.addWidget(self.plot_tab)
         
         # # Set the plots
         # self.plots = {"test":[]}
@@ -528,7 +529,9 @@ class ApplicationWindow(QWidget):
     def update_plots(self):
         """Method to update the plots with new data"""
         if self.data_collection:
-            sensor = self.combobox.currentText()
+            # sensor = self.combobox.currentText()
+            sensor_index = self.plot_tab.currentIndex()
+            sensor = self.sensor_names[sensor_index]
             fig = self.plots[sensor]
             if type(fig) == MyFigureCanvas:
 
@@ -565,7 +568,7 @@ class ApplicationWindow(QWidget):
 
 
             data = eDisplay.result()
-            print(data)
+            # print(data)
             self.update_buffer(data, use_noise=False)
             # print(self.big_data_dict)
 
@@ -630,8 +633,8 @@ class MyFigureCanvas(FigureCanvas):
             ax.set_xlabel(xlabels[i])
             ax.set_ylabel(ylabels[i])
 
-        self.figure.set_figheight(5*num_subplots)
-        self.figure.tight_layout(pad=4)
+        # self.figure.set_figheight(5*num_subplots)
+        # self.figure.tight_layout(pad=4)
         
         self.draw()   
 
@@ -658,7 +661,7 @@ class MyFigureCanvas(FigureCanvas):
             for artist in ax.lines:
                 artist.remove()
             # Plot the updated data and make sure we aren't either plotting offscreen or letting the x axis get too long
-            ax.plot(self.x_data[i], self.y_data[i])
+            ax.plot(self.x_data[i], self.y_data[i], '.--')
             xlim = ax.get_xlim()
             if (xlim[1] - xlim[0]) >= self.x_range:
                 ax.set_xlim([self.x_data[i][-1] - self.x_range, self.x_data[i][-1] + 1])
