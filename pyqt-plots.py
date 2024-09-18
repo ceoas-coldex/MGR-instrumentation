@@ -132,7 +132,9 @@ class ApplicationWindow(QWidget):
         center_layout = QVBoxLayout()
         right_layout = QVBoxLayout()
 
-        self.max_buffer_length = 5000
+        self.max_buffer_length = 5000 # How long we let the buffers get, helps with memory
+        self.default_plot_length = 60 # Length of time (in sec) we plot before you have to scroll back to see it
+
         self._load_notes_directory()
         self._load_notes_entries()
         self._init_data_buffer()
@@ -150,9 +152,9 @@ class ApplicationWindow(QWidget):
         self.threadpool = QThreadPool()
             
         # Initiate the timer
-        self.plots_timer = QTimer()
-        self.plots_timer.timeout.connect(self.update_plots)
-        self.plots_timer.start(250)
+        self.plot_figs_timer = QTimer()
+        self.plot_figs_timer.timeout.connect(self.update_plots)
+        self.plot_figs_timer.start(250)
 
         self.execution_timer = QTimer()
         self.execution_timer.timeout.connect(self.run_data_collection)
@@ -412,7 +414,14 @@ class ApplicationWindow(QWidget):
         right_layout.setAlignment(QtCore.Qt.AlignTop)
 
     def _save_notes(self, line:QLineEdit, note_title:str):
-        """Method to hold onto the values entered into the logging panel"""
+        """
+        Method to hold onto the values entered into the logging panel
+
+        Args:
+            line (QLineEdit): _description_
+            note_title (str): _description_
+        """
+
         self.logging_entries.update({note_title: line.text()})
         self.lineedits.append(line)
 
@@ -457,11 +466,18 @@ class ApplicationWindow(QWidget):
             logger.warning(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
             self.notes_dict = {}
     
-
     ## --------------------- DATA INPUT & STREAMING DISPLAY --------------------- ##
 
     def build_plotting_layout(self, center_layout:QLayout):
-        ### Center layout
+        """
+        A method to build the central plotting panel. Takes in the parent layout (center_layout) and adds a QTabWidget
+        to give us a convienent way to display the live sensor plots. For each sensor (stored in self.sensor_names), we add a tab
+        to hold the matplotlib figure and toolbar that will display sensor data.
+
+        Args:
+            center_layout (QLayout): The main window layout we want to nest the plots in
+        """
+        # Make a title
         label = QLabel(self)
         label.setText("Live Sensor Data")
         label.setFont(self.bold16)
@@ -471,83 +487,130 @@ class ApplicationWindow(QWidget):
         # Initialize the plotting flag
         self.data_collection = False
 
-        # Make the dropdown
-        # self.combobox = QComboBox()
-        # self.combobox.addItems(self.sensor_names)
-        # self.combobox.currentIndexChanged.connect(self.display_sensor_plot)
-        # center_layout.addWidget(self.combobox)
-
-        self.plot_stack = QStackedWidget(self)
-
+        # Create some object variables to hold plotting information - the QTabWidget that displays the figs, and a dictionary
+        # to hold onto the figure objects themselves for later updating
         self.plot_tab = QTabWidget(self)
-
-        # self.plot_tab.currentChanged.connect(self.display_sensor_plot)
-
-        self.plots = {}
+        self.plot_figs = {}
+        # Loop through the sensors, create a figure & toolbar for each, and add them to the QTabWidget
         for sensor in self.sensor_names:
-
-            # parent = QWidget(self)
-            # parent_vbox = QVBoxLayout(parent)
-
-            # Create a new tab
+            # Create a new tab and give it a vertical layout
             tab = QWidget(self)
-            # Tab has a vertical layout
+            tab.setObjectName(sensor)
             tab_vbox = QVBoxLayout(tab)
-
+            # For each figure, we want a subplot corresponding to each piece of data returned by the sensor. Grab that number
             num_subplots = len(self.big_data_dict[sensor]["Data"])
-            fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,
-                                 y_init=[[0]]*num_subplots,
+            # Create the figure and toolbar
+            fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
+                                 y_init=[[0]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
                                  ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
                                  num_subplots=num_subplots,
-                                 buffer_length=self.max_buffer_length)
+                                 x_range=self.default_plot_length, # Set xlimit range of each axis
+                                 )
             toolbar = NavigationToolbar(canvas=fig, parent=self, coordinates=False)
-
+            # Add the figure and toolbar to this tab's layout
             tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
             tab_vbox.addWidget(fig)
-
+            # Add this tab to the QTabWidget
             self.plot_tab.addTab(tab, sensor)
-            self.plots.update({sensor: fig})
-
+            # Hold onto the figure object for later
+            self.plot_figs.update({sensor: fig})
+        # Once we've done all that, add the QTabWidget to the main layout
         center_layout.addWidget(self.plot_tab)
         
-        # # Set the plots
-        # self.plots = {"test":[]}
-        # for i in range(5):
-        #     n = int(np.random.randint(1,3))
-        #     x_init = [[0]]*n
-        #     y_init = [[0]]*n
-        #     fig = MyFigureCanvas(x_init, y_init, num_subplots=n, buffer_length=self.max_buffer_length)
-        #     toolbar = NavigationToolbar(fig, self, False)
-        #     self.plots["test"].append(fig)
-        #     center_layout.addWidget(toolbar, alignment=Qt.AlignHCenter)
-        #     center_layout.addWidget(fig, alignment=Qt.AlignHCenter)
-    
-    def display_sensor_plot(self, i):
-        self.plot_stack.setCurrentIndex(i)
+        # Finally, add a custom tab to plot multiple readings from multiple sensors
+        self.add_all_plots_tab()
+
+    def add_all_plots_tab(self):
+        """Method to read in the main_page_plots config file and use it to initialize a special tab to show a few
+        """
+        # Create a new tab and give it a vertical layout
+        tab = QWidget(self)
+        tab.setObjectName("All")
+        tab_vbox = QVBoxLayout(tab)
+
+        ##### should have some sort of validation here to make sure all the keys are in the big data dict, and eliminate them otherwise ######
+        with open("config/main_page_plots.yaml", 'r') as stream:
+            self.main_page_plots = yaml.safe_load(stream)
+
+        num_subplots = 0
+        y_axis_labels = []
+        for key in self.main_page_plots:
+            main_page_plot_titles = self.main_page_plots[key]
+            for title in main_page_plot_titles:
+                y_axis_labels.append(title)
+                num_subplots += 1
+
+        self.main_page_num_subplots = num_subplots
+
+        fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
+                                 y_init=[[0]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
+                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 ylabels=y_axis_labels,
+                                 num_subplots=num_subplots,
+                                 x_range=self.default_plot_length, # Set xlimit range of each axis
+                                 )
+
+        tab_vbox.addWidget(fig)
+        self.plot_figs.update({"All":fig})
+        self.plot_tab.insertTab(0, tab, "Specified Plots")
+        self.plot_tab.setCurrentIndex(0)
 
     def update_plots(self):
-        """Method to update the plots with new data"""
+        """Method to update the live plots with the buffers stored in self.big_data_dict
+        """
+        # If the data collection flag is active...
         if self.data_collection:
-            # sensor = self.combobox.currentText()
-            sensor_index = self.plot_tab.currentIndex()
-            sensor = self.sensor_names[sensor_index]
-            fig = self.plots[sensor]
+            # Grab the name of the current QTabWidget tab we're on (which sensor data we're displaying)
+            plot_name = self.plot_tab.currentWidget().objectName()
+            fig = self.plot_figs[plot_name]
+            # Make sure the figure is the correct object - not strictly necessary, but a good safety check
             if type(fig) == MyFigureCanvas:
-
-                num_subplots = len(self.big_data_dict[sensor]["Data"].keys())
-
-                # print(list(self.big_data_dict[sensor]["Data"].values()))
-                # print([self.big_data_dict[sensor]["Time (epoch)"]]*num_subplots)
-
-                fig.update_data(x_new=[self.big_data_dict[sensor]["Time (epoch)"]]*num_subplots,
-                                y_new=list(self.big_data_dict[sensor]["Data"].values()))
+                # Grab the updated x and y values from the big data buffer
+                x_data_list, y_data_list = self.get_xy_data_from_buffer(plot_name)
+                # Pass the updated data into the figure object and redraw the axes
+                fig.update_data(x_new=x_data_list, y_new=y_data_list)
                 fig.update_canvas()
 
-            # for plot in self.plots:
-            #     fig = self.plots[plot]
-            #     fig.update_data() # If left blank, udates and plots with random data
-            #     fig.update_canvas()
+    def get_xy_data_from_buffer(self, plot_name:str):
+        """Method to parse the big data buffer and pull out the sensor channels we're interested in plotting.
+
+        Args:
+            plot_name (str): The name of the QWidget we're plotting on, should match a sensor in self.sensor names or be "All" for the
+                main page plots
+
+        Returns:
+            x_data_list (list): _description_ \n
+
+            y_data_list (list): _description_
+        """
+        # Try to extract the updated data from the big buffer
+        try:
+            num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
+            x_data_list = [self.big_data_dict[plot_name]["Time (epoch)"]]*num_subplots # Same timestamp for all sensor readings
+            y_data_list = list(self.big_data_dict[plot_name]["Data"].values())
+        # If we can't do that, we're probably on the "main page plots" tab, in which case the plot name is "All"
+        except KeyError as e:
+            # If we /are/ on that page, we need to do a little more finagling to extract the data we want
+            if plot_name == "All":
+                # Grab the sensors we want to plot, from the dictionary we read in earlier (add_all_plots_page)
+                sensors = list(self.main_page_plots.keys())
+                # The dictionary has key-value pairs of "sensor name":["sensor channel to plot", "other sensor channel to plot"].
+                # Loop through both the sensor names /and/ the sensor channels we want to plot, grabbing their data from the big dict
+                x_data_list = []
+                y_data_list = []
+                for sensor in sensors:
+                    subplot_names = self.main_page_plots[sensor]
+                    for subplot_name in subplot_names:
+                        x_data_list.append(self.big_data_dict[sensor]["Time (epoch)"])
+                        y_data_list.append(self.big_data_dict[sensor]["Data"][subplot_name])
+            # Otherwise (and we should never get here if validation worked correctly), something went wrong
+            else:
+                logger.warning(f"Error in reading the data buffer when updating plots: {e}")
+                x_data_list = []
+                y_data_list = []
+
+        return x_data_list, y_data_list
 
     ## --------------------- DATA COLLECTION PIPELINE --------------------- ##
     def run_data_collection(self):
@@ -609,12 +672,11 @@ class ApplicationWindow(QWidget):
 
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
-    def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60, buffer_length=5000) -> None:
+    def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60) -> None:
         """
         :param x_init:          
         :param y_init:          Initial y-data
         :param x_range:         How much data we show on the x-axis, in x-axis units
-        :param buffer_length: 
 
         """
         super().__init__(plt.Figure())
