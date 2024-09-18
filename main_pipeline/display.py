@@ -120,21 +120,21 @@ class Display():
         except FileNotFoundError as e:
             logger.warning(f"Error in accessing csv to save data: {e}")
         tend = time.time()
-        print(f"saving data took {tend-tstart} seconds")
+        # print(f"saving data took {tend-tstart} seconds")
 
     def display_consumer(self, interpretor_bus:Bus, delay):
         """Method to read the processed data published by the interpretor class, save it to a csv, and update 
         the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
         # print(f"Data: \n{interp_data}")
-        # try:
-        #     tstart = time.time()
-        #     self.gui.update_buffer(interp_data, use_noise=True)
-        #     tend = time.time()
-        #     print(f"updaing buffer took {tend-tstart} seconds")
-        #     self.save_data(interp_data)
+        try:
+            # tstart = time.time()
+            # self.gui.update_buffer(interp_data, use_noise=True)
+            # tend = time.time()
+            # print(f"updaing buffer took {tend-tstart} seconds")
+            self.save_data(interp_data)
             
-        # except TypeError:
-        #     pass
+        except TypeError:
+            pass
         time.sleep(delay)
         return interp_data

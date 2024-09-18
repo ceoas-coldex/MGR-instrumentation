@@ -158,7 +158,7 @@ class ApplicationWindow(QWidget):
 
         self.execution_timer = QTimer()
         self.execution_timer.timeout.connect(self.run_data_collection)
-        self.execution_timer.start(250)
+        self.execution_timer.start(500)
 
         
         # Show the window
