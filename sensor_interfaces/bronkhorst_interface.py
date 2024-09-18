@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-# fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
-fh = logging.StreamHandler()
+fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+# fh = logging.StreamHandler()
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -76,11 +76,12 @@ class Bronkhorst():
                 unit = unit[13:]
                 self.fmeasure_unit = bytearray.fromhex(unit).decode().strip()
                 # grab the device measurements
-                timestamp, output = my_bronkhorst.query()
+                timestamp, output = self.query()
                 setpoint_and_meas, fmeas_and_temp = output
                 # Check if the measurements are the lengths we expect and the timestamp is the type we expect
                 if len(setpoint_and_meas) == 25 and len(fmeas_and_temp) == 33 and type(timestamp) == float:
                     logger.info("Bronkhorst initialized")
+                    print("returning 1")
                     return 1
                 
         except Exception as e:

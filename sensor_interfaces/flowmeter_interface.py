@@ -113,7 +113,7 @@ class FlowMeter():
 
         return buf
     
-    @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
+    # @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
     def query(self):
         """Queries the flowmeter. Returns raw data and timestamp
             Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""

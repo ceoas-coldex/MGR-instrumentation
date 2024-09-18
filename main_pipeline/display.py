@@ -7,7 +7,7 @@ import yaml
 import csv
 import pandas as pd
 
-from gui import GUI
+# from gui import GUI
 from main_pipeline.bus import Bus
 
 import logging
@@ -132,7 +132,7 @@ class Display():
         #     self.gui.update_buffer(interp_data, use_noise=True)
         #     tend = time.time()
         #     print(f"updaing buffer took {tend-tstart} seconds")
-        #     self.save_data(interp_data)
+        self.save_data(interp_data)
             
         # except TypeError:
         #     pass
