@@ -7,7 +7,7 @@ import yaml
 import csv
 import pandas as pd
 
-from gui import GUI
+# from gui import GUI
 from main_pipeline.bus import Bus
 
 import logging
@@ -127,14 +127,14 @@ class Display():
         the appropriate buffers for plotting"""
         interp_data = interpretor_bus.read()
         # print(f"Data: \n{interp_data}")
-        try:
-            # tstart = time.time()
-            # self.gui.update_buffer(interp_data, use_noise=True)
-            # tend = time.time()
-            # print(f"updaing buffer took {tend-tstart} seconds")
-            self.save_data(interp_data)
+        # try:
+        #     tstart = time.time()
+        #     self.gui.update_buffer(interp_data, use_noise=True)
+        #     tend = time.time()
+        #     print(f"updaing buffer took {tend-tstart} seconds")
+        self.save_data(interp_data)
             
-        except TypeError:
-            pass
+        # except TypeError:
+        #     pass
         time.sleep(delay)
         return interp_data

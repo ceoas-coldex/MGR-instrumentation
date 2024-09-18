@@ -328,7 +328,9 @@ class ApplicationWindow(QWidget):
         return title_buttons, sensor_buttons
     
     def _on_sensor_init(self):
+        ######## PUT THIS IN A THREAD SO IT DOESN'T KILL THE GUI ##########
         self.sensor_status_dict = self.sensor.initialize_sensors()
+        print(self.sensor_status_dict)
         self._update_sensor_status()
         self.title_buttons["Start Data Collection"].setEnabled(True)
         self.title_buttons["Stop Data Collection"].setEnabled(True)
@@ -636,7 +638,7 @@ class ApplicationWindow(QWidget):
             # print(self.big_data_dict)
 
     def update_buffer(self, new_data:dict, use_noise=False):
-        """Method to update the self.big_data_dict buffer with new data from the sensor pipeline. This gets called from executor.py
+        """Method to update the self.big_data_dict buffer with new data from the sensor pipeline.
         
         Args - 
             - new_data: dict, most recent data update. Should have the same key/value structure as big_data_dict

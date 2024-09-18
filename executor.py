@@ -21,7 +21,7 @@ import yaml
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
-from gui import GUI
+from tkinter_gui import GUI
 from gui2 import TestGUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor

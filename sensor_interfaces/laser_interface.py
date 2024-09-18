@@ -163,7 +163,7 @@ class Dimetix():
 
         return timestamp, response
 
-    @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
+    # @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)
