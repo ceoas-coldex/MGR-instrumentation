@@ -479,9 +479,18 @@ class ApplicationWindow(QWidget):
 
         self.plot_stack = QStackedWidget(self)
 
+        self.plot_tab = QTabWidget(self)
+
         self.plots = {}
         for sensor in self.sensor_names:
+
             parent = QWidget(self)
+            parent_vbox = QVBoxLayout(parent)
+
+            # # Create a new tab
+            # tab = QWidget()
+            # # Tab has a vertical layout
+            # tab_vbox = QVBoxLayout(tab)
 
 
             num_subplots = len(self.big_data_dict[sensor]["Data"])
@@ -492,8 +501,9 @@ class ApplicationWindow(QWidget):
                                  num_subplots=num_subplots,
                                  buffer_length=self.max_buffer_length)
             toolbar = NavigationToolbar(canvas=fig, parent=self, coordinates=False)
-            fig.setParent(parent)
-            toolbar.setParent(parent)
+
+            parent_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
+            parent_vbox.addWidget(fig)
 
             self.plot_stack.addWidget(parent)
             self.plots.update({sensor: fig})
@@ -621,7 +631,8 @@ class MyFigureCanvas(FigureCanvas):
             ax.set_ylabel(ylabels[i])
 
         self.figure.set_figheight(5*num_subplots)
-        self.figure.tight_layout(pad=2)
+        self.figure.tight_layout(pad=4)
+        
         self.draw()   
 
     def update_data(self, x_new=None, y_new=None):
