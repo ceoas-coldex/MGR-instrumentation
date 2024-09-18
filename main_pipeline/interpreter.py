@@ -26,9 +26,9 @@ try:
 except ImportError:
     from bus import Bus
 
-class Interpretor():
-    """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
-    @log_on_end(logging.INFO, "Interpretor class initiated", logger=logger)
+class Interpreter():
+    """Class that reads data from each sensor bus, does some processing, and republishes on an Interpreter bus."""
+    @log_on_end(logging.INFO, "Interpreter class initiated", logger=logger)
     def __init__(self) -> None:
 
        self._initialize_data_storage()
@@ -361,5 +361,5 @@ class Interpretor():
 
 
 if __name__ == "__main__":
-    interp = Interpretor()
+    interp = Interpreter()
     print(interp.big_data)

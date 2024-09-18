@@ -1,6 +1,6 @@
 # -------------
-# This is the Graphical User Interface (GUI) - true to its name, many graphs and user interface going on here!
-# I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain. 
+# Old version of the GUI, using Tkinter. Generally works, but didn't end up being fast enought to display all the plots we need. 
+# I moved to pyqt5 for better performance and generally more features
 # -------------
 
 import numpy as np

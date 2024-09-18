@@ -22,10 +22,9 @@ import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
 from tkinter_gui import GUI
-from gui2 import TestGUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
-from main_pipeline.interpreter import Interpretor
+from main_pipeline.interpreter import Interpreter
 from main_pipeline.display import Display
 
 # Set up a logger for this module
@@ -63,7 +62,7 @@ class Executor():
         # self.test_gui = TestGUI()
 
         # Initialize the rest of the process
-        self.interpretor = Interpretor()
+        self.interpretor = Interpreter()
         self.display = Display(self.gui)  # Pass the GUI and data saving filepath into the display class
 
         # Initialize the busses
@@ -201,7 +200,7 @@ class Executor():
                         eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
                         ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
                         eBronkhorst = self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
-                        eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                        eInterpreter = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                                     self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
                                                     self.main_interp_bus, self.interp_delay)
 
@@ -213,7 +212,7 @@ class Executor():
                     # eFlowMeterSLI2000.result()
                     # eFlowMeterSLS1500.result()
                     # eLaser.result()
-                    # eInterpretor.result()
+                    # eInterpreter.result()
                     eDisplay.result()
 
                 # If we got a keyboard interrupt (something Wrong happened), don't try to shut down the threads cleanly -

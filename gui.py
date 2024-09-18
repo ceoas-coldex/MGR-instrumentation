@@ -1,3 +1,7 @@
+# -------------
+# This is the Graphical User Interface (GUI) - true to its name, many graphs and user interface going on here!
+# I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain. 
+# -------------
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import *
@@ -31,7 +35,7 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 fh.setFormatter(formatter)
 
 from main_pipeline.sensor import Sensor
-from main_pipeline.interpreter import Interpretor
+from main_pipeline.interpreter import Interpreter
 from main_pipeline.display import Display
 from main_pipeline.bus import Bus
 
@@ -92,31 +96,20 @@ class Worker(QRunnable):
 
 # main window
 class ApplicationWindow(QWidget):
-    """The PyQt5 main window"""
+    """
+    This is the Graphical User Interface, or GUI! It sets up the user interface for the main pipeline.
 
+    Args:
+        This class inherets from the general QWidget class in order to make the main window. There are lots of different 
+        ways to this inheriting, which make some of the syntax slightly different in between applications. Ah well.
+        
+    """
     def __init__(self):
+        # Initialize the inherited class (QWidget)
         super().__init__()
 
-        self.sensor = Sensor()
-        self.interpretor = Interpretor()
-        self.display = Display()
-
-        # Initialize the busses
-        self.abakus_bus = Bus()
-        self.flowmeter_sli2000_bus = Bus()
-        self.flowmeter_sls1500_bus = Bus()
-        self.laser_bus = Bus()
-        self.picarro_gas_bus = Bus()
-        self.bronkhorst_bus = Bus()
-        self.main_interp_bus = Bus()
-
-        # Set the delay times (sec)
-        self.sensor_delay = 0.3
-        self.interp_delay = 0.1
-        self.display_delay = 0.1
-        
         # Window settings
-        self.setGeometry(50, 50, 2000, 1200) # Set window size (x-coord, y-coord, width, height)
+        self.setGeometry(50, 50, 2000, 1200) # window size (x-coord, y-coord, width, height)
         self.setWindowTitle("MGR App")
 
         # Set some fonts
@@ -127,97 +120,53 @@ class ApplicationWindow(QWidget):
         self.bold12.setBold(True)
         self.norm12 = QFont("Helvetica", 12)
 
-        main_layout = QHBoxLayout()
-        left_layout = QGridLayout()
-        center_layout = QVBoxLayout()
-        right_layout = QVBoxLayout()
-
+        # Initialize the main sense-interpret-save data pipeline
+        self.init_data_pipeline()
+        
+        # Set data buffer parameters
         self.max_buffer_length = 5000 # How long we let the buffers get, helps with memory
         self.default_plot_length = 60 # Length of time (in sec) we plot before you have to scroll back to see it
-
-        self._load_notes_directory()
-        self._load_notes_entries()
-        self._init_data_buffer()
-
-        self.build_plotting_layout(center_layout)
+        # self.load_notes_directory()
+        self.load_notes_entries()
+        self.init_data_buffer()
+        
+        # Create the three main GUI panels:
+        # 1. Left panel: sensor status and control
+        left_layout = QGridLayout()
         self.build_control_layout(left_layout)
+        # 2. Center panel: data streaming
+        center_layout = QVBoxLayout()
+        self.build_plotting_layout(center_layout)
+        # 3. Right panel: logging and notetaking
+        right_layout = QVBoxLayout()
         self.build_notes_layout(right_layout)
 
+        # Wrap these three main panels up into one big layout, and add it to the app window
+        main_layout = QHBoxLayout()
         main_layout.addLayout(left_layout)
         main_layout.addLayout(center_layout)
         main_layout.addLayout(right_layout)
-
         self.setLayout(main_layout)
         
+        # Haven't used this yet, but might still - create a threadpool for this class, so we can do threading later
         self.threadpool = QThreadPool()
             
-        # Initiate the timer
+        # Initiate two timers:
+        # One for updating the plots...
         self.plot_figs_timer = QTimer()
         self.plot_figs_timer.timeout.connect(self.update_plots)
         self.plot_figs_timer.start(250)
-
+        # ...and one for collecting, processing, and saving data
         self.execution_timer = QTimer()
         self.execution_timer.timeout.connect(self.run_data_collection)
         self.execution_timer.start(500)
-
         
         # Show the window
         self.show()
 
     ## --------------------- FILE DIRECTORY & DATA INITS --------------------- ## 
     
-    def _load_notes_directory(self):
-        """
-        Method to read the data_saving.yaml config file and set the notes/logs filepath accordingly. If
-        it can't find that file, it defaults to the current working directory.
-        
-        Updates - 
-            - self.notes_filepath: str, where the notes/logs get saved    
-        """
-        # Set up the first part of the file name - the current date
-        # Grab the current time in YYYY-MM-DD HH:MM:SS format
-        datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        # Grab only the date part of the time
-        date = datetime.split(" ")[0]
-        # Try to read in the data saving config file to get the directory and filename suffix
-        try:
-            with open("config/data_saving.yaml", 'r') as stream:
-                saving_config_dict = yaml.safe_load(stream)
-            # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
-            directory = saving_config_dict["Notes"]["Directory"]
-            suffix = saving_config_dict["Notes"]["Suffix"]
-            self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
-        # If we can't find the file, note that and set the filepath to the current working directory
-        except FileNotFoundError as e:
-            logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
-            self.notes_filepath = f"{date}_notes.csv"
-        # If we can't read the dictonary keys, note that and set the filepath to the current working directory
-        except KeyError as e:
-            logger.warning(f"Error in reading data_saving config file: {e}. Saving to current working directory")
-            self.notes_filepath = f"{date}_notes.csv"
     
-    def _init_data_buffer(self):
-        """Method to read in and save the sensor_data configuration yaml file
-        
-        Updates - 
-            - self.big_data_dict: dict, holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
-            - self.sensor_names: list, sensor names that correspond to the buffer dict keys
-        """
-        # Read in the sensor data config file to initialize the data buffer. 
-        # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
-        with open("config/sensor_data.yaml", 'r') as stream:
-            self.big_data_dict = yaml.safe_load(stream)
-
-        # Comb through the keys, set the timestamp to the current time and the data to zero
-        sensor_names = self.big_data_dict.keys()
-        for name in sensor_names:
-            self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=self.max_buffer_length)
-            channels = self.big_data_dict[name]["Data"].keys()
-            for channel in channels:
-                self.big_data_dict[name]["Data"][channel] = deque([0.0], maxlen=self.max_buffer_length)
-
-        # Grab the names of the sensors from the dictionary
-        self.sensor_names = list(sensor_names)
     
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ## 
        
@@ -393,7 +342,12 @@ class ApplicationWindow(QWidget):
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         right_layout.addWidget(label)
         
+        # init notes dictionary - should move to its own method
         self.logging_entries = {}
+        self.logging_entries.update({"Internal Timestamp (epoch)":""})
+        for key in self.notes_dict:
+            self.logging_entries.update({key:""})
+
         self.lineedits = []
         for note in self.notes_dict:
             line = QLineEdit(self)
@@ -429,30 +383,19 @@ class ApplicationWindow(QWidget):
 
     def _log_notes(self):
         """Callback for the 'log' button (self.init_logging_panel), logs the text entries (self.logging_entries) to a csv"""
-        # Loops through the elements in self.logging_entries (tkinter Text objects), reads and clears each element
+        self.display.save_notes(self.logging_entries.values())
+        
         timestamp = time.time()
         self.logging_entries.update({"Timestamp (epoch)": timestamp})
 
-        # Check if a file exists at the given path and write the notes
-        try:
-            with open(self.notes_filepath, 'a') as csvfile:
-                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
-                writer.writerow(self.logging_entries.values())
-        # If it doesn't, something went wrong with initialization - remake it here
-        except FileNotFoundError:
-            with open(self.notes_filepath, 'x') as csvfile:
-                writer = csv.writer(csvfile, delimiter=',')
-                notes_titles = list(self.notes_dict.keys())
-                notes_titles.append("Internal Timestamp (epoch)")
-                writer.writerow(notes_titles) # give it a title
-                writer.writerow(self.logging_entries.values()) # write the notes
-
         # Clear the dictionary of notes and the text entries on the screen
-        self.logging_entries.clear()
+        # self.logging_entries.clear()
+        for key in self.logging_entries:
+            self.logging_entries[key] = ""
         for line in self.lineedits:
             line.clear()
    
-    def _load_notes_entries(self):
+    def load_notes_entries(self):
         """
         Method to read in the log_entries.yaml config file and grab onto that dictionary. If it can't
         find that file, it returns an empty dictionary - no logging entries will be displayed.
@@ -615,6 +558,52 @@ class ApplicationWindow(QWidget):
         return x_data_list, y_data_list
 
     ## --------------------- DATA COLLECTION PIPELINE --------------------- ##
+    def init_data_pipeline(self):
+        """Creates objects of the Sensor(), Interpreter(), and Display() classes, and sets busses and delay times 
+        for each sense/interpret/save process (see run_data_collection for how these are all used)
+        """
+        # Create each main object of the pipeline
+        self.sensor = Sensor()
+        self.interpretor = Interpreter()
+        self.display = Display()
+
+        # Initialize the busses
+        self.abakus_bus = Bus()
+        self.flowmeter_sli2000_bus = Bus()
+        self.flowmeter_sls1500_bus = Bus()
+        self.laser_bus = Bus()
+        self.picarro_gas_bus = Bus()
+        self.bronkhorst_bus = Bus()
+        self.main_interp_bus = Bus()
+
+        # Set the delay times (sec)
+        self.sensor_delay = 0.3
+        self.interp_delay = 0.1
+        self.display_delay = 0.1
+
+    def init_data_buffer(self):
+        """Method to read in and save the sensor_data configuration yaml file
+        
+        Updates - 
+            - self.big_data_dict: dict, holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
+            - self.sensor_names: list, sensor names that correspond to the buffer dict keys
+        """
+        # Read in the sensor data config file to initialize the data buffer. 
+        # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
+        with open("config/sensor_data.yaml", 'r') as stream:
+            self.big_data_dict = yaml.safe_load(stream)
+
+        # Comb through the keys, set the timestamp to the current time and the data to zero
+        sensor_names = self.big_data_dict.keys()
+        for name in sensor_names:
+            self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=self.max_buffer_length)
+            channels = self.big_data_dict[name]["Data"].keys()
+            for channel in channels:
+                self.big_data_dict[name]["Data"][channel] = deque([0.0], maxlen=self.max_buffer_length)
+
+        # Grab the names of the sensors from the dictionary
+        self.sensor_names = list(sensor_names)
+
     def run_data_collection(self):
         if self.data_collection:
             with concurrent.futures.ThreadPoolExecutor() as self.executor:
