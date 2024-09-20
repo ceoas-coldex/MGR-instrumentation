@@ -141,7 +141,6 @@ class ApplicationWindow(QWidget):
         # Set data buffer parameters
         self.max_buffer_length = 5000 # How long we let the buffers get, helps with memory
         self.default_plot_length = 60 # Length of time (in sec) we plot before you have to scroll back to see it
-        # self.load_notes_directory()
         self.load_notes_entries()
         self.init_data_buffer()
         
@@ -166,8 +165,8 @@ class ApplicationWindow(QWidget):
         # Create a threadpool for this class, so we can do threading later
         self.threadpool = QThreadPool()
             
-        # Initiate two timers:
-        timer_update = 500 # how frequently to update the plots and collect data (ms)
+        # Initiate two timers that both trigger every X ms:
+        timer_update = 500
         # One for updating the plots...
         self.plot_figs_timer = QTimer()
         self.plot_figs_timer.timeout.connect(self.update_plots)
@@ -308,7 +307,7 @@ class ApplicationWindow(QWidget):
                 parent.addWidget(line, row+3, col, 1, colspan)
 
         # We should add any further widgets after the last dividing line, so 5 rows after the last 'row' iterator
-        start_next_row = row+5
+        start_next_row = (elements_per_row*num_rows)+starting_row + 5
 
         return start_next_row
 
@@ -574,30 +573,19 @@ class ApplicationWindow(QWidget):
         center_layout.addWidget(self.plot_tab)
         
         # Finally, add a custom tab to plot multiple readings from multiple sensors
-        self.add_all_plots_tab()
+        self.add_main_plots_tab()
 
-    def add_all_plots_tab(self):
-        """Method to read in the main_page_plots config file and use it to initialize a special tab to show a few
+    def add_main_plots_tab(self):
+        """Method to build a unique tab to show a specified set of sensor channels on the main page. Sensors to show here are set in 
+        main_page_plots.yaml
         """
         # Create a new tab and give it a vertical layout
         tab = QWidget(self)
         tab.setObjectName("All")
         tab_vbox = QVBoxLayout(tab)
-
-        ##### should have some sort of validation here to make sure all the keys are in the big data dict, and eliminate them otherwise ######
-        with open("config/main_page_plots.yaml", 'r') as stream:
-            self.main_page_plots = yaml.safe_load(stream)
-
-        num_subplots = 0
-        y_axis_labels = []
-        for key in self.main_page_plots:
-            main_page_plot_titles = self.main_page_plots[key]
-            for title in main_page_plot_titles:
-                y_axis_labels.append(title)
-                num_subplots += 1
-
-        self.main_page_num_subplots = num_subplots
-
+        # Read in the plots we want on the main page
+        y_axis_labels, num_subplots = self.load_main_page_plot_dict()
+        # Make a figure and toolbar for the main page and put them in the tab
         fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[0]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
@@ -606,16 +594,46 @@ class ApplicationWindow(QWidget):
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
                                  axis_titles=list(self.main_page_plots.keys())
                                  )
-        
         toolbar = NavigationToolbar(fig, self, coordinates=False)
-
         tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
         tab_vbox.addWidget(fig)
+        # Add the figure to the stored dictionary of data streaming figures
         self.plot_figs.update({"All":fig})
+        # Add the tab to the QTabWidget
         self.plot_tab.insertTab(0, tab, "Specified Plots")
+        # Set the current index so this tab is visible when the GUI opens. Also set the font
         self.plot_tab.setCurrentIndex(0)
-
         self.plot_tab.setFont(self.norm10)
+
+    def load_main_page_plot_dict(self):
+        """Method to read and parse the main_page_plots.yaml config file
+
+        Returns:
+            y_axis_labels (list): List of axis labels for the main page subplots
+
+            **num_subplots**: *int* Number of needed main page subplots
+        """
+        # If we can find it, read in the main page configuration yaml file. This loads a dictionary with the names of sensors and channels
+        # we want to put on the main page. It has key-value pairs of {"sensor name":{["channel name", "other channel name"]}, ...}
+        try:
+            with open("config/main_page_plots.yaml", 'r') as stream:
+                self.main_page_plots = yaml.safe_load(stream)
+        # If we can't find it, note that
+        except:
+            logger.warning("Error in reading the main_page_plots configuration file. Check your directories.")
+            self.main_page_plots = {}
+
+        # Parse through the dictionary to extract the data channels we want to plot
+        num_subplots = 0 # and keep an eye on how many subplots we need to initialize
+        y_axis_labels = []
+        for key in self.main_page_plots: # Key: "sensor name"
+            if key in self.sensor_names:
+                main_page_plot_channels = self.main_page_plots[key]
+                for channel in main_page_plot_channels:
+                    y_axis_labels.append(channel)
+                    num_subplots += 1
+
+        return y_axis_labels, num_subplots
 
     def update_plots(self):
         """Method to update the live plots with the buffers stored in self.big_data_dict
@@ -641,9 +659,9 @@ class ApplicationWindow(QWidget):
                 main page plots
 
         Returns:
-            x_data_list (list): _description_ \n
+            x_data_list (list): List of deques from self.big_data_dict - timestamp for each sensor channel
 
-            y_data_list (list): _description_
+            **y_data_list** (list): List of deques from self.big_data_dict - data for each sensor channel
         """
         # Try to extract the updated data from the big buffer
         try:
@@ -665,11 +683,11 @@ class ApplicationWindow(QWidget):
                     for subplot_name in subplot_names:
                         x_data_list.append(self.big_data_dict[sensor]["Time (epoch)"])
                         y_data_list.append(self.big_data_dict[sensor]["Data"][subplot_name])
-            # Otherwise (and we should never get here if validation worked correctly), something went wrong
+            # Otherwise (and we should never get here since everything is passed in externally), something went wrong. The plots safely don't update if we pass in None
             else:
                 logger.warning(f"Error in reading the data buffer when updating plots: {e}")
-                x_data_list = []
-                y_data_list = []
+                x_data_list = None
+                y_data_list = None
 
         return x_data_list, y_data_list
 
@@ -699,15 +717,21 @@ class ApplicationWindow(QWidget):
 
     def init_data_buffer(self):
         """Method to read in and save the sensor_data configuration yaml file
-        
-        Updates - 
-            - self.big_data_dict: dict, holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
-            - self.sensor_names: list, sensor names that correspond to the buffer dict keys
+
+        Updates:
+            **self.big_data_dict**: *dict* - Holds buffer of data with key-value pairs 'Sensor Name':deque[data buffer]
+
+            **self.sensor_names**: *list* - Sensor names that correspond to the buffer dict keys
+
         """
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
-        with open("config/sensor_data.yaml", 'r') as stream:
-            self.big_data_dict = yaml.safe_load(stream)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                self.big_data_dict = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.error(f"Error in loading the sensor data config file: {e}")
+            self.big_data_dict = {}
 
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
@@ -812,15 +836,17 @@ class MyFigureCanvas(FigureCanvas):
     def update_data(self, x_new=None, y_new=None):
         """Method to update the variables to plot. If nothing is given, get fake ones for testing"""    
         if x_new is None:
-            new_x = self.x_data[0][-1]+1
-            for i in range(self.num_subplots):
-                self.x_data[i].append(new_x)
+            # new_x = self.x_data[0][-1]+1
+            # for i in range(self.num_subplots):
+            #     self.x_data[i].append(new_x)
+            pass
         else:
             self.x_data = x_new
 
         if y_new is None:
-            for i in range(self.num_subplots):
-                self.y_data[i].append(get_next_datapoint())
+            # for i in range(self.num_subplots):
+            #     self.y_data[i].append(get_next_datapoint())
+            pass
         else:
             self.y_data = y_new
 

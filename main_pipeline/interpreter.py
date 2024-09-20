@@ -40,8 +40,12 @@ class Interpreter():
             initializing all values to zero.
         """
         # Read in the sensor data config file to initialize the data buffer. 
-        with open("config/sensor_data.yaml", 'r') as stream:
-            self.big_data = yaml.safe_load(stream)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                self.big_data = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.error(f"Error in loading the sensor data config file: {e}")
+            self.big_data = {}
 
         t_i = time.time()
         # Comb through the keys, set the timestamp to the current time and the data to zero

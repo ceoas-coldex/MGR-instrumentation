@@ -112,8 +112,13 @@ class Sensor():
         self.bronkhorst = Bronkhorst(serial_port=comms_config["Bronkhorst Pressure"]["serial port"], baud_rate=comms_config["Bronkhorst Pressure"]["baud rate"])
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
-        with open("config/sensor_data.yaml", 'r') as stream:
-            big_data_dict = yaml.safe_load(stream)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                big_data_dict = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.error(f"Error in loading the sensor data config file: {e}")
+            big_data_dict = {}
+        
         self.sensor_names = list(big_data_dict.keys())
 
         # Create a dictionary to store the status of each sensor (0: offline, 1: online, 2: disconnected/simulated)

@@ -37,8 +37,13 @@ class Display():
     def init_data_saving(self):
         """Method to set up data storage and configure internal data management"""
         # Read in the sensor config file to grab a list of all the sensors we're working with
-        with open("config/sensor_data.yaml", 'r') as stream:
-            big_data_dict = yaml.safe_load(stream)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                big_data_dict = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.error(f"Error in loading the sensor data config file: {e}")
+            big_data_dict = {}
+
         self.sensor_names = big_data_dict.keys()
 
         self._load_data_directory()
