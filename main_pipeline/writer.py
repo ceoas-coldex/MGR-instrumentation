@@ -149,17 +149,13 @@ class Writer():
         except KeyError as e: # If something has gone wrong with reading the dictionary keys, note that
             logger.warning(f"Error in reading data dictionary: {e}")
         except TypeError as e: # Due to threading timing, sometimes this tries to read the processed data before it's been instantiated. Catch that here
-            # logger.warning(f"Error in reading data dictionary: {e}")
             pass
-
         try:
             with open(self.csv_filepath, 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
                 writer.writerow(to_write)
         except FileNotFoundError as e:
             logger.warning(f"Error in accessing csv to save data: {e}")
-        tend = time.time()
-        # print(f"saving data took {tend-tstart} seconds")
 
     def save_notes(self, notes):
         # Check if a file exists at the given path and write the notes
@@ -176,9 +172,8 @@ class Writer():
                 writer.writerow(notes_titles) # give it a title
                 writer.writerow(notes) # write the notes
 
-    def write_consumer(self, interpretor_bus:Bus, delay):
+    def write_consumer(self, interpretor_bus:Bus):
         """Method to read the processed data published by the interpretor class and save it to a csv"""
         interp_data = interpretor_bus.read()
         self.save_data(interp_data)
-        time.sleep(delay)
         return interp_data

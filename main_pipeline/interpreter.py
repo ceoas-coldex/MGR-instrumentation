@@ -6,6 +6,11 @@ import numpy as np
 import time
 import yaml
 
+try:
+    from main_pipeline.bus import Bus
+except ImportError:
+    from bus import Bus
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
@@ -21,11 +26,6 @@ logger.addHandler(fh)
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
 
-try:
-    from main_pipeline.bus import Bus
-except ImportError:
-    from bus import Bus
-
 class Interpreter():
     """Class that reads data from each sensor bus, does some processing, and republishes on an Interpreter bus."""
     @log_on_end(logging.INFO, "Interpreter class initiated", logger=logger)
@@ -34,10 +34,9 @@ class Interpreter():
        self._initialize_data_storage()
 
     def _initialize_data_storage(self):
-        """
-            Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
-            updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
-            initializing all values to zero.
+        """Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
+        updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
+        initializing all data values to NAN.
         """
         # Read in the sensor data config file to initialize the data buffer. 
         try:
@@ -48,7 +47,7 @@ class Interpreter():
             self.big_data = {}
 
         t_i = time.time()
-        # Comb through the keys, set the timestamp to the current time and the data to zero
+        # Comb through the keys, set the timestamp to the current time and the data to np.nan
         sensor_names = self.big_data.keys()
         for name in sensor_names:
             self.big_data[name]["Time (epoch)"] = t_i
@@ -57,8 +56,21 @@ class Interpreter():
                 self.big_data[name]["Data"][channel] = np.nan
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
-                               picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus, delay):
-        """Method to read from all the sensor busses and write one compiled output file"""
+                               picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
+        """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
+        **If you add new sensors, you'll need to modify this method**ummary_
+
+        Args:
+            abakus_bus (Bus): _description_
+            flowmeter_sli_bus (Bus): _description_
+            flowmeter_sls_bus (Bus): _description_
+            laser_bus (Bus): _description_
+            picarro_gas_bus (Bus): _description_
+            bronkhorst_bus (Bus): _description_
+            output_bus (Bus): _description_
+            delay (_type_): How long we sleep after data interpreting (s)
+        """
+
         # Read from all the busses (should be in the form (timestamp, sensor_data))
         abakus_output = abakus_bus.read()
         flowmeter_sli_output = flowmeter_sli_bus.read()
@@ -85,7 +97,6 @@ class Interpreter():
         
         # Write to the output bus
         output_bus.write(self.big_data)
-        time.sleep(delay)
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):

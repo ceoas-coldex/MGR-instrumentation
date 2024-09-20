@@ -27,8 +27,8 @@ Codebase and documentation for unified data collection of the OSU COLDEX MGR lab
 ### To add a new sensor
 - sensor_comms.yaml
 - sensor_data.yaml
-- executor._set_gui_buttons
-- sensor -> new method for initializing, querying, shutting down, etc
+- sensor -> new methods for initializing, querying, shutting down, etc
+- interpretor -> new methods for processing, which get called by main_consumer_producer
 
 
 

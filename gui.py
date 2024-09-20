@@ -659,13 +659,6 @@ class ApplicationWindow(QWidget):
         self.bronkhorst_bus = Bus()
         self.main_interp_bus = Bus()
 
-        # Set the delay times (sec) - be a little careful that these delay times play nicely with the timer
-        # firing rates set in __init__. Shouldn't trigger the timer more frequently than it takes to get data to plot
-        # These are also currently conservative
-        self.sensor_delay = 0.3
-        self.interp_delay = 0.1
-        self.write_delay = 0.1
-
     def init_data_buffer(self):
         """Method to read in and save the sensor_data configuration yaml file
 
@@ -705,17 +698,17 @@ class ApplicationWindow(QWidget):
         # Create a ThreadPoolExecutor to accomplish a bunch of tasks at once. These threads pass data between themselves with busses (which handle
         # proper locking, so we're not trying to read and write at the same time) and return a big dictionary of the most recent processed sensor data
         with concurrent.futures.ThreadPoolExecutor() as self.executor:
-            self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
-            self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
-            self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
-            self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-            self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-            self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.abakus_producer, self.abakus_bus)
+            self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus)
+            self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus)
+            self.executor.submit(self.sensor.laser_producer, self.laser_bus)
+            self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
+            self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
             self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                         self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
-                                        self.main_interp_bus, self.interp_delay)
+                                        self.main_interp_bus)
 
-            eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus, self.write_delay)
+            eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus)
 
         # Get the processed data from the final class (also blocks until everything has completed its task)
         data = eWriter.result()

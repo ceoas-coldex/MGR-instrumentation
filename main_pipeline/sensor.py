@@ -184,11 +184,10 @@ class Sensor():
         return self.sensor_status_dict
     
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
-    def abakus_producer(self, abakus_bus:Bus, delay):
+    def abakus_producer(self, abakus_bus:Bus):
         """Method that writes Abakus data to its bus"""
         data = self.read_abakus()
         abakus_bus.write(data)
-        time.sleep(delay)
 
     def read_abakus(self):
         """Method that gets data from the Abakus \n
@@ -197,17 +196,15 @@ class Sensor():
         return timestamp, data_out
 
     ## ------------------- FLOWMETER ------------------- ##
-    def flowmeter_sli2000_producer(self, flowmeter_bus:Bus, delay):
+    def flowmeter_sli2000_producer(self, flowmeter_bus:Bus):
         """Method that writes flowmeter SLI2000 data to its bus"""
         data = self.read_flowmeter(flowmeter_model="SLI2000")
         flowmeter_bus.write(data)
-        time.sleep(delay)
 
-    def flowmeter_sls1500_producer(self, flowmeter_bus:Bus, delay):
+    def flowmeter_sls1500_producer(self, flowmeter_bus:Bus):
         """Method that writes flowmeter SLS1500 data to its bus"""
         data = self.read_flowmeter(flowmeter_model="SLS1500")
         flowmeter_bus.write(data)
-        time.sleep(delay)
 
     def read_flowmeter(self, flowmeter_model):
         """
@@ -227,11 +224,10 @@ class Sensor():
         return timestamp, data_out
     
     # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
-    def laser_producer(self, laser_bus:Bus, delay):
+    def laser_producer(self, laser_bus:Bus):
         """Method that writes laser data to its bus"""
         data = self.read_laser()
         laser_bus.write(data)
-        time.sleep(delay)
 
     def read_laser(self):
         """Method that gets data from the Dimetix laser
@@ -242,17 +238,15 @@ class Sensor():
         return timestamp, (distance, temp)
     
     ## ------------------- PICARRO ------------------- ##
-    def picarro_gas_producer(self, picarro_bus:Bus, delay):
+    def picarro_gas_producer(self, picarro_bus:Bus):
         """Method that writes Picarro gas concentration data to its bus"""
         data = self.read_picarro("GAS")
         picarro_bus.write(data)
-        time.sleep(delay)
 
-    def picarro_water_producer(self, picarro_bus:Bus, delay):
+    def picarro_water_producer(self, picarro_bus:Bus):
         """Method that writes Picarro water isotope data to its bus"""
         data = self.read_picarro("WATER")
         picarro_bus.write(data)
-        time.sleep(delay)
 
     def read_picarro(self, picarro_model):
         """Method that gets data from a Picarro, specified by the model
@@ -269,11 +263,10 @@ class Sensor():
         return timestamp, data_out
 
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
-    def bronkhorst_producer(self, bronkhorst_bus:Bus, delay):
+    def bronkhorst_producer(self, bronkhorst_bus:Bus):
         """Method that writes bronkhorst data to its bus"""
         data = self.read_bronkhorst()
         bronkhorst_bus.write(data)
-        time.sleep(delay)
 
     def read_bronkhorst(self):
         """Method that gets data from the Bronkhorst pressure sensor
