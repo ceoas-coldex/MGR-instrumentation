@@ -149,7 +149,8 @@ class Writer():
         except KeyError as e: # If something has gone wrong with reading the dictionary keys, note that
             logger.warning(f"Error in reading data dictionary: {e}")
         except TypeError as e: # Due to threading timing, sometimes this tries to read the processed data before it's been instantiated. Catch that here
-            logger.warning(f"Error in reading data dictionary: {e}")
+            # logger.warning(f"Error in reading data dictionary: {e}")
+            pass
 
         try:
             with open(self.csv_filepath, 'a') as csvfile:

@@ -54,7 +54,7 @@ class Interpreter():
             self.big_data[name]["Time (epoch)"] = t_i
             channels = list(self.big_data[name]["Data"].keys())
             for channel in channels:
-                self.big_data[name]["Data"][channel] = 0.0
+                self.big_data[name]["Data"][channel] = np.nan
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus, delay):
@@ -307,8 +307,6 @@ class Interpreter():
             self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
             self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (mbar a)"] = fmeasure
             self.big_data["Bronkhorst Pressure"]["Data"]["Temperature (C)"] = temp
-
-            print(self.big_data["Bronkhorst Pressure"]["Data"]["Temperature"])
 
         except Exception as e:
             logger.warning(f"Encountered exception in processing Bronkhorst data: {e}. Not updating measurement")

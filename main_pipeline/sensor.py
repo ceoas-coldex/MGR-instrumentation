@@ -27,7 +27,7 @@ fh.setFormatter(formatter)
 
 # Custom imports
 from main_pipeline.bus import Bus
-
+from sensor_interfaces import sim_instruments
 
 ####### -------------------------------- Try to connect to all the sensors -------------------------------- #######
 # If we can connect, use the real sensor at the specified serial port and baud. if not, use simulated hardware. 
@@ -62,7 +62,7 @@ except SerialException:
 except KeyError as e:
     logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
-# Flowmeter - they both need to be plugged in for this to work
+# Flowmeter - they both need to be plugged in to connect to either
 try:
     serial.Serial(port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baudrate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
     serial.Serial(port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baudrate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
@@ -101,7 +101,7 @@ except KeyError as e:
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
     @log_on_end(logging.INFO, "Sensor class initiated", logger=logger)
-    def __init__(self) -> None:
+    def __init__(self, debug=False) -> None:
         # Initialize the sensors with the appropriate serial port and baud rate (set in config/sensor_comms.yaml, make sure the dictionary keys here match)
         self.abakus = Abakus(serial_port=comms_config["Abakus Particle Counter"]["serial port"], baud_rate=comms_config["Abakus Particle Counter"]["baud rate"])
         self.flowmeter_sli2000 = FlowMeter(sensor_type="sli2000", serial_port=comms_config["Flowmeter SLI2000 (Green)"]["serial port"], baud_rate=comms_config["Flowmeter SLI2000 (Green)"]["baud rate"])
@@ -125,6 +125,10 @@ class Sensor():
         self.sensor_status_dict = {}
         for name in self.sensor_names:
             self.sensor_status_dict.update({name:0})
+
+        # Sim instruments has a "debug" flag - if True, it will return fake readings so we can test plotting, saving, etc. If False,
+        # it returns np.nan. It defaults to False so we don't accidentally save fake data as if it were real
+        sim_instruments.setSimDebugMode(debug)
 
     def __del__(self) -> None:
         self.shutdown_sensors()

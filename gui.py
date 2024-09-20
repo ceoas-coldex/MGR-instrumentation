@@ -495,7 +495,7 @@ class ApplicationWindow(QWidget):
             num_subplots = len(self.big_data_dict[sensor]["Data"])
             # Create the figure and toolbar
             fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
-                                 y_init=[[0]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
+                                 y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
                                  ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
                                  num_subplots=num_subplots,
@@ -529,7 +529,7 @@ class ApplicationWindow(QWidget):
         y_axis_labels, num_subplots = self.load_main_page_plot_dict()
         # Make a figure and toolbar for the main page and put them in the tab
         fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
-                                 y_init=[[0]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
+                                 y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
                                  ylabels=y_axis_labels,
                                  num_subplots=num_subplots,
@@ -640,7 +640,7 @@ class ApplicationWindow(QWidget):
         for each sense/interpret/save process (see run_data_collection for how these are all used)
         """
         # Create each main object of the pipeline
-        self.sensor = Sensor()
+        self.sensor = Sensor(debug=True)
         self.interpretor = Interpreter()
         self.writer = Writer()
 
@@ -684,7 +684,7 @@ class ApplicationWindow(QWidget):
             self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=self.max_buffer_length)
             channels = self.big_data_dict[name]["Data"].keys()
             for channel in channels:
-                self.big_data_dict[name]["Data"][channel] = deque([0.0], maxlen=self.max_buffer_length)
+                self.big_data_dict[name]["Data"][channel] = deque([np.nan], maxlen=self.max_buffer_length)
 
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
@@ -731,7 +731,8 @@ class ApplicationWindow(QWidget):
             except KeyError as e:   # ... otherwise log an exception
                 logger.warning(f"Error updating the {name} buffer timestamp: {e}")
             except TypeError as e:  # Sometimes due to threading shenanigans it comes through as "NoneType", check for that too
-                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+                # logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+                pass
             
             # Grab and append the data from each channel
             channels = list(self.big_data_dict[name]["Data"].keys())
@@ -745,8 +746,10 @@ class ApplicationWindow(QWidget):
                     self.big_data_dict[name]["Data"][channel].append(ch_data)
                 except KeyError:    # ... otherwise log an exception
                     logger.warning(f"Error updating the {name} buffer data: {e}")
+                    pass
                 except TypeError as e: 
-                    logger.warning(f"Error updating the {name} buffer data: {e}")
+                    # logger.warning(f"Error updating the {name} buffer data: {e}")
+                    pass
 
 
 ###################################### HELPER CLASSES ######################################
