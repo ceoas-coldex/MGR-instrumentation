@@ -102,7 +102,7 @@ class ApplicationWindow(QWidget):
         self.threadpool = QThreadPool()
             
         # Initiate two timers that both trigger every X ms:
-        timer_update = 500
+        timer_update = 1000
         # One for updating the plots...
         self.plot_figs_timer = QTimer()
         self.plot_figs_timer.timeout.connect(self.update_plots)
@@ -459,7 +459,7 @@ class ApplicationWindow(QWidget):
             logger.warning(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
             self.notes_dict = {}
     
-    ## --------------------- DATA INPUT & STREAMING DISPLAY --------------------- ##
+    ## --------------------- DATA STREAMING / LIVE PLOTTING --------------------- ##
 
     def build_plotting_layout(self, center_layout:QLayout):
         """
@@ -577,21 +577,27 @@ class ApplicationWindow(QWidget):
 
         return y_axis_labels, num_subplots
 
-    def update_plots(self):
+    def _thread_plots(self):
         """Method to update the live plots with the buffers stored in self.big_data_dict
+        """
+        # Grab the name of the current QTabWidget tab we're on (which sensor data we're displaying)
+        plot_name = self.plot_tab.currentWidget().objectName()
+        fig = self.plot_figs[plot_name]
+        # Make sure the figure is the correct object - not strictly necessary, but a good safety check
+        if type(fig) == MyFigureCanvas:
+            # Grab the updated x and y values from the big data buffer
+            x_data_list, y_data_list = self.get_xy_data_from_buffer(plot_name)
+            # Pass the updated data into the figure object and redraw the axes
+            fig.update_data(x_new=x_data_list, y_new=y_data_list)
+            fig.update_canvas()
+    
+    def update_plots(self):
+        """Method to start a thread that will update the live plots with the buffers stored in self.big_data_dict
         """
         # If the data collection flag is active...
         if self.data_collection:
-            # Grab the name of the current QTabWidget tab we're on (which sensor data we're displaying)
-            plot_name = self.plot_tab.currentWidget().objectName()
-            fig = self.plot_figs[plot_name]
-            # Make sure the figure is the correct object - not strictly necessary, but a good safety check
-            if type(fig) == MyFigureCanvas:
-                # Grab the updated x and y values from the big data buffer
-                x_data_list, y_data_list = self.get_xy_data_from_buffer(plot_name)
-                # Pass the updated data into the figure object and redraw the axes
-                fig.update_data(x_new=x_data_list, y_new=y_data_list)
-                fig.update_canvas()
+            worker = Worker(self._thread_plots)
+            self.threadpool.start(worker)
 
     def get_xy_data_from_buffer(self, plot_name:str):
         """Method to parse the big data buffer and pull out the sensor channels we're interested in plotting.
@@ -689,33 +695,33 @@ class ApplicationWindow(QWidget):
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
 
-    def run_data_collection(self):
-        """Method to complete the entire sense/interpret/save data pipeline once. This is called by a timer way back in __init__, so gets triggered every time that
-        timer fires. It spins up a bunch of threads to gather data from each sensor, pass raw data into the interpretor class, and save the processed data
+    def _thread_data_collection(self):
+        """Method to spin up threads for each sensor, plus the interpretor and the writer. 
+        Allows us to take, process, and save data (mostly) simultaneously
+
+        Returns:
+            data (dict): Big dictionary of processed sensor data, has the same structure as self.big_data_dict
         """
-        # If data collection is active...
-        if self.data_collection:
-            # Create a ThreadPoolExecutor to accomplish a bunch of tasks at once. These threads pass data between themselves with busses (which handle
-            # proper locking, so we're not trying to read and write at the same time) and return a big dictionary of the most recent processed sensor data
-            with concurrent.futures.ThreadPoolExecutor() as self.executor:
-                self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
-                self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
-                self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
-                self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-                self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-                self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
-                self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
-                                            self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
-                                            self.main_interp_bus, self.interp_delay)
+        # Create a ThreadPoolExecutor to accomplish a bunch of tasks at once. These threads pass data between themselves with busses (which handle
+        # proper locking, so we're not trying to read and write at the same time) and return a big dictionary of the most recent processed sensor data
+        with concurrent.futures.ThreadPoolExecutor() as self.executor:
+            self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+            self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
+            self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                                        self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
+                                        self.main_interp_bus, self.interp_delay)
 
-                eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus, self.write_delay)
+            eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus, self.write_delay)
 
-            # Get the processed data from the final class (also blocks until everything has completed its task)
-            data = eWriter.result()
-            # Update our internal data buffer with the processed data
-            self.update_buffer(data, use_noise=False)
-
-    def update_buffer(self, new_data:dict, use_noise=False):
+        # Get the processed data from the final class (also blocks until everything has completed its task)
+        data = eWriter.result()
+        return data
+    
+    def _update_buffer(self, new_data:dict):
         """Method to update the self.big_data_dict buffer with new data from the sensor pipeline.
         
         Args:
@@ -737,12 +743,8 @@ class ApplicationWindow(QWidget):
             # Grab and append the data from each channel
             channels = list(self.big_data_dict[name]["Data"].keys())
             for channel in channels:
-                if use_noise: # If we're using noise, set that (mostly useful for visual plot verification with simulated sensors)
-                    noise = np.random.rand()
-                else:
-                    noise = 0
                 try:    # Check if the dictionary key exists... 
-                    ch_data = new_data[name]["Data"][channel] + noise
+                    ch_data = new_data[name]["Data"][channel]
                     self.big_data_dict[name]["Data"][channel].append(ch_data)
                 except KeyError:    # ... otherwise log an exception
                     logger.warning(f"Error updating the {name} buffer data: {e}")
@@ -750,12 +752,25 @@ class ApplicationWindow(QWidget):
                 except TypeError as e: 
                     # logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
-
+    
+    def run_data_collection(self):
+        """Method to complete the entire sense/interpret/save data pipeline once. This is called by a timer way back in __init__, so gets triggered every time that
+        timer fires. It spins up a bunch of threads to gather data from each sensor, pass raw data into the interpretor class, and save the processed data
+        """
+        # If data collection is active...
+        if self.data_collection:
+            # Set up a thread to go query all the instruments once and process their results
+            worker = Worker(self._thread_data_collection)
+            # Once that's finished, trigger the method to save the results to our internal data buffer
+            worker.signals.result.connect(self._update_buffer)
+            # Spin up the thread
+            self.threadpool.start(worker)
 
 ###################################### HELPER CLASSES ######################################
 
+## --------------------- PLOTTING --------------------- ##
 class MyFigureCanvas(FigureCanvas):
-    """This is the FigureCanvas in which the live plot is drawn."""
+    """This is the FigureCanvas in which a live plot is drawn."""
     def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60, axis_titles=None) -> None:
         """
         :param x_init:          Initial x-data
@@ -814,19 +829,7 @@ class MyFigureCanvas(FigureCanvas):
 
         self.draw()
 
-        # Faster plotting code but can't get the x-axis updating to work
-        # ---------
-        # self._line_.set_ydata(self.y_data)
-        # self._line_.set_xdata(self.x_data)
-        # self.ax.draw_artist(self.ax.patch)
-        # self.ax.draw_artist(self._line_)
-        # self.ax.set_ylim(ymin=min(self.y_data), ymax=min(self.y_data))
-        # self.ax.set_xlim(xmin=self.x_data[0], xmax=self.x_data[-1])
-        # self.draw()
-        # self.update()
-        # self.flush_events()
-
-# pyqt threading
+## --------------------- PYQT THREADING --------------------- ##
 class WorkerSignals(QObject):
     """
     Defines the signals available from a running worker thread.
@@ -904,6 +907,7 @@ def find_grid_dims(num_elements, num_cols):
 
     return num_rows, num_cols
 
+# If we're running from this script, spin up QApplication and start the GUI
 if __name__ == "__main__":
     qapp = QtWidgets.QApplication(sys.argv)
     app = ApplicationWindow()
