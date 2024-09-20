@@ -433,6 +433,11 @@ class ApplicationWindow(QWidget):
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
 
     def build_notes_layout(self, right_layout:QLayout):
+        """Method to build the layout for notetaking.
+
+        Args:
+            right_layout (QLayout): Parent layout
+        """
         right_layout.setContentsMargins(0, 20, 0, 0)
         # Set the title
         label = QLabel(self)
@@ -440,13 +445,9 @@ class ApplicationWindow(QWidget):
         label.setFont(self.bold16)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         right_layout.addWidget(label)
-        
-        # init notes dictionary - should move to its own method
-        self.logging_entries = {}
-        self.logging_entries.update({"Internal Timestamp (epoch)":""})
-        for key in self.notes_dict:
-            self.logging_entries.update({key:""})
-
+        # Initialize an empty dictionary of logging entries with keys that correspond to elements in self.notes_dict
+        self.init_logging_entries()
+        # For each entry in self.notes_dict, create a line entry
         self.lineedits = []
         for note in self.notes_dict:
             line = QLineEdit(self)
@@ -458,7 +459,7 @@ class ApplicationWindow(QWidget):
             line.setMaximumWidth(700)
             right_layout.addWidget(line, alignment=Qt.AlignTop)
 
-        # Make a button to save the text entries to a csv
+        # Make a button that saves the logged entries to a csv when pressed
         log_button = QPushButton(self)
         log_button.setText("LOG")
         log_button.setFont(self.bold12)
@@ -468,29 +469,38 @@ class ApplicationWindow(QWidget):
         # Position the panel at the top of the window
         right_layout.setAlignment(QtCore.Qt.AlignTop)
 
-    def _save_notes(self, line:QLineEdit, note_title:str):
+    def init_logging_entries(self):
+        """Method to build a dictionary to save logged notes
         """
-        Method to hold onto the values entered into the logging panel
+        self.logging_entries = {}
+        self.logging_entries.update({"Internal Timestamp (epoch)":""})
+        for key in self.notes_dict:
+            self.logging_entries.update({key:""})
+
+    def _save_notes(self, line:QLineEdit, note_title:str):
+        """Callback function for the QLineEdit entries, holds onto the values entered into the logging panel.
 
         Args:
             line (QLineEdit): _description_
             note_title (str): _description_
         """
-
+        # Add the logging entry to the appropriate key of the dictionary
         self.logging_entries.update({note_title: line.text()})
+        # Hold onto the QLineEdit object so we can modify it later
         self.lineedits.append(line)
 
     def _log_notes(self):
-        """Callback for the 'log' button (self.init_logging_panel), logs the text entries (self.logging_entries) to a csv"""
-        self.display.save_notes(self.logging_entries.values())
-        
+        """Callback for the 'log' button (self.init_logging_panel), logs the text entries (self.logging_entries) to a csv
+        """
+        # Update the timestamp and save the notes
         timestamp = time.time()
         self.logging_entries.update({"Timestamp (epoch)": timestamp})
-
-        # Clear the dictionary of notes and the text entries on the screen
-        # self.logging_entries.clear()
+        self.display.save_notes(self.logging_entries.values())
+        
+        # Clear the notes dictionary
         for key in self.logging_entries:
             self.logging_entries[key] = ""
+        # Clear the text entries on the GUI
         for line in self.lineedits:
             line.clear()
    
