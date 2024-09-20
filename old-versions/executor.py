@@ -25,7 +25,7 @@ from tkinter_gui import GUI
 from main_pipeline.bus import Bus
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpreter import Interpreter
-from main_pipeline.display import Display
+from main_pipeline.writer import Display
 
 # Set up a logger for this module
 logger = logging.getLogger("executor")
