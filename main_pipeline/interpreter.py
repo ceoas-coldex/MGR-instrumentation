@@ -58,17 +58,16 @@ class Interpreter():
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
         """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
-        **If you add new sensors, you'll need to modify this method**ummary_
+        **If you add new sensors, you'll need to modify this method**
 
         Args:
-            abakus_bus (Bus): _description_
-            flowmeter_sli_bus (Bus): _description_
-            flowmeter_sls_bus (Bus): _description_
-            laser_bus (Bus): _description_
-            picarro_gas_bus (Bus): _description_
-            bronkhorst_bus (Bus): _description_
-            output_bus (Bus): _description_
-            delay (_type_): How long we sleep after data interpreting (s)
+            abakus_bus (Bus): 
+            flowmeter_sli_bus (Bus): 
+            flowmeter_sls_bus (Bus): 
+            laser_bus (Bus): 
+            picarro_gas_bus (Bus): 
+            bronkhorst_bus (Bus): 
+            output_bus (Bus): 
         """
 
         # Read from all the busses (should be in the form (timestamp, sensor_data))
@@ -100,17 +99,15 @@ class Interpreter():
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):
-        """
-        Function to processes the data from querying the Abakus. The first measurement comes through with 
-        more than the expected 32 channels (since the Abakus holds onto the last measurement from the last batch)
-        so you should query the Abakus a couple times before starting data processing. We have a check for that here
-        just in case.
+        """Function to processes the data from querying the Abakus and save it to the big data dictionary. 
+        The first measurement comes through with more than the expected 32 channels (since the Abakus holds 
+        onto the last measurement from the last batch) so you should query the Abakus a couple times before 
+        starting data processing. We have a check for that here just in case.        
 
-            Inputs - abakus_data (tuple, (timestamp, raw_data))    
-        
-            Updates - self.abakus_data (pd.df, processed timestamp, bins, and particle count/bin)
+        Args:
+            abakus_data (tuple): Data (timestamp, raw_data) read from the Abakus bus
         """
-        # Data processing - from Abby's stuff originally
+        
         try:
             timestamp, data_out = abakus_data
             output = data_out.split() # split into a list
@@ -120,13 +117,10 @@ class Interpreter():
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
             abakus_bin_num = 32
             if len(bins) == abakus_bin_num: 
-                # logger.info("Abakus data good, recieved 32 channels.")
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
                 self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
                 self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
                 self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
-
-                # logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
             else:
                 logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except KeyError as e:
@@ -139,10 +133,13 @@ class Interpreter():
         """Method to process data from querying the Flowmeter. The scale factor and unit output of the two 
         models differs (SLI2000 - uL/min, SLS1500 - mL/min). Could make that the same if needed, but for now
         I want it to be consistent with the out-of-box software
-        
-            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model, scale_factor, units  
-        
-            Updates - self.flowmeter_SLXXXXX_data (pd.df, processed timestamp and flow rate)"""
+
+        Args:
+            flowmeter_data (tuple): _description_
+            model (str): Flowmeter model (SLI2000 or SLS1500)
+            scale_factor (int): Flowmeter scale factor, unique to device
+            units (str): Data units (uL/min or mL/min)
+        """        
         # Check if reading is good
         validated_data = self.check_flowmeter_data(flowmeter_data, model)
         # If it's good, try processing it
@@ -164,27 +161,36 @@ class Interpreter():
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
         check in with her about specifics. 
 
-            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model
+        Args:
+            flowmeter_data (tuple): Data (timestamp, raw_data) read from flowmeter bus
+            model (str): Flowmeter model (SLI2000 or SLS1500)
 
-            Returns - a bunch of bytes if the data is valid, False if not"""
+        Raises:
+            Exception: Bad reply from flowmeter - if the third bit is nonzero (see docs)
+            Exception: Bad checksum - (see docs)
+
+        Returns:
+            _type_: A string of bytes if it passes validation, False if not
+        """
         try:
+            # Check if the third bit indicates a bad reply or not
             raw_data = flowmeter_data[1]
             adr = raw_data[1]
             cmd = raw_data[2]
             state = raw_data[3]
             if state != 0:
                 raise Exception("Bad reply from flow meter")
+            # Check checksum
             length = raw_data[4]
             rxdata8 = raw_data[5:5 + length]
             chkRx = raw_data[5 + length]
-
             chk = hex(adr + cmd + length + sum(rxdata8))  # convert integer to hexadecimal
             chk = chk[-2:]  # extract the last two characters of the string
             chk = int(chk, 16)  # convert back to an integer base 16 (hexadecimal)
             chk = chk ^ 0xFF  # binary check
             if chkRx != chk:
                 raise Exception("Bad checksum")
-
+            # If we passed those checks, compile valid output
             rxdata16 = []
             if length > 1:
                 i = 0
@@ -199,16 +205,27 @@ class Interpreter():
             return False
     
     def bytepack(self, byte1, byte2):
-        """ 
-        Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
-            Inputs - byte1 (uint8 byte), byte2 (uint8 byte)
-            Return - binary16 (combined uint16 byte)
+        """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
+
+        Args:
+            byte1 (uint8 byte): one byte
+            byte2 (uint8 byte): a second byte
+
+        Returns:
+            binary16 (uint16 byte): Combined byte
         """
         binary16 = (byte1 << 8) | byte2
         return binary16
     
     def twos_comp(self, binary):
-        """Helper method to take two's complement of binary input if negative, returns input otherwise"""
+        """Helper method to take two's complement of binary input if negative, returns input otherwise
+        
+        Args:
+            binary (uint16 byte): Binary input
+
+        Returns:
+            n (uint16 byte): Binary output
+        """
         if (binary & (1 << 15)):
             n = -((binary ^ 0xFFFF) + 1)
         else:
@@ -217,14 +234,11 @@ class Interpreter():
     
     ## ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
     def process_laser_data(self, laser_data):
-        """
-        Method to process data from querying the laser. It doesn't always like to return a valid result, but
+        """Method to process data from querying the laser. It doesn't always like to return a valid result, but
         if it does, it's just the value in meters (I think, should check with Abby about getting the data sheet there) \n
         
-            Inputs - laser_data (tuple, (timestamp, raw_data))
-            
-            Updates - self.laser_data (pd.df, processed_timestamp, distance reading (cm)). 
-            Doesn't currently have temperature because I was getting one or the other, and prioritized distance
+        Args:
+            laser_data (tuple): Data (timestamp, raw_data) read from laser bus
         """
         # Split up the data
         try:
@@ -268,14 +282,16 @@ class Interpreter():
     def process_picarro_data(self, picarro_data, model):
         """Method to process data from querying the picarro
         
-            Inputs - picarro_data (tuple, (timestamp, raw_data)), model
-            
-            Updates - self.picarro_gas_data"""
+        Args:
+            picarro_data (tuple): Data (timestamp, raw_data) read from picarro bus
+            model (str): Picarro model ("GAS" or "WATER")
+        """
         if model == "GAS":
             try:
                 timestamp, data_out = picarro_data
-                # logger.debug(data_out)
-                # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
+
+                # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
+                # the computer clocks drift
 
                 self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
                 self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
@@ -293,18 +309,19 @@ class Interpreter():
 
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
     def process_bronkhorst_data(self, bronkhorst_data):
-        """Method to process Bronkhorst output when querying setpoint/measurement and fmeasure/temperature, modify if
-        we add query values. I /really/ didn't want to write a general function for any potential bronkhorst return"""
+        """Method to process Bronkhorst output when querying setpoint/measurement and fmeasure/temperature
+        
+        Args:
+            bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
 
         try:
             timestamp, (setpoint_and_meas, fmeas_and_temp) = bronkhorst_data
             
             # Parsing setpoint and measurement is straightforward - 
             # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
-            # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
             setpoint = int(setpoint_and_meas[11:15], 16)
             measure = int(setpoint_and_meas[19:], 16)
-
+            # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
             setpoint = np.interp(setpoint, [0,32000], [0,100.0])
             measure = np.interp(measure, [0,41942], [0,131.07]) # This is bascially the same as the setpoint, but can measure over 100%
 
@@ -348,11 +365,11 @@ class Interpreter():
                 0    | 00000000  |  00000000000000000000000
             Bit: 31   | [30 - 23] |  [22        -         0]
 
-        Args - 
-            - hex_str (str, hexadecmial representation of binary string)
+        Args:
+            hex_str (str, hexadecmial representation of binary string)
 
-        Returns -
-            - dec (float, number in decimal notation)
+        Returns:
+            dec (float, number in decimal notation)
         """
 
         # Convert to integer, keeping its hex representation
@@ -371,7 +388,6 @@ class Interpreter():
         dec = pow(-1, sign_bit) * mantissa_int * pow(2, exponent_unbias)
 
         return dec
-
 
 if __name__ == "__main__":
     interp = Interpreter()

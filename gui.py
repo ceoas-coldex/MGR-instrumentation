@@ -53,6 +53,7 @@ class ApplicationWindow(QWidget):
         
     """
     def __init__(self):
+        """Constructor, called when the class is instantiated"""
         # Initialize the inherited class (QWidget)
         super().__init__()
 
@@ -114,6 +115,11 @@ class ApplicationWindow(QWidget):
         
         # Show the window
         self.show()
+
+    def __del__(self):
+        """Destructor, called when the class is destroyed
+        """
+        self.sensor.shutdown_sensors()
     
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ## 
        
@@ -412,9 +418,9 @@ class ApplicationWindow(QWidget):
         """Method to build a dictionary to save logged notes
         """
         self.logging_entries = {}
-        self.logging_entries.update({"Internal Timestamp (epoch)":""})
         for key in self.notes_dict:
             self.logging_entries.update({key:""})
+        self.logging_entries.update({"Internal Timestamp (epoch)":""})
 
     def _save_notes(self, line:QLineEdit, note_title:str):
         """Callback function for the QLineEdit entries, holds onto the values entered into the logging panel.
@@ -433,8 +439,8 @@ class ApplicationWindow(QWidget):
         """
         # Update the timestamp and save the notes
         timestamp = time.time()
-        self.logging_entries.update({"Timestamp (epoch)": timestamp})
-        self.display.save_notes(self.logging_entries.values())
+        self.logging_entries.update({"Internal Timestamp (epoch)": timestamp})
+        self.writer.save_notes(self.logging_entries.values())
         
         # Clear the notes dictionary
         for key in self.logging_entries:

@@ -1,9 +1,9 @@
 # -------------
-# This script creates shadow hardware. If you're not connected to the instruments, this will substitute sensor readings
+# This script creates shadow hardware. If you're not connected to the instruments, this can substitute sensor readings
 # with simulated values that have the same representation and type as real data 
 # 
 # Ali Jones
-# Last updated 8/29/24
+# Last updated 9/20/24
 # -------------
 
 import time
@@ -23,6 +23,9 @@ logger.addHandler(fh)
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
 
+# Global variable crimes! Tried to keep this pretty minor - set up a global flag to let us know if we're in
+# "debug" mode or not - if we are, our simulated sensors return valid (if fake) sensor readings, so we can
+# check processing, saving, plotting, etc. If we aren't in debug mode, they return NAN. We default to False.
 global debug 
 debug = False
 def setSimDebugMode(use_debug):
@@ -33,6 +36,8 @@ def setSimDebugMode(use_debug):
 def getSimDebugMode():
     global debug
     return debug
+
+# Create classes that mirror the real sensor interfaces
 
 class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
