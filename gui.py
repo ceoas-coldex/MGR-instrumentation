@@ -85,6 +85,7 @@ class Worker(QRunnable):
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
+        self.signals = WorkerSignals()
 
     @pyqtSlot()
     def run(self):
@@ -92,7 +93,15 @@ class Worker(QRunnable):
         Initialise the runner function with passed args, kwargs.
         '''
         # Retrieve args/kwargs here; and fire processing using them
-        self.fn(*self.args, **self.kwargs)
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        # self.signals.result.emit(result)
+        except:
+            print("error!")
+        else:
+            self.signals.result.emit(result)  # Return the result of the processing
+        finally:
+            self.signals.finished.emit()
 
 # main window
 class ApplicationWindow(QWidget):
@@ -119,6 +128,12 @@ class ApplicationWindow(QWidget):
         self.bold12 = QFont("Helvetica", 12)
         self.bold12.setBold(True)
         self.norm12 = QFont("Helvetica", 12)
+        self.norm10 = QFont("Helvetica", 10)
+
+        # Make some default colors
+        self.button_blue = "#71b5cc"
+        self.light_blue = "#579cba"
+        self.dark_blue = "#083054"
 
         # Initialize the main sense-interpret-save data pipeline
         self.init_data_pipeline()
@@ -148,95 +163,133 @@ class ApplicationWindow(QWidget):
         main_layout.addLayout(right_layout)
         self.setLayout(main_layout)
         
-        # Haven't used this yet, but might still - create a threadpool for this class, so we can do threading later
+        # Create a threadpool for this class, so we can do threading later
         self.threadpool = QThreadPool()
             
         # Initiate two timers:
+        timer_update = 500 # how frequently to update the plots and collect data (ms)
         # One for updating the plots...
         self.plot_figs_timer = QTimer()
         self.plot_figs_timer.timeout.connect(self.update_plots)
-        self.plot_figs_timer.start(250)
+        self.plot_figs_timer.start(timer_update)
         # ...and one for collecting, processing, and saving data
         self.execution_timer = QTimer()
         self.execution_timer.timeout.connect(self.run_data_collection)
-        self.execution_timer.start(500)
+        self.execution_timer.start(timer_update)
         
         # Show the window
         self.show()
-
-    ## --------------------- FILE DIRECTORY & DATA INITS --------------------- ## 
-    
-    
     
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ## 
        
     def build_control_layout(self, left_layout:QLayout):
-        title_button_info, sensor_button_info = self._define_button_callbacks()
-        start_next_row, title_colspan = self._make_title_control_layout(left_layout, title_button_info)
-        self._make_sensor_control_layout(left_layout, sensor_button_info, starting_row=start_next_row, colspan=title_colspan)
+        """Method to build the layout for sensor status & control
 
+        Args:
+            left_layout (QLayout): The layout we want to store our status & control widgets in
+        """
+        left_layout.setContentsMargins(0, 20, 0, 0)
+        # Grab button information for both the main title array and the individual sensors
+        title_button_info, sensor_button_info = self.define_sensor_button_callbacks()
+        # Make the title row - has general buttons for initializing sensors and starting data collection
+        start_next_row, title_colspan = self.make_title_control_panel(left_layout, title_button_info)
+        # Make the individual button rows
+        self.make_sensor_control_panel(left_layout, sensor_button_info, starting_row=start_next_row, colspan=title_colspan)
         # Position the panel at the top of the window
         left_layout.setAlignment(QtCore.Qt.AlignTop)
 
-    def _make_title_control_layout(self, parent:QGridLayout, title_button_info:dict, colspan=2):
+    def make_title_control_panel(self, parent:QGridLayout, title_button_info:dict, colspan=2):
+        """Builds the panel for general sensor control - has buttons to initialize/shutdown sensors and start/stop data collection
+
+        Args:
+            parent (QGridLayout): Parent layout
+            title_button_info (dict): Dictionary containing key-value pairs of 
+                "button name":{"callback:button_callback_function, "enabled":True/False}
+            colspan (int, optional): How many columns of buttons. Defaults to 2.
+
+        Returns:
+            start_next_row (int): What row of a QGridLayout any further widgets should start on
+
+            **colspan**: *int*: How many columns we've used so far
+        """
         # Set the title
         label = QLabel(self)
         label.setText("Sensor Status & Control")
         label.setFont(self.bold16)
         label.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        # label.setMargin()
         parent.addWidget(label, 0, 0, 1, colspan) # args: widget, row, column, rowspan, columnspan
 
+        # Determine the dimensions of our button grid
         num_rows, num_cols = find_grid_dims(num_elements=len(title_button_info), num_cols=colspan)
 
-        # For all the buttons we want (stored in the title_buttons dict) create, position, and assign a callback for each
+        # For all the buttons we want to generate (stored in the title_button_info dict),
+        # create, position, and assign a callback for each
         i = 0
         title_button_text = list(title_button_info.keys())
-        self.title_buttons = {} # hold onto the buttons for later
-        for row in range(1, num_rows+1): # Adjusting for the title row
+        self.title_buttons = {} # Holding onto the buttons for later
+        for row in range(1, num_rows+1): # Adjusting for the QLabel title that we put on row 1
             for col in range(num_cols):
                 button_text = title_button_text[i]
                 button = QPushButton(self)
                 button.setText(button_text)
                 button.setFont(self.norm12)
-                button.pressed.connect(title_button_info[button_text]["callback"])
-                button.setEnabled(title_button_info[button_text]["enabled"])
+                button.pressed.connect(title_button_info[button_text]["callback"]) # set the button callback
+                button.setEnabled(title_button_info[button_text]["enabled"]) # set the button initial state (enabled/disabled)
                 parent.addWidget(button, row, col)
                 self.title_buttons.update({button_text:button})
                 i+=1
 
+        # Add a separation line to the layout after all the buttons
         line = QFrame(self)
         line.setFrameShape(QFrame.HLine)
         parent.addWidget(line, row+1, 0, 1, colspan)
 
-        start_next_row = row+2
+        # We should add any further widgets after that^ line widget, so 2 rows after the last button
+        start_next_row = num_rows+2
 
         return start_next_row, colspan
     
-    def _make_sensor_control_layout(self, parent:QGridLayout, sensor_buttons:dict, starting_row, colspan):
-        self.sensor_status_display = {}
-        num_rows, num_cols = find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
-        i = 0
-        elements_per_row = 4
-        for row in range(starting_row, (elements_per_row*num_rows)+starting_row, elements_per_row):
-            for col in range(num_cols):
-                sensor = self.sensor_names[i]
+    def make_sensor_control_panel(self, parent:QGridLayout, sensor_buttons:dict, starting_row, colspan):
+        """Builds the panel for specific sensor control - has buttons that depend upon sensor functionality
 
+        Args:
+            parent (QGridLayout): Parent layout
+            sensor_buttons (dict): Dictionary containing key-value pairs of "sensor_name":{button_1_name:button_1_callback, ...}
+            starting_row (_type_): What row of the parent layout we should start building from
+            colspan (_type_): How many columns are already being used in the parent layout
+
+        Returns:
+            start_next_row (int): What row of a QGridLayout we any further widgets should start on
+        """
+        # Determine how many rows we need for a status & control block per sensor
+        num_rows, num_cols = find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
+        # For all the sensors, create control buttons (if applicable) and a status indicator
+        i = 0
+        self.sensor_status_display = {} # Holding onto the status displays for later
+        # We want to place 4 widgets per sensor panel, so we need to be a little funky with the for loop - 
+        elements_per_row = 4
+        # - we increment by 4 each 'row' of the loop, and manually increment inside the loop
+        for row in range(starting_row, (elements_per_row*num_rows)+starting_row, elements_per_row): 
+            for col in range(num_cols):
+                # Extract the sensor name
+                sensor = self.sensor_names[i]
+                i+=1
+                # First widget we want to place - the sensor title
                 title = QLabel(self)
                 title.setFont(self.bold12)
                 title.setText(sensor)
                 title.setAlignment(Qt.AlignHCenter)
                 title.setStyleSheet("padding-top:10px")
                 parent.addWidget(title, row, col, 1, colspan)
-
+                # Second widget - the status indicator (QLabel that changes color & text upon initialization and shutdown)
                 status = QLabel(self)
                 status.setText("OFFLINE")
                 status.setFont(self.norm12)
                 status.setStyleSheet("background-color:#AF5189; margin:10px")
                 status.setAlignment(Qt.AlignCenter)
                 parent.addWidget(status, row+1, col, 1, colspan)
-                self.sensor_status_display.update({sensor:status})
-                
+                self.sensor_status_display.update({sensor:status}) # Hold onto the status display for later
+                # Third widget - buttons. Not currently robust to multiple rows of buttons, since we haven't needed that
                 try:
                     buttons = sensor_buttons[sensor]
                     c = 0
@@ -249,14 +302,27 @@ class ApplicationWindow(QWidget):
                         c+=1
                 except KeyError:
                     print("no command buttons for this sensor")
-
+                # Fourth widget - dividing line
                 line = QFrame(self)
                 line.setFrameShape(QFrame.HLine)
                 parent.addWidget(line, row+3, col, 1, colspan)
 
-                i+=1
+        # We should add any further widgets after the last dividing line, so 5 rows after the last 'row' iterator
+        start_next_row = row+5
 
-    def _define_button_callbacks(self):
+        return start_next_row
+
+    def define_sensor_button_callbacks(self):
+        """Method that sets the button callbacks for the sensor status & control panel. **If you're adding a new sensor, you'll
+        likely need to add to this method.**
+
+        Returns:
+            title_buttons (dict): Dictionary with title button information 
+                {"button_name":{"callback":button_callback, "enabled":True/False}}
+            
+            sensor_buttons (dict): Dictionary with sensor button information {"sensor_name":{"button_name":button_callback}}
+        """
+
         title_buttons = {}
         title_button_names = ["Initialize All Sensors", "Shutdown All Sensors", "Start Data Collection", "Stop Data Collection"]
         title_button_callbacks = [self._on_sensor_init, self._on_sensor_shutdown, self._on_start_data, self._on_stop_data]
@@ -275,31 +341,63 @@ class ApplicationWindow(QWidget):
                                             "Start SLS1500":self.sensor.flowmeter_sls1500.initialize_flowmeter}})
 
         return title_buttons, sensor_buttons
-    
+        
     def _on_sensor_init(self):
-        ######## PUT THIS IN A THREAD SO IT DOESN'T KILL THE GUI ##########
-        self.sensor_status_dict = self.sensor.initialize_sensors()
-        print(self.sensor_status_dict)
-        self._update_sensor_status()
+        """Callback function for the 'Initialize All Sensors' button
+        """
+        # Start our sensor initialization in a thread so any blocking doesn't cause the GUI to freeze
+        worker = Worker(self.sensor.initialize_sensors)
+        # When it's done, trigger the _finished_sensor_init function
+        worker.signals.result.connect(self._finished_sensor_init)
+        self.threadpool.start(worker)
+
+    def _finished_sensor_init(self, sensor_status:dict):
+        """Method that gets triggered when that thread^ in _on_sensor_init finishes.
+
+        Args:
+            sensor_status (dict): dictionary returned from self.sensor.initialize_sensors
+        """
+        # Update the sensor status dictionary and the GUI
+        self.sensor_status_dict = sensor_status
+        self.update_sensor_status()
+        # Enable the data collection buttons
         self.title_buttons["Start Data Collection"].setEnabled(True)
         self.title_buttons["Stop Data Collection"].setEnabled(True)
-
+        
     def _on_sensor_shutdown(self):
+        """Callback function for the 'Shutdown All Sensors' button
+        """
         self.data_collection = False
-        self.sensor_status_dict = self.sensor.shutdown_sensors()
-        self._update_sensor_status()
+        # Start our sensor shutdown in a thread so any blocking doesn't cause the GUI to freeze
+        worker = Worker(self.sensor.shutdown_sensors)
+        # When it's done, trigger the _finished_sensor_shutdown function
+        worker.signals.result.connect(self._finished_sensor_shutdown)
+        self.threadpool.start(worker)
+
+    def _finished_sensor_shutdown(self, sensor_status:dict):
+        """Method that gets triggered when that thread^ in _on_sensor_shutdown finishes.
+
+        Args:
+            sensor_status (dict): dictionary returned from self.sensor.shutdown_sensors
+        """
+        # Update the sensor status dictionary and the GUI
+        self.sensor_status_dict = sensor_status
+        self.update_sensor_status()
+        # Enable the data collection buttons
         self.title_buttons["Start Data Collection"].setEnabled(False)
         self.title_buttons["Stop Data Collection"].setEnabled(False)
     
     def _on_start_data(self):
+        """Callback function for the "Start Data Collection" button. Sets the data_collection flag to true
+        """
         self.data_collection = True
-        # worker = Worker(self.run_data_collection())
-        # self.threadpool.start(worker)
         
     def _on_stop_data(self):
+        """Callback function for the "Stop Data Collection" button. Sets the data_collection flag to false
+        """
         self.data_collection = False
 
-    def _update_sensor_status(self):
+    def update_sensor_status(self):
         """Method to update the sensor status upon initialization or shutdown. Uses the values stored in
         self.sensor_status_dict to set the color and text of each sensor status widget."""
         # Loop through the sensors and grab their status from the sensor status dictionary
@@ -335,6 +433,7 @@ class ApplicationWindow(QWidget):
     ## --------------------- LOGGING & NOTETAKING --------------------- ##
 
     def build_notes_layout(self, right_layout:QLayout):
+        right_layout.setContentsMargins(0, 20, 0, 0)
         # Set the title
         label = QLabel(self)
         label.setText("Notes & Logs")
@@ -422,6 +521,7 @@ class ApplicationWindow(QWidget):
         Args:
             center_layout (QLayout): The main window layout we want to nest the plots in
         """
+        center_layout.setContentsMargins(10, 20, 10, 0)
         # Make a title
         label = QLabel(self)
         label.setText("Live Sensor Data")
@@ -494,12 +594,18 @@ class ApplicationWindow(QWidget):
                                  ylabels=y_axis_labels,
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
+                                 axis_titles=list(self.main_page_plots.keys())
                                  )
+        
+        toolbar = NavigationToolbar(fig, self, coordinates=False)
 
+        tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
         tab_vbox.addWidget(fig)
         self.plot_figs.update({"All":fig})
         self.plot_tab.insertTab(0, tab, "Specified Plots")
         self.plot_tab.setCurrentIndex(0)
+
+        self.plot_tab.setFont(self.norm10)
 
     def update_plots(self):
         """Method to update the live plots with the buffers stored in self.big_data_dict
@@ -663,7 +769,7 @@ class ApplicationWindow(QWidget):
 
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
-    def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60) -> None:
+    def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60, axis_titles=None) -> None:
         """
         :param x_init:          
         :param y_init:          Initial y-data
@@ -685,9 +791,11 @@ class MyFigureCanvas(FigureCanvas):
             self.axs.append(ax)
             ax.set_xlabel(xlabels[i])
             ax.set_ylabel(ylabels[i])
+            if axis_titles is not None:
+                ax.set_title(axis_titles[i])
 
-        # self.figure.set_figheight(5*num_subplots)
-        # self.figure.tight_layout(pad=4)
+        self.figure.set_figheight(5*num_subplots)
+        self.figure.tight_layout(h_pad=4)
         
         self.draw()   
 
