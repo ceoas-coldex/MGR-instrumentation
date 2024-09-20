@@ -174,8 +174,7 @@ class Display():
                 writer.writerow(notes) # write the notes
 
     def display_consumer(self, interpretor_bus:Bus, delay):
-        """Method to read the processed data published by the interpretor class, save it to a csv, and update 
-        the appropriate buffers for plotting"""
+        """Method to read the processed data published by the interpretor class and save it to a csv"""
         interp_data = interpretor_bus.read()
         # print(f"Data: \n{interp_data}")
         # try:

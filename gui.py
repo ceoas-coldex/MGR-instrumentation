@@ -17,8 +17,8 @@ import sys
 import time
 from collections import deque
 from functools import partial
-import csv
 import concurrent.futures
+import traceback
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -39,69 +39,6 @@ from main_pipeline.interpreter import Interpreter
 from main_pipeline.display import Display
 from main_pipeline.bus import Bus
 
-# pyqt threading
-class WorkerSignals(QObject):
-    '''
-    Defines the signals available from a running worker thread.
-
-    Supported signals are:
-
-    finished
-        No data
-
-    error
-        tuple (exctype, value, traceback.format_exc() )
-
-    result
-        object data returned from processing, anything
-
-    progress
-        int indicating % progress
-
-    '''
-    finished = pyqtSignal()
-    error = pyqtSignal(tuple)
-    result = pyqtSignal(object)
-    progress = pyqtSignal(int)
-
-class Worker(QRunnable):
-    '''
-    Worker thread
-
-    Inherits from QRunnable to handle worker thread setup, signals and wrap-up.
-
-    :param callback: The function callback to run on this worker thread. Supplied args and
-                     kwargs will be passed through to the runner.
-    :type callback: function
-    :param args: Arguments to pass to the callback function
-    :param kwargs: Keywords to pass to the callback function
-
-    '''
-
-    def __init__(self, fn, *args, **kwargs):
-        super(Worker, self).__init__()
-
-        # Store constructor arguments (re-used for processing)
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-        self.signals = WorkerSignals()
-
-    @pyqtSlot()
-    def run(self):
-        '''
-        Initialise the runner function with passed args, kwargs.
-        '''
-        # Retrieve args/kwargs here; and fire processing using them
-        try:
-            result = self.fn(*self.args, **self.kwargs)
-        # self.signals.result.emit(result)
-        except:
-            print("error!")
-        else:
-            self.signals.result.emit(result)  # Return the result of the processing
-        finally:
-            self.signals.finished.emit()
 
 # main window
 class ApplicationWindow(QWidget):
@@ -146,14 +83,11 @@ class ApplicationWindow(QWidget):
         
         # Create the three main GUI panels:
         # 1. Left panel: sensor status and control
-        left_layout = QGridLayout()
-        self.build_control_layout(left_layout)
+        left_layout = self.build_control_layout(QGridLayout())
         # 2. Center panel: data streaming
-        center_layout = QVBoxLayout()
-        self.build_plotting_layout(center_layout)
+        center_layout = self.build_plotting_layout(QVBoxLayout())
         # 3. Right panel: logging and notetaking
-        right_layout = QVBoxLayout()
-        self.build_notes_layout(right_layout)
+        right_layout = self.build_notes_layout(QVBoxLayout())
 
         # Wrap these three main panels up into one big layout, and add it to the app window
         main_layout = QHBoxLayout()
@@ -196,6 +130,8 @@ class ApplicationWindow(QWidget):
         self.make_sensor_control_panel(left_layout, sensor_button_info, starting_row=start_next_row, colspan=title_colspan)
         # Position the panel at the top of the window
         left_layout.setAlignment(QtCore.Qt.AlignTop)
+
+        return left_layout
 
     def make_title_control_panel(self, parent:QGridLayout, title_button_info:dict, colspan=2):
         """Builds the panel for general sensor control - has buttons to initialize/shutdown sensors and start/stop data collection
@@ -468,6 +404,8 @@ class ApplicationWindow(QWidget):
         # Position the panel at the top of the window
         right_layout.setAlignment(QtCore.Qt.AlignTop)
 
+        return right_layout
+
     def init_logging_entries(self):
         """Method to build a dictionary to save logged notes
         """
@@ -574,6 +512,8 @@ class ApplicationWindow(QWidget):
         
         # Finally, add a custom tab to plot multiple readings from multiple sensors
         self.add_main_plots_tab()
+        
+        return center_layout
 
     def add_main_plots_tab(self):
         """Method to build a unique tab to show a specified set of sensor channels on the main page. Sensors to show here are set in 
@@ -692,6 +632,7 @@ class ApplicationWindow(QWidget):
         return x_data_list, y_data_list
 
     ## --------------------- DATA COLLECTION PIPELINE --------------------- ##
+
     def init_data_pipeline(self):
         """Creates objects of the Sensor(), Interpreter(), and Display() classes, and sets busses and delay times 
         for each sense/interpret/save process (see run_data_collection for how these are all used)
@@ -701,7 +642,7 @@ class ApplicationWindow(QWidget):
         self.interpretor = Interpreter()
         self.display = Display()
 
-        # Initialize the busses
+        # Initialize a bus for each thread we plan to spin up later
         self.abakus_bus = Bus()
         self.flowmeter_sli2000_bus = Bus()
         self.flowmeter_sls1500_bus = Bus()
@@ -710,7 +651,9 @@ class ApplicationWindow(QWidget):
         self.bronkhorst_bus = Bus()
         self.main_interp_bus = Bus()
 
-        # Set the delay times (sec)
+        # Set the delay times (sec) - be a little careful that these delay times play nicely with the timer
+        # firing rates set in __init__. Shouldn't trigger the timer more frequently than it takes to get data to plot
+        # These are also currently conservative
         self.sensor_delay = 0.3
         self.interp_delay = 0.1
         self.display_delay = 0.1
@@ -745,36 +688,39 @@ class ApplicationWindow(QWidget):
         self.sensor_names = list(sensor_names)
 
     def run_data_collection(self):
+        """Method to complete the entire sense/interpret/save data pipeline once. This is called by a timer way back in __init__, so gets triggered every time that
+        timer fires. It spins up a bunch of threads to gather data from each sensor, pass raw data into the interpretor class, and save the processed data
+        """
+        # If data collection is active...
         if self.data_collection:
+            # Create a ThreadPoolExecutor to accomplish a bunch of tasks at once. These threads pass data between themselves with busses (which handle
+            # proper locking, so we're not trying to read and write at the same time) and return a big dictionary of the most recent processed sensor data
             with concurrent.futures.ThreadPoolExecutor() as self.executor:
-                eAbakus = self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
-
-                eFlowMeterSLI2000 = self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
-                eFlowMeterSLS1500 = self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
-                eLaser = self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
-                ePicarroGas = self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
-                eBronkhorst = self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
-                eInterpretor = self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                self.executor.submit(self.sensor.abakus_producer, self.abakus_bus, self.sensor_delay)
+                self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus, self.sensor_delay)
+                self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus, self.sensor_delay)
+                self.executor.submit(self.sensor.laser_producer, self.laser_bus, self.sensor_delay)
+                self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus, self.sensor_delay)
+                self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus, self.sensor_delay)
+                self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                             self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
                                             self.main_interp_bus, self.interp_delay)
 
                 eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
 
-
+            # Get the processed data from the final class (also blocks until everything has completed its task)
             data = eDisplay.result()
-            # print(data)
+            # Update our internal data buffer with the processed data
             self.update_buffer(data, use_noise=False)
-            # print(self.big_data_dict)
 
     def update_buffer(self, new_data:dict, use_noise=False):
         """Method to update the self.big_data_dict buffer with new data from the sensor pipeline.
         
-        Args - 
-            - new_data: dict, most recent data update. Should have the same key/value structure as big_data_dict
-            - use_noise: bool, adds some random noise if true. For testing
+        Args:
+            new_data (dict): Most recent data update. Should have the same key/value structure as big_data_dict
+            use_noise (bool): Adds some random noise if true. For testing only
         """
-        # For each sensor name, grab the timestamp and the data from each sensor channel. If it's in a list, take the
-        # first index, otherwise, append the dictionary value directly
+        # For each sensor, grab the timestamp and the data from each sensor channel
         for name in self.sensor_names:
             # Grab and append the timestamp
             try:    # Check if the dictionary key exists... 
@@ -801,11 +747,13 @@ class ApplicationWindow(QWidget):
                     logger.warning(f"Error updating the {name} buffer data: {e}")
 
 
+###################################### HELPER CLASSES ######################################
+
 class MyFigureCanvas(FigureCanvas):
     """This is the FigureCanvas in which the live plot is drawn."""
     def __init__(self, x_init:deque, y_init:deque, xlabels:list, ylabels:list, num_subplots=1, x_range=60, axis_titles=None) -> None:
         """
-        :param x_init:          
+        :param x_init:          Initial x-data
         :param y_init:          Initial y-data
         :param x_range:         How much data we show on the x-axis, in x-axis units
 
@@ -818,7 +766,7 @@ class MyFigureCanvas(FigureCanvas):
         self.x_range = x_range
         self.num_subplots = num_subplots
 
-        # Store a figure axis for the number of subplots set
+        # Generate and store a figure axis for the number of subplots passed in
         self.axs = []
         for i in range(0, num_subplots):
             ax = self.figure.add_subplot(num_subplots+1, 1, i+1)
@@ -828,24 +776,20 @@ class MyFigureCanvas(FigureCanvas):
             if axis_titles is not None:
                 ax.set_title(axis_titles[i])
 
+        # Set a figure size
         self.figure.set_figheight(5*num_subplots)
         self.figure.tight_layout(h_pad=4)
         
         self.draw()   
 
     def update_data(self, x_new=None, y_new=None):
-        """Method to update the variables to plot. If nothing is given, get fake ones for testing"""    
+        """Method to update the variables to plot. If nothing is given, doesn't update data - safety catch in case something has gone wrong with the GUI"""    
         if x_new is None:
-            # new_x = self.x_data[0][-1]+1
-            # for i in range(self.num_subplots):
-            #     self.x_data[i].append(new_x)
             pass
         else:
             self.x_data = x_new
 
         if y_new is None:
-            # for i in range(self.num_subplots):
-            #     self.y_data[i].append(get_next_datapoint())
             pass
         else:
             self.y_data = y_new
@@ -865,7 +809,7 @@ class MyFigureCanvas(FigureCanvas):
 
         self.draw()
 
-        # Faster code but can't get the x-axis updating to work
+        # Faster plotting code but can't get the x-axis updating to work
         # ---------
         # self._line_.set_ydata(self.y_data)
         # self._line_.set_xdata(self.x_data)
@@ -877,12 +821,74 @@ class MyFigureCanvas(FigureCanvas):
         # self.update()
         # self.flush_events()
 
-## --------------------- HELPER FUNCTIONS --------------------- ##
+# pyqt threading
+class WorkerSignals(QObject):
+    """
+    Defines the signals available from a running worker thread.
+
+    Supported signals are:
+        - finished: None
+        - error: tuple (exctype, value, traceback.format_exc() )
+        - result: anything (object data returned from processing)
+        - progress: int indicating % progress
+    """
+    finished = pyqtSignal()
+    error = pyqtSignal(tuple)
+    result = pyqtSignal(object)
+    progress = pyqtSignal(int)
+
+class Worker(QRunnable):
+    """
+    Worker thread
+
+    Inherits from QRunnable to handle worker thread setup, signals and wrap-up.
+
+    :param callback: The function callback to run on this worker thread. Supplied args and
+                     kwargs will be passed through to the runner.
+    :type callback: function
+    :param args: Arguments to pass to the callback function
+    :param kwargs: Keywords to pass to the callback function
+    """
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+    @pyqtSlot()
+    def run(self):
+        """
+        Initialise the runner function with passed args, kwargs.
+        """
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except: # If there's an error, report it
+            exctype, value = sys.exc_info()[:2]
+            logger.error(traceback.print_exc((exctype, value, traceback.format_exc())))
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)  # Return the result of the processing
+        finally:
+            self.signals.finished.emit() # Done
+
+
+###################################### HELPER FUNCTIONS ######################################
 
 def find_grid_dims(num_elements, num_cols):
     """Method to determine the number of rows we need in a grid given the number of elements and the number of columns
-    
-        Returns - num_rows (int), num_cols (int)"""
+
+    Args:
+        num_elements (int): How many elements we want to split
+        num_cols (int): How many columns across which we want to split them
+
+    Returns:
+        num_rows (int): Number of rows needed in the grid
+        
+        **num_cols**: *int*  Number of columns needed in the grid
+    """    
 
     num_rows = num_elements / num_cols
     # If the last number of the fraction is a 5, add 0.1. This is necessary because Python defaults to 
@@ -892,18 +898,6 @@ def find_grid_dims(num_elements, num_cols):
     num_rows = round(num_rows)
 
     return num_rows, num_cols
-
-# Data source
-# ------------
-n = np.linspace(0, 499, 500)
-d = 50 + 25 * (np.sin(n / 8.3)) + 10 * (np.sin(n / 7.5)) - 5 * (np.sin(n / 1.5))
-i = 0
-def get_next_datapoint():
-    global i
-    i += 1
-    if i > 499:
-        i = 0
-    return float(d[i])
 
 if __name__ == "__main__":
     qapp = QtWidgets.QApplication(sys.argv)
