@@ -1,6 +1,8 @@
 # -------------
-# This is the Graphical User Interface (GUI) - true to its name, many graphs and user interface going on here!
-# I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain. 
+# This is the Graphical User Interface (GUI) - true to its name, many graphs and user interfaces going on here!
+# I've tried to make it as modular as possible, so adding additional sensors in the future won't be as much of a pain.
+# 
+# Most of the GUI features - like what sensors we display, what notetaking capabilities we need out of a logging panel,
 # -------------
 
 from PyQt5 import QtWidgets, QtCore
@@ -36,7 +38,7 @@ fh.setFormatter(formatter)
 
 from main_pipeline.sensor import Sensor
 from main_pipeline.interpreter import Interpreter
-from main_pipeline.display import Display
+from main_pipeline.writer import Writer
 from main_pipeline.bus import Bus
 
 
@@ -640,7 +642,7 @@ class ApplicationWindow(QWidget):
         # Create each main object of the pipeline
         self.sensor = Sensor()
         self.interpretor = Interpreter()
-        self.display = Display()
+        self.writer = Writer()
 
         # Initialize a bus for each thread we plan to spin up later
         self.abakus_bus = Bus()
@@ -656,7 +658,7 @@ class ApplicationWindow(QWidget):
         # These are also currently conservative
         self.sensor_delay = 0.3
         self.interp_delay = 0.1
-        self.display_delay = 0.1
+        self.write_delay = 0.1
 
     def init_data_buffer(self):
         """Method to read in and save the sensor_data configuration yaml file
@@ -706,10 +708,10 @@ class ApplicationWindow(QWidget):
                                             self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
                                             self.main_interp_bus, self.interp_delay)
 
-                eDisplay = self.executor.submit(self.display.display_consumer, self.main_interp_bus, self.display_delay)
+                eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus, self.write_delay)
 
             # Get the processed data from the final class (also blocks until everything has completed its task)
-            data = eDisplay.result()
+            data = eWriter.result()
             # Update our internal data buffer with the processed data
             self.update_buffer(data, use_noise=False)
 

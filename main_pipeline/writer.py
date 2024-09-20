@@ -25,8 +25,8 @@ logger.addHandler(fh)
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
 
-class Display():
-    """Class that reads the interpreted data and displays it on the GUI"""
+class Writer():
+    """Class that reads the interpreted data and saves it to the disk"""
     @log_on_end(logging.INFO, "Display class initiated", logger=logger)
     def __init__(self) -> None:
         # Store the GUI
@@ -133,11 +133,11 @@ class Display():
     def save_data(self, data_dict):
         """Method to save the passed in directory to a csv file
         
-        Args -
-            - data_dict: dict, must have the same key-value pairs as the expected dictionary from config/sensor_data.yaml"""
+        Args:
+            data_dict (dict): Dictionary of data read in from the interpretor bus in display_consumer.
+                Must have the same key-value pairs as the expected dictionary from config/sensor_data.yaml
+        """
         
-        # print(pd.DataFrame(data_dict))
-        tstart = time.time()
         to_write = []
         try:
             for name in self.sensor_names:
@@ -146,7 +146,9 @@ class Display():
                 channel_data = data_dict[name]["Data"].values()
                 for data in channel_data:
                     to_write.append(data)
-        except KeyError as e:
+        except KeyError as e: # If something has gone wrong with reading the dictionary keys, note that
+            logger.warning(f"Error in reading data dictionary: {e}")
+        except TypeError as e: # Due to threading timing, sometimes this tries to read the processed data before it's been instantiated. Catch that here
             logger.warning(f"Error in reading data dictionary: {e}")
 
         try:
@@ -173,18 +175,9 @@ class Display():
                 writer.writerow(notes_titles) # give it a title
                 writer.writerow(notes) # write the notes
 
-    def display_consumer(self, interpretor_bus:Bus, delay):
+    def write_consumer(self, interpretor_bus:Bus, delay):
         """Method to read the processed data published by the interpretor class and save it to a csv"""
         interp_data = interpretor_bus.read()
-        # print(f"Data: \n{interp_data}")
-        # try:
-        #     tstart = time.time()
-        #     self.gui.update_buffer(interp_data, use_noise=True)
-        #     tend = time.time()
-        #     print(f"updaing buffer took {tend-tstart} seconds")
         self.save_data(interp_data)
-            
-        # except TypeError:
-        #     pass
         time.sleep(delay)
         return interp_data
