@@ -64,7 +64,7 @@ class Abakus():
         report that initialization failed.
         
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize / error)
         """
         try:
             self.start_measurement()
@@ -83,7 +83,7 @@ class Abakus():
             logger.info(f"Exception in Abakus initialization: {e}")
 
         logger.info(f"Abakus initialization failed after {timeout} attempts")
-        return 0
+        return 3
     
     @log_on_end(logging.INFO, "Abakus measurements started", logger=logger)
     def start_measurement(self):

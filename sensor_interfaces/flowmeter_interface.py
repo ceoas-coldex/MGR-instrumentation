@@ -61,7 +61,7 @@ class FlowMeter():
         report that initialization failed.
         
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize / error)
         """
         # Try to query and get a valid output. If we can't get a valid reading after a set of attempts, report back that initialization failed 
         try:
@@ -79,7 +79,7 @@ class FlowMeter():
             logger.info(f"Exception in Flowmeter {self.sensor_type} initialization: {e}")
 
         logger.info(f"Flowmeter {self.sensor_type} initialization failed after {timeout} attempts")
-        return 0
+        return 3
     
     @log_on_end(logging.INFO, "Flowmeter measurements started", logger=logger)
     def start_measurement(self):
@@ -113,7 +113,7 @@ class FlowMeter():
 
         return buf
     
-    @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
+    # @log_on_end(logging.INFO, "Flowmeter queried", logger=logger)
     def query(self):
         """Queries the flowmeter. Returns raw data and timestamp
             Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""

@@ -30,10 +30,13 @@ Flowmeter:
   Data:
     SLI2000 (uL/min): []
     SLS1500 (mL/min): []
-# Bronkhorst Pressure:
-#   Time (epoch): []
-#   Data:
-#     Dummy key: []
+Bronkhorst Pressure:
+  Time (epoch): []
+  Data:
+    Setpoint: []
+    Measurement (%): []
+    Measurement (mbar a): []
+    Temperature (C): []
 # Melthead:
 #   Time (epoch): []
 #   Data:

@@ -6,6 +6,11 @@ import numpy as np
 import time
 import yaml
 
+try:
+    from main_pipeline.bus import Bus
+except ImportError:
+    from bus import Bus
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
@@ -21,41 +26,50 @@ logger.addHandler(fh)
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
 
-try:
-    from main_pipeline.bus import Bus
-except ImportError:
-    from bus import Bus
-
-class Interpretor():
-    """Class that reads data from each sensor bus, does some processing, and republishes on an interpretor bus."""
-    @log_on_end(logging.INFO, "Interpretor class initiated", logger=logger)
+class Interpreter():
+    """Class that reads data from each sensor bus, does some processing, and republishes on an Interpreter bus."""
+    @log_on_end(logging.INFO, "Interpreter class initiated", logger=logger)
     def __init__(self) -> None:
 
        self._initialize_data_storage()
 
-    
     def _initialize_data_storage(self):
-        """
-            Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
-            updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
-            initializing all values
+        """Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
+        updated by the sensor outputs. Does this by reading in the data buffer stored in config/sensor_data.yaml and 
+        initializing all data values to NAN.
         """
         # Read in the sensor data config file to initialize the data buffer. 
-        with open("config/sensor_data.yaml", 'r') as stream:
-            self.big_data = yaml.safe_load(stream)
+        try:
+            with open("config/sensor_data.yaml", 'r') as stream:
+                self.big_data = yaml.safe_load(stream)
+        except FileNotFoundError as e:
+            logger.error(f"Error in loading the sensor data config file: {e}")
+            self.big_data = {}
 
         t_i = time.time()
-        # Comb through the keys, set the timestamp to the current time and the data to zero
+        # Comb through the keys, set the timestamp to the current time and the data to np.nan
         sensor_names = self.big_data.keys()
         for name in sensor_names:
             self.big_data[name]["Time (epoch)"] = t_i
             channels = list(self.big_data[name]["Data"].keys())
             for channel in channels:
-                self.big_data[name]["Data"][channel] = 0.0
+                self.big_data[name]["Data"][channel] = np.nan
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
-                               picarro_gas_bus:Bus, output_bus:Bus, delay):
-        """Method to read from all the sensor busses and write one compiled output file"""
+                               picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
+        """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
+        **If you add new sensors, you'll need to modify this method**
+
+        Args:
+            abakus_bus (Bus): 
+            flowmeter_sli_bus (Bus): 
+            flowmeter_sls_bus (Bus): 
+            laser_bus (Bus): 
+            picarro_gas_bus (Bus): 
+            bronkhorst_bus (Bus): 
+            output_bus (Bus): 
+        """
+
         # Read from all the busses (should be in the form (timestamp, sensor_data))
         abakus_output = abakus_bus.read()
         flowmeter_sli_output = flowmeter_sli_bus.read()
@@ -63,6 +77,7 @@ class Interpretor():
         laser_output = laser_bus.read()
         picarro_gas_output = picarro_gas_bus.read()
         # picarro_water_timestamp, picarro_water_data = picarro_water_bus.read()
+        bronkhorst_output = bronkhorst_bus.read()
 
         # Process the raw data from each bus (saves the data in self.big_data)
         self.process_abakus_data(abakus_output)
@@ -71,6 +86,7 @@ class Interpretor():
         self.process_laser_data(laser_output)
         self.process_picarro_data(picarro_gas_output, model="GAS")
         # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
+        self.process_bronkhorst_data(bronkhorst_output)
         
         # Uncomment these lines to check the difference in timestamps between the sensors
         # print(f"time difference 1: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Gas"]["Time (epoch)"]}")
@@ -80,21 +96,18 @@ class Interpretor():
         
         # Write to the output bus
         output_bus.write(self.big_data)
-        time.sleep(delay)
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):
-        """
-        Function to processes the data from querying the Abakus. The first measurement comes through with 
-        more than the expected 32 channels (since the Abakus holds onto the last measurement from the last batch)
-        so you should query the Abakus a couple times before starting data processing. We have a check for that here
-        just in case.
+        """Function to processes the data from querying the Abakus and save it to the big data dictionary. 
+        The first measurement comes through with more than the expected 32 channels (since the Abakus holds 
+        onto the last measurement from the last batch) so you should query the Abakus a couple times before 
+        starting data processing. We have a check for that here just in case.        
 
-            Inputs - abakus_data (tuple, (timestamp, raw_data))    
-        
-            Updates - self.abakus_data (pd.df, processed timestamp, bins, and particle count/bin)
+        Args:
+            abakus_data (tuple): Data (timestamp, raw_data) read from the Abakus bus
         """
-        # Data processing - from Abby's stuff originally
+        
         try:
             timestamp, data_out = abakus_data
             output = data_out.split() # split into a list
@@ -104,13 +117,10 @@ class Interpretor():
             # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
             abakus_bin_num = 32
             if len(bins) == abakus_bin_num: 
-                # logger.info("Abakus data good, recieved 32 channels.")
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
                 self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
                 self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
                 self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
-
-                # logger.debug(f"abakus: {self.big_data['Abakus Particle Counter']}")
             else:
                 logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except KeyError as e:
@@ -123,10 +133,13 @@ class Interpretor():
         """Method to process data from querying the Flowmeter. The scale factor and unit output of the two 
         models differs (SLI2000 - uL/min, SLS1500 - mL/min). Could make that the same if needed, but for now
         I want it to be consistent with the out-of-box software
-        
-            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model, scale_factor, units  
-        
-            Updates - self.flowmeter_SLXXXXX_data (pd.df, processed timestamp and flow rate)"""
+
+        Args:
+            flowmeter_data (tuple): _description_
+            model (str): Flowmeter model (SLI2000 or SLS1500)
+            scale_factor (int): Flowmeter scale factor, unique to device
+            units (str): Data units (uL/min or mL/min)
+        """        
         # Check if reading is good
         validated_data = self.check_flowmeter_data(flowmeter_data, model)
         # If it's good, try processing it
@@ -148,27 +161,36 @@ class Interpretor():
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
         check in with her about specifics. 
 
-            Inputs - flowmeter_data (tuple, (timestamp, raw_data)), model
+        Args:
+            flowmeter_data (tuple): Data (timestamp, raw_data) read from flowmeter bus
+            model (str): Flowmeter model (SLI2000 or SLS1500)
 
-            Returns - a bunch of bytes if the data is valid, False if not"""
+        Raises:
+            Exception: Bad reply from flowmeter - if the third bit is nonzero (see docs)
+            Exception: Bad checksum - (see docs)
+
+        Returns:
+            _type_: A string of bytes if it passes validation, False if not
+        """
         try:
+            # Check if the third bit indicates a bad reply or not
             raw_data = flowmeter_data[1]
             adr = raw_data[1]
             cmd = raw_data[2]
             state = raw_data[3]
             if state != 0:
                 raise Exception("Bad reply from flow meter")
+            # Check checksum
             length = raw_data[4]
             rxdata8 = raw_data[5:5 + length]
             chkRx = raw_data[5 + length]
-
             chk = hex(adr + cmd + length + sum(rxdata8))  # convert integer to hexadecimal
             chk = chk[-2:]  # extract the last two characters of the string
             chk = int(chk, 16)  # convert back to an integer base 16 (hexadecimal)
             chk = chk ^ 0xFF  # binary check
             if chkRx != chk:
                 raise Exception("Bad checksum")
-
+            # If we passed those checks, compile valid output
             rxdata16 = []
             if length > 1:
                 i = 0
@@ -183,32 +205,40 @@ class Interpretor():
             return False
     
     def bytepack(self, byte1, byte2):
-        """ 
-        Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
-            Inputs - byte1 (uint8 byte), byte2 (uint8 byte)
-            Return - binary16 (combined uint16 byte)
+        """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
+
+        Args:
+            byte1 (uint8 byte): one byte
+            byte2 (uint8 byte): a second byte
+
+        Returns:
+            binary16 (uint16 byte): Combined byte
         """
         binary16 = (byte1 << 8) | byte2
         return binary16
     
     def twos_comp(self, binary):
-        """Helper method to take two's complement of binary input if negative, returns input otherwise"""
+        """Helper method to take two's complement of binary input if negative, returns input otherwise
+        
+        Args:
+            binary (uint16 byte): Binary input
+
+        Returns:
+            n (uint16 byte): Binary output
+        """
         if (binary & (1 << 15)):
             n = -((binary ^ 0xFFFF) + 1)
         else:
             n = binary
         return n
     
-    # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
+    ## ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
     def process_laser_data(self, laser_data):
-        """
-        Method to process data from querying the laser. It doesn't always like to return a valid result, but
+        """Method to process data from querying the laser. It doesn't always like to return a valid result, but
         if it does, it's just the value in meters (I think, should check with Abby about getting the data sheet there) \n
         
-            Inputs - laser_data (tuple, (timestamp, raw_data))
-            
-            Updates - self.laser_data (pd.df, processed_timestamp, distance reading (cm)). 
-            Doesn't currently have temperature because I was getting one or the other, and prioritized distance
+        Args:
+            laser_data (tuple): Data (timestamp, raw_data) read from laser bus
         """
         # Split up the data
         try:
@@ -249,17 +279,19 @@ class Interpretor():
             logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
 
     ## ------------------- PICARRO ------------------- ##
-    def process_picarro_data(self, picarro_model, model):
+    def process_picarro_data(self, picarro_data, model):
         """Method to process data from querying the picarro
         
-            Inputs - picarro_data (tuple, (timestamp, raw_data)), model
-            
-            Updates - self.picarro_gas_data"""
+        Args:
+            picarro_data (tuple): Data (timestamp, raw_data) read from picarro bus
+            model (str): Picarro model ("GAS" or "WATER")
+        """
         if model == "GAS":
             try:
-                timestamp, data_out = picarro_model
-                # logger.debug(data_out)
-                # self.picarro_gas_data["sample time"] = data_out[0] # the time at which the measurement was sampled, probably different than timestamp
+                timestamp, data_out = picarro_data
+
+                # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
+                # the computer clocks drift
 
                 self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
                 self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
@@ -271,10 +303,92 @@ class Interpretor():
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
         elif model == "WATER":
             try:
-                timestamp, data_out = picarro_model
+                timestamp, data_out = picarro_data
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
 
+    ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
+    def process_bronkhorst_data(self, bronkhorst_data):
+        """Method to process Bronkhorst output when querying setpoint/measurement and fmeasure/temperature
+        
+        Args:
+            bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
+
+        try:
+            timestamp, (setpoint_and_meas, fmeas_and_temp) = bronkhorst_data
+            
+            # Parsing setpoint and measurement is straightforward - 
+            # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
+            setpoint = int(setpoint_and_meas[11:15], 16)
+            measure = int(setpoint_and_meas[19:], 16)
+            # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
+            setpoint = np.interp(setpoint, [0,32000], [0,100.0])
+            measure = np.interp(measure, [0,41942], [0,131.07]) # This is bascially the same as the setpoint, but can measure over 100%
+
+            # Parsing fmeasure and temperature is a little more complicated -
+            # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
+            fmeasure = self.hex_to_ieee754_dec(fmeas_and_temp[11:19])
+            temp = self.hex_to_ieee754_dec(fmeas_and_temp[23:])
+
+            self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+            self.big_data["Bronkhorst Pressure"]["Data"]["Setpoint"] = setpoint
+            self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
+            self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (mbar a)"] = fmeasure
+            self.big_data["Bronkhorst Pressure"]["Data"]["Temperature (C)"] = temp
+
+        except Exception as e:
+            logger.warning(f"Encountered exception in processing Bronkhorst data: {e}. Not updating measurement")
+
+    def mantissa_to_int(self, mantissa_str):
+        """Method to convert the mantissa of the IEEE floating point to its decimal representation"""
+        # Variable to be our exponent as we loop through the mantissa
+        power = -1
+        # Variable to store the decimal value of mantissa
+        mantissa = 0
+        # Iterate through binary number and convert it from binary
+        for i in mantissa_str:
+            mantissa += (int(i)*pow(2, power))
+            power -= 1
+            
+        return (mantissa + 1)
+
+    def hex_to_ieee754_dec(self, hex_str:str) -> float:
+        """
+        Method to convert a hexadecimal string (e.g what is returned from the Bronkhorst) into an IEEE floating point. It's gnarly,
+        more details https://www.mimosa.org/ieee-floating-point-format/ and https://www.h-schmidt.net/FloatConverter/IEEE754.html
+        
+        In short, the IEEE 754 standard formats a floating point as N = 1.F x 2E-127, 
+        where N = floating point number, F = fractional part in binary notation, E = exponent in bias 127 representation.
+
+        The hex input corresponds to a 32 bit binary:
+                Sign | Exponent  |  Fractional parts of number
+                0    | 00000000  |  00000000000000000000000
+            Bit: 31   | [30 - 23] |  [22        -         0]
+
+        Args:
+            hex_str (str, hexadecmial representation of binary string)
+
+        Returns:
+            dec (float, number in decimal notation)
+        """
+
+        # Convert to integer, keeping its hex representation
+        ieee_32_hex = int(hex_str, 16)
+        # Convert to 32 bit binary
+        ieee_32 = f'{ieee_32_hex:0>32b}'
+        # The first bit is the sign bit
+        sign_bit = int(ieee_32[0])
+        # The next 8 bits are exponent bias in biased form - subtract 127 to get the unbiased form
+        exponent_bias = int(ieee_32[1:9], 2)
+        exponent_unbias = exponent_bias - 127
+        # Next 23 bits are the mantissa
+        mantissa_str = ieee_32[9:]
+        mantissa_int = self.mantissa_to_int(mantissa_str)
+        # Finally, convert to decimal
+        dec = pow(-1, sign_bit) * mantissa_int * pow(2, exponent_unbias)
+
+        return dec
+
 if __name__ == "__main__":
-    interp = Interpretor()
+    interp = Interpreter()
     print(interp.big_data)

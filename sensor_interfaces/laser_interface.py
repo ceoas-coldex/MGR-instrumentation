@@ -91,7 +91,7 @@ class Dimetix():
         report that initialization failed.
         
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize/error)
         """
         # Set communication settings
         self.ser.write(self.SET_COM_SETTINGS) 
@@ -155,15 +155,15 @@ class Dimetix():
         response = self.ser.read_until(self.CRLF)
         time2 = time.time()
         
-        print(f"sending serial message took {timestamp-time1} sec")
-        print(f"laser reading took {time2-timestamp} sec")
+        # print(f"sending serial message took {timestamp-time1} sec")
+        # print(f"laser reading took {time2-timestamp} sec")
         
         # Decode the response
         response = response.decode()
 
         return timestamp, response
 
-    @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
+    # @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         # Get the temperature from the laser sensor
         self.ser.write(self.TEMP)

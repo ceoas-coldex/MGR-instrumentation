@@ -1,10 +1,8 @@
-# This file holds the entries we want in the logging panel of the GUI
+# This file holds the entries we want in the logging panel of the GUI. It's set up as a dictionary
+# in case we need to pass in additional information per entry (default value, cap the answer at X chars, etc)
+# but currently all we use are the keys
 ---
 Core Length (units):
-  entry height: 1 # size in screen units we want this entry taking up in the GUI. Think 'lines of text'
 Core ID:
-  entry height: 1
 Timestamp (HH:MM:SS):
-  entry height: 1
 Notes:
-  entry height: 24

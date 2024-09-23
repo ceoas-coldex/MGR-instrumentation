@@ -1,13 +1,13 @@
 # -------------
-# This script creates shadow hardware. If you're not connected to the instruments, this will substitute sensor readings
+# This script creates shadow hardware. If you're not connected to the instruments, this can substitute sensor readings
 # with simulated values that have the same representation and type as real data 
 # 
 # Ali Jones
-# Last updated 8/29/24
+# Last updated 9/20/24
 # -------------
 
 import time
-
+import numpy as np
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
@@ -22,6 +22,22 @@ logger.addHandler(fh)
 # Create a formatter to specify our log format
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
+
+# Global variable crimes! Tried to keep this pretty minor - set up a global flag to let us know if we're in
+# "debug" mode or not - if we are, our simulated sensors return valid (if fake) sensor readings, so we can
+# check processing, saving, plotting, etc. If we aren't in debug mode, they return NAN. We default to False.
+global debug 
+debug = False
+def setSimDebugMode(use_debug):
+    global debug
+    if use_debug:
+        debug = True
+
+def getSimDebugMode():
+    global debug
+    return debug
+
+# Create classes that mirror the real sensor interfaces
 
 class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
@@ -38,7 +54,7 @@ class Abakus():
     def initialize_abakus(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -60,7 +76,14 @@ class Abakus():
         fake_abakus_data = "00000008 00000000 00000009 00000000 00000010 00000000 00000011 00000000 00000012 00000000 00000013 00000000 00000014 00000000 00000016 00000000 00000018 00000000 00000020 00000000 00000022 00000000 00000024 00000000 00000026 00000000 00000028 00000000 00000030 00000000 00000032 00000000 00000034 00000000 00000037 00000000 00000040 00000000 00000043 00000000 00000046 00000000 00000049 00000000 00000052 00000000 00000055 00000000 00000058 00000000 00000062 00000000 00000066 00000000 00000070 00000000 00000075 00000000 00000080 00000000 00000090 00000000 00000100 00000000"
         timestamp = time.time()
 
-        return timestamp, fake_abakus_data
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = fake_abakus_data
+        # Otherwise, return NAN
+        else:
+            output = np.nan
+
+        return timestamp, output
 
 class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
@@ -75,9 +98,9 @@ class Picarro():
     def initialize_picarro(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
-        
-        Returns - 2
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
+            
+            Returns - 2
         """
         logger.info("Initialized Picarro")
         return 2
@@ -91,7 +114,14 @@ class Picarro():
         # Split along the semicolons
         fake_picarro_data = fake_picarro_data.split(";")
 
-        return timestamp, fake_picarro_data
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = fake_picarro_data
+        # Otherwise, return NAN
+        else:
+            output = np.nan
+
+        return timestamp, output
 
 class FlowMeter():
     def __init__(self, serial_port="COM6", baud_rate=115200, sensor_type="SLI2000") -> None:
@@ -106,7 +136,7 @@ class FlowMeter():
     def initialize_flowmeter(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -129,7 +159,14 @@ class FlowMeter():
         fake_flowmeter_sls1500_reading = [126, 0, 53, 0, 2, 255, 247, 210, 126]
                                     # [126, 0, 53, 0, 2, 255, 246, 211, 126] # also
 
-        return timestamp, fake_flowmeter_sli2000_reading
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = fake_flowmeter_sli2000_reading
+        # Otherwise, return NAN
+        else:
+            output = np.nan
+
+        return timestamp, output
 
 class Dimetix():
     def __init__(self, serial_port="COM8", baud_rate=19200) -> None:
@@ -146,7 +183,7 @@ class Dimetix():
     def initialize_laser(self):
         """
         The initialization methods return one of three values: 
-        0 (real hardware, failed to initialize), 1 (real hardware, succeeded), 2 (simulated hardware)
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
             
             Returns - 2
         """
@@ -166,23 +203,63 @@ class Dimetix():
         """Returns - timestamp (float, epoch time), fake_laser_distance_reading (str, unprocessed string)"""
         fake_laser_distance_reading = "g0g+00000101" # raw serial output "g0t-00000023"
         timestamp = time.time()
-        return timestamp, fake_laser_distance_reading
+
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = fake_laser_distance_reading
+        # Otherwise, return NAN
+        else:
+            output = np.nan
+
+        return timestamp, output
     
     # @log_on_end(logging.INFO, "Dimetix laser queried temperature", logger=logger)
     def query_temperature(self):
         """Returns - timestamp (float, epoch time), fake_laser_temp_reading (str, unprocessed string)"""
         fake_laser_temp_reading = "g0t-00000023"
         timestamp = time.time()
-        return timestamp, fake_laser_temp_reading
+
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = fake_laser_temp_reading
+        # Otherwise, return NAN
+        else:
+            output = np.nan
+
+        return timestamp, output
 
 class Bronkhorst():
     def __init__(self, serial_port, baud_rate=38400) -> None:
         """Not yet done. Fake hardware, pretends to do everything the real Dimetix laser class does"""
         self.initialize_pyserial(serial_port, baud_rate)
 
-    def initialize_pyserial(port, baud):
+    def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
+    @log_on_start(logging.INFO, "Initializing Bronkhorst")
+    def initialize_bronkhorst(self):
+        """
+        The initialization methods return one of three values: 
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
+            
+            Returns - 2
+        """
+        logger.info("Bronkhorst initialized")
+        return 2
+    
     # @log_on_end(logging.INFO, "Bronkhorst queried", logger=logger)
     def query(self):
-        pass
+        """Returns - timestamp (float, epoch time), output ((bytestr, bytestr), chained responses for setpoint & measure and 
+            fmeasure  & temperature)"""
+        setpoint_and_meas = ':0A800281215DC001217CE0'
+        fmeas_and_temp = ':0E8002A1404479C0E0214741C80000'
+        timestamp = time.time()
+
+        # If we're in debug mode, return this fake reading
+        if debug:
+            output = (setpoint_and_meas, fmeas_and_temp)
+        # Otherwise, return NAN
+        else:
+            output = (np.nan, np.nan)
+        
+        return timestamp, output
