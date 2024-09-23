@@ -683,10 +683,22 @@ class ApplicationWindow(QWidget):
         return x_data_list, y_data_list
 
     def _get_entire_day_data(self, sensor):
-        filepath = self.writer.get_data_directory()
-        channels = list(self.big_data_dict[sensor]["Data"].keys())
-        channels.append("time (epoch)")
+        """Method that reads the big data saving csv, pulls out the channels of the sensor we want,
+        and returns them.
 
+        Args:
+            sensor (str): The name of the sensor, must match a key in self.big_data_dict
+
+        Returns:
+            result (tuple): tuple of (sensor: *str*, data: *dict*)
+        """
+        # Grab the filepath of the data csv from the writer object
+        filepath = self.writer.get_data_directory()
+        # Grab the data channels we have for this sensor - we'll use these to get data from the csv
+        channels = list(self.big_data_dict[sensor]["Data"].keys())
+        # Add time so we can get that too
+        channels.append("time (epoch)")
+        # The data is saved to the csv in the form "Sensor Name": "Channel Name", so format it here
         cols = [f"{sensor}: {channel}" for channel in channels]
         try:
             data = pd.read_csv(filepath, delimiter=',', header=0, usecols=cols)
@@ -697,13 +709,22 @@ class ApplicationWindow(QWidget):
         return sensor, data
     
     def _update_entire_day_plot(self, result):
+        """Method that triggers when the threaded self._get_entire_day_data finishes, 
+        giving us the dictionary of sensor data pulled from the csv file. 
+
+        Args:
+            result (tuple): tuple of (sensor: *str*, data: *dict*)
+        """
+        # The thread retuns the name of the sensor and the dictionary of data
         sensor, data = result
+        # Grab some metadata from the big_data_dict - the channels of data we have for this sensor, and the 
+        # number of subplots we need to display them all
         channels = list(self.big_data_dict[sensor]["Data"].keys())
         num_subplots = len(channels)
-
+        # Pull the time from the data input and convert it from UTC epoch time to Pacific time
         t = data[f"{sensor}: time (epoch)"]
-        t_pacific_time = pd.to_datetime(t.to_numpy(), unit='s').tz_localize('utc').tz_convert('America/Los_Angeles')
-
+        t_pacific_time = epoch_to_pacific_time(t)
+        # Create a figure and toolbar with the data for each sensor channel
         fig = MyFigureCanvas(x_init=[t_pacific_time]*num_subplots,
                              y_init=[data[f"{sensor}: {channel}"] for channel in channels],
                              num_subplots=num_subplots,
@@ -712,15 +733,23 @@ class ApplicationWindow(QWidget):
                              x_range=len(t),
                              )
         toolbar = NavigationToolbar(fig, self)
+        # Create another window, add the widgets, and show the window
         self.plot_window = AnotherWindow(title=sensor)
         self.plot_window.set_widget(toolbar)
         self.plot_window.set_widget(fig)
         self.plot_window.show()
 
-    
     def plot_entire_day(self, sensor:str):
+        """Method to spin up a thread that plots the entire day's worth of data and displays it on another window.
+
+        Args:
+            sensor (str): The name of the sensor, must match a key in self.big_data_dict
+        """
+        # Set up the thread to grab sensor data from the csv
         worker = Worker(self._get_entire_day_data, sensor)
+        # When the thread finishes, display the result
         worker.signals.result.connect(self._update_entire_day_plot)
+        # Start the thread
         self.threadpool.start(worker)
         
 
@@ -1002,6 +1031,15 @@ def find_grid_dims(num_elements, num_cols):
     num_rows = round(num_rows)
 
     return num_rows, num_cols
+
+def epoch_to_pacific_time(time):
+    time = np.array(time)
+    t_datetime = pd.to_datetime(time, unit='s')
+    t_utc = t_datetime.tz_localize('utc')
+    t_pacific = t_utc.tz_convert('America/Los_Angeles')
+    
+    return t_pacific
+
 
 # If we're running from this script, spin up QApplication and start the GUI
 if __name__ == "__main__":
