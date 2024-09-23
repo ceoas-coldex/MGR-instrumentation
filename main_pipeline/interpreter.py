@@ -5,6 +5,7 @@
 import numpy as np
 import time
 import yaml
+import copy
 
 try:
     from main_pipeline.bus import Bus
@@ -48,8 +49,8 @@ class Interpreter():
 
         t_i = time.time()
         # Comb through the keys, set the timestamp to the current time and the data to np.nan
-        sensor_names = self.big_data.keys()
-        for name in sensor_names:
+        self.sensor_names = self.big_data.keys()
+        for name in self.sensor_names:
             self.big_data[name]["Time (epoch)"] = t_i
             channels = list(self.big_data[name]["Data"].keys())
             for channel in channels:
@@ -95,7 +96,14 @@ class Interpreter():
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
         # Write to the output bus
-        output_bus.write(self.big_data)
+        output_bus.write(copy.deepcopy(self.big_data))
+
+        # Reset the dictionary to make sure we're not holding onto anything from the last data collection round
+        for name in self.sensor_names:
+            channels = list(self.big_data[name]["Data"].keys())
+            for channel in channels:
+                self.big_data[name]["Data"][channel] = np.nan
+
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):
@@ -113,14 +121,15 @@ class Interpreter():
             output = data_out.split() # split into a list
             bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
             counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
-
-            # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
+            total_counts = int(np.sum(counts))
+            
+            # If we've received the correct number of bins, update the measurement. Otherwise, log an error
             abakus_bin_num = 32
             if len(bins) == abakus_bin_num: 
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
                 self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
                 self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
-                self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
+                self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
             else:
                 logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
         except KeyError as e:

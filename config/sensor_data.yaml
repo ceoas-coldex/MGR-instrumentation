@@ -1,4 +1,6 @@
-# This file sets up the dictionary for data management / live plotting buffer
+# This file sets up the dictionary for data management / live plotting buffer.
+# IMPORTANT - the dictionary keys ("Time (epoch)" and "Data") must exist and be spelled correctly. If you want to eliminate all
+# the data channels from a sensor, comment out the whole sensor.
 ---
 Picarro Gas:
   Time (epoch): []

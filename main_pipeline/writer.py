@@ -116,8 +116,8 @@ class Writer():
         # Pull out all the data we want to save - the timestamp and channel names of each sensor
         data_titles = []
         for name in self.sensor_names:
-            data_titles.append(f"{name}: time (epoch)")
             channels = big_data_dict[name]["Data"].keys()
+            data_titles.append(f"{name}: time (epoch)")
             for channel in channels:
                 data_titles.append(f"{name}: {channel}")
 

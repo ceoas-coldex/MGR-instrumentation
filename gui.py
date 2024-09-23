@@ -276,7 +276,7 @@ class ApplicationWindow(QWidget):
                         parent.addWidget(b, row+2, col+c)
                         c+=1
                 except KeyError:
-                    print("no command buttons for this sensor")
+                    logger.info("no command buttons for this sensor")
                 # Fourth widget - dividing line
                 line = QFrame(self)
                 line.setFrameShape(QFrame.HLine)
@@ -603,7 +603,7 @@ class ApplicationWindow(QWidget):
             with open("config/main_page_plots.yaml", 'r') as stream:
                 self.main_page_plots = yaml.safe_load(stream)
         # If we can't find it, note that
-        except:
+        except FileNotFoundError:
             logger.warning("Error in reading the main_page_plots configuration file. Check your directories.")
             self.main_page_plots = {}
 
@@ -760,7 +760,7 @@ class ApplicationWindow(QWidget):
         """
         # Create each main object of the pipeline
         self.sensor = Sensor(debug=True)
-        self.interpretor = Interpreter()
+        self.interpreter = Interpreter()
         self.writer = Writer()
 
         # Initialize a bus for each thread we plan to spin up later
@@ -793,8 +793,8 @@ class ApplicationWindow(QWidget):
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
-            self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
             channels = self.big_data_dict[name]["Data"].keys()
+            self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
             for channel in channels:
                 self.big_data_dict[name]["Data"][channel] = deque([np.nan], maxlen=self.max_buffer_length)
 
@@ -802,7 +802,7 @@ class ApplicationWindow(QWidget):
         self.sensor_names = list(sensor_names)
 
     def _thread_data_collection(self):
-        """Method to spin up threads for each sensor, plus the interpretor and the writer. 
+        """Method to spin up threads for each sensor, plus the interpreter and the writer. 
         Allows us to take, process, and save data (mostly) simultaneously
 
         Returns:
@@ -818,13 +818,13 @@ class ApplicationWindow(QWidget):
                 self.executor.submit(self.sensor.laser_producer, self.laser_bus)
                 self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
                 self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
-                self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                self.executor.submit(self.interpreter.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                             self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
                                             self.main_interp_bus)
 
                 eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus)
         except RuntimeError as e:
-            logger.warning(f"Encoutered Error in data threading: {e}")
+            logger.warning(f"Encountered Error in data threading: {e}")
 
         # Get the processed data from the final class (also blocks until everything has completed its task)
         data = eWriter.result()
@@ -846,7 +846,7 @@ class ApplicationWindow(QWidget):
             except KeyError as e:   # ... otherwise log an exception
                 logger.warning(f"Error updating the {name} buffer timestamp: {e}")
             except TypeError as e:  # Sometimes due to threading shenanigans it comes through as "NoneType", check for that too
-                # logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
                 pass
             
             # Grab and append the data from each channel
@@ -859,7 +859,7 @@ class ApplicationWindow(QWidget):
                     logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
                 except TypeError as e: 
-                    # logger.warning(f"Error updating the {name} buffer data: {e}")
+                    logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
     
     def run_data_collection(self):

@@ -1,36 +1,72 @@
-# MGR-instrumentation
+# MGR Instrumentation
 Codebase and documentation for unified data collection of the OSU COLDEX MGR lab instrumentation
 
 ## Overview
 
+purpose of this repo is 
+
+current sensors integrated are
+
+This README describes installation/setup procedures, how to use the codebase, elements of the GUI, and data management. More documentation exists in each package:
+
+- [Sensor Interfaces README](sensor_interfaces/README.md): documentation of the **sensors**, including user manuals, interfaces, simulated hardware, and steps for adding a new sensor
+- [Data Pipeline README](main_pipeline/README.md): crunchier documentation of the **data processing pipeline**, such as how data gets passed from sensing → interpreting → saving.
+
 ## Getting Started
 
+This section goes over installation and setup of this repository. If you're reading this README from the MGR lab computer, this has already been taken care of - you can start [using the codebase](#running).
+
+### Installation
+
+This project can be installed from GitHub with
+
+    git clone https://github.com/ali-clara/MGR-instrumentation.git
+
+Or by using [GitHub desktop](https://github.com/apps/desktop), which I recommend for Windows and for folks who aren't too familiar with `git`.
+
 ### Dependencies
-- imports in the virtual environment requirements.txt
+I highly recommend setting up a virtual environment to hold and store this codebase, especially for lab computers with multiple users. This allows you to run Python locally in the environment, instead of globally on your machine, which gets rid of a lot of import/path headaches. A good IDE can make this really easy ([here's a walkthrough for VSCode](https://code.visualstudio.com/docs/python/environments#_creating-environments)). Once you have your environment, you can import all the dependencies needed for this repository by running the following from the main directory:
 
-### Abakus
-- Just plugged straight into my (windows10) laptop, it set up the device properly
+    pip install -r requirements.text
 
-### Sensirion flow meters
-- just plugged in, took the data validation and processing from Abby's stuff
+If you don't want to use a virtual environment, you'll need to import the following:
 
-### Dimetrix laser
-- just plugged in
+- [numpy](https://pypi.org/project/numpy/)
+- [pandas](https://pypi.org/project/pandas/)
+- [pyserial](https://pypi.org/project/pyserial/)
+- [matplotlib](https://pypi.org/project/matplotlib/)
+- [logdecorator](https://pypi.org/project/logdecorator/)
+- [PyYAML](https://pypi.org/project/pyyaml/)
+- [readerwriterlock](https://pypi.org/project/readerwriterlock/)
+- [PyQt5](https://pypi.org/project/PyQt5/)
 
-## GUI
-- ctrl-tab walks you around the different widgets
+### Configuration Files
+
+To make this codebase easier to modify, it uses a set of YAML files to configure internal parameters, such as the sensors we display on the live-plotting screens, the directories we save data to, and the sensor communication ports. These files and their functions are described here, as well as what elements to configure upon setup.
+
+- *sensor_comms.yaml* - Sets the sensor communication parameters, such as serial port and baud rate.
+
+    - <mark>**Configure upon setup**:</mark> Set the correct serial port for each sensor. You can find this information by plugging in the sensors one at a time and noting what ports become active, either in the Windows Device Manager (under COM & LPT) or through the command line.
+
+- *data_saving.yaml* - Sets the directories where sensor data and logged notes get stored.
+    
+    - <mark>**Configure upon setup**:</mark> Set the directories to a valid location on your device
+
+- *sensor_data.yaml* - Sets up internal data management. You can comment out lines or entire sensor blocks to prevent that data from being plotted and saved.
+
+    - **Configure upon setup**: Nothing required
+
+- *log_entries.yaml* - Sets the text entries that pop up on the Logging & Notetaking GUI panel.
+
+    - **Configure upon setup**: Nothing required
+
+- *main_page_plots.yaml* - Sets what sensors and what data channels of those sensors get plotted on the main data-streaming page.
+
+    - **Configure upon setup**: Nothing required
+
+## Running
+
+## GUI 
+- tab walks you around the different widgets
 
 ## Data Management
-
-## Modification Instructions
-### To add a new sensor
-- sensor_comms.yaml
-- sensor_data.yaml
-- sensor_interfaces\my_new_sensor_name.py -> make a class with methods for initializing, querying, shutting down, etc
-- sim_interfaces -> make a shell of those ^ methods. Can have as many or as few cababilities as you'd like, but this allows the entire pipeline to run even when a sensor is unplugged
-- sensor.py -> tie into those new methods and write a my_new_sensor_producer() method to publish sensor data to a bus
-- interpretor.py -> new methods for processing, which get called by main_consumer_producer. Make sure the dictionary keys match
-- 
-
-
-
