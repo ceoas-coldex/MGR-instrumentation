@@ -121,6 +121,36 @@ class ApplicationWindow(QWidget):
         """
         self.sensor.shutdown_sensors()
     
+    def closeEvent(self, event):
+        """This method overwrites the default QWidget closeEvent that triggers when the window "X" is clicked.
+        It ensures we can shutdown sensors cleanly by opening a QMessageBox to prompt the user to quit/cancel
+        """
+        self.check_close_event()
+        # If we actually want to shut down, shutdown the sensors and then accept the closeEvent
+        if self.accept_quit:
+            self.sensor.shutdown_sensors()
+            event.accept()
+        # Otherwise, ignore it
+        else:
+            event.ignore()
+
+    def check_close_event(self):
+        """Method to check if the user actually wants to quit or not. Opens a QMessageBox and stores
+        the result as a boolean in self.accept_quit."""
+        # Flags to handle clean shutdown by storing the "are you sure you want to quit" result
+        self.accept_quit = None
+        # Set up a messagebox to prompt the user
+        msgbox = QMessageBox()
+        msgbox.setIcon(QMessageBox.Question)
+        msgbox.setText("Are you sure you want to close the window? This shuts down sensors and stops data collection.")
+        msgbox.setStandardButtons(QMessageBox.Close | QMessageBox.Cancel)
+        # Get the user click and parse it appropriately
+        msg_return = msgbox.exec()
+        if msg_return == QMessageBox.Close:
+            self.accept_quit = True
+        elif msg_return == QMessageBox.Cancel:
+            self.accept_quit = False
+
     ## --------------------- SENSOR STATUS & CONTROL --------------------- ## 
        
     def build_control_layout(self, left_layout:QLayout):
@@ -703,18 +733,21 @@ class ApplicationWindow(QWidget):
         """
         # Create a ThreadPoolExecutor to accomplish a bunch of tasks at once. These threads pass data between themselves with busses (which handle
         # proper locking, so we're not trying to read and write at the same time) and return a big dictionary of the most recent processed sensor data
-        with concurrent.futures.ThreadPoolExecutor() as self.executor:
-            self.executor.submit(self.sensor.abakus_producer, self.abakus_bus)
-            self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus)
-            self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus)
-            self.executor.submit(self.sensor.laser_producer, self.laser_bus)
-            self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
-            self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
-            self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
-                                        self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
-                                        self.main_interp_bus)
+        try:
+            with concurrent.futures.ThreadPoolExecutor() as self.executor:
+                self.executor.submit(self.sensor.abakus_producer, self.abakus_bus)
+                self.executor.submit(self.sensor.flowmeter_sli2000_producer, self.flowmeter_sli2000_bus)
+                self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus)
+                self.executor.submit(self.sensor.laser_producer, self.laser_bus)
+                self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
+                self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
+                self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                                            self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
+                                            self.main_interp_bus)
 
-            eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus)
+                eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus)
+        except RuntimeError as e:
+            logger.warning(f"Encoutered Error in data threading: {e}")
 
         # Get the processed data from the final class (also blocks until everything has completed its task)
         data = eWriter.result()
@@ -766,6 +799,52 @@ class ApplicationWindow(QWidget):
             self.threadpool.start(worker)
 
 ###################################### HELPER CLASSES ######################################
+
+## --------------------- PROMPT UPON CLOSE --------------------- ##
+class AreYouSure(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.QUIT = False
+        self.CANCEL = False
+
+        layout = QGridLayout()
+
+        bold12 = QFont("Helvetica", 12)
+        bold12.setBold(True)
+        norm12 = QFont("Helvetica", 12)
+        norm10 = QFont("Helvetica", 10)
+
+        label = QLabel("Are you sure you want to quit?")
+        label.setFont(bold12)
+        layout.addWidget(label, 0, 0, 0, 2) # args: widget, row, column, rowspan, columnspan
+
+        label = QLabel("This shuts down sensors and stops data collection")
+        label.setFont(norm10)
+        layout.addWidget(label, 1, 0, 0, 2)
+
+        button = QPushButton("Quit")
+        button.setStyleSheet("background-color:#D55E00")
+        button.setFont(norm10)
+        button.clicked.connect(self._on_quit)
+        layout.addWidget(button, 2, 0, 0, 1)
+
+        button = QPushButton("Cancel")
+        button.setFont(norm10)
+        button.clicked.connect(self._on_cancel)
+        layout.addWidget(button, 2, 1, 0, 1)
+
+        self.setLayout(layout)
+
+    def _on_quit(self):
+        self.QUIT = True
+        self.CANCEL = True
+        self.close()
+
+    def _on_cancel(self):
+        self.QUIT = False
+        self.CANCEL = True
+        self.close()
 
 ## --------------------- PLOTTING --------------------- ##
 class MyFigureCanvas(FigureCanvas):
