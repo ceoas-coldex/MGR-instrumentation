@@ -532,7 +532,7 @@ class ApplicationWindow(QWidget):
             # For each figure, we want a subplot corresponding to each piece of data returned by the sensor. Grab that number
             num_subplots = len(self.big_data_dict[sensor]["Data"])
             # Create the figure and toolbar
-            fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
+            fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
                                  ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
@@ -544,7 +544,7 @@ class ApplicationWindow(QWidget):
             button = QPushButton("Plot Entire Day")
             button.setFont(self.norm12)
             button.pressed.connect(partial(self.plot_entire_day, sensor))
-            # Add the figure and toolbar to this tab's layout
+            # Add the figure, toolbar, and button to this tab's layout
             tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
             tab_vbox.addWidget(fig)
             tab_vbox.addWidget(button)
@@ -552,12 +552,11 @@ class ApplicationWindow(QWidget):
             self.plot_tab.addTab(tab, sensor)
             # Hold onto the figure object for later
             self.plot_figs.update({sensor: fig})
-        # Once we've done all that, add the QTabWidget to the main layout
-        center_layout.addWidget(self.plot_tab)
-        
         # Finally, add a custom tab to plot multiple readings from multiple sensors
         self.add_main_plots_tab()
-        
+        # Once we've done all that, add the QTabWidget to the main layout
+        center_layout.addWidget(self.plot_tab)
+
         return center_layout
 
     def add_main_plots_tab(self):
@@ -571,7 +570,7 @@ class ApplicationWindow(QWidget):
         # Read in the plots we want on the main page
         y_axis_labels, num_subplots = self.load_main_page_plot_dict()
         # Make a figure and toolbar for the main page and put them in the tab
-        fig = MyFigureCanvas(x_init=[[time.time()]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
+        fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time (epoch)"]*num_subplots,
                                  ylabels=y_axis_labels,
@@ -794,7 +793,7 @@ class ApplicationWindow(QWidget):
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
-            self.big_data_dict[name]["Time (epoch)"] = deque([time.time()], maxlen=self.max_buffer_length)
+            self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
             channels = self.big_data_dict[name]["Data"].keys()
             for channel in channels:
                 self.big_data_dict[name]["Data"][channel] = deque([np.nan], maxlen=self.max_buffer_length)
@@ -878,19 +877,29 @@ class ApplicationWindow(QWidget):
 
 ###################################### HELPER CLASSES ######################################
 
-## --------------------- PROMPT UPON CLOSE --------------------- ##
+## --------------------- SEPARATE WINDOW --------------------- ##
 class AnotherWindow(QWidget):
-    def __init__(self, title):
-        super().__init__()
-        # Window settings
-        self.setWindowTitle(title)
+    """This class is a skeleton window with the capability of adding external widgets. If we need another window 
+    (e.g to plot all that day's data on a new screen) we can call this class and add widgets. It's barebones and
+    really only good for simple windows; if you need more functionality, you'd probably want to make a custom class.
 
+    Args:
+        QWidget (QWidget): Inherets from the general QWidget class
+    """
+    def __init__(self, title="New Window"):
+        super().__init__()
+        self.setWindowTitle(title)
+        # Give the window a single layout
         self.my_layout = QVBoxLayout()
         self.setLayout(self.my_layout)
 
-    def set_widget(self, widget):
+    def set_widget(self, widget:QWidget):
+        """Simple method to add a widget to the layout.
+
+        Args:
+            widget (QWidget): The widget to be added
+        """
         self.my_layout.addWidget(widget)
-    
 
 ## --------------------- PLOTTING --------------------- ##
 class MyFigureCanvas(FigureCanvas):
@@ -1033,9 +1042,21 @@ def find_grid_dims(num_elements, num_cols):
     return num_rows, num_cols
 
 def epoch_to_pacific_time(time):
+    """Method to convert from epoch (UTC, number of seconds since Jan 1, 1970) to a datetime format
+    in the Pacific timezone
+
+    Args:
+        time (array_like): Anything that can be converted into a np array, e.g a list of epoch times
+
+    Returns:
+        t_pacific (DateTimeIndex): Datetime object in pacific time
+    """
     time = np.array(time)
+    # Convert to datetime, specifying that it's in seconds
     t_datetime = pd.to_datetime(time, unit='s')
+    # Current timezone is UTC
     t_utc = t_datetime.tz_localize('utc')
+    # New timezone is pacific
     t_pacific = t_utc.tz_convert('America/Los_Angeles')
     
     return t_pacific
