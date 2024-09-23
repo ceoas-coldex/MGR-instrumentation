@@ -21,6 +21,7 @@ from collections import deque
 from functools import partial
 import concurrent.futures
 import traceback
+import pandas as pd
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -59,7 +60,7 @@ class ApplicationWindow(QWidget):
 
         # Window settings
         self.setGeometry(50, 50, 2000, 1200) # window size (x-coord, y-coord, width, height)
-        self.setWindowTitle("MGR App")
+        self.setWindowTitle("")
 
         # Set some fonts
         self.bold16 = QFont("Helvetica", 16)
@@ -142,7 +143,8 @@ class ApplicationWindow(QWidget):
         # Set up a messagebox to prompt the user
         msgbox = QMessageBox()
         msgbox.setIcon(QMessageBox.Question)
-        msgbox.setText("Are you sure you want to close the window? This shuts down sensors and stops data collection.")
+        msgbox.setText("Are you sure you want to close the app? This shuts down sensors and stops data collection.")
+        msgbox.setWindowTitle("MGR App")
         msgbox.setStandardButtons(QMessageBox.Close | QMessageBox.Cancel)
         # Get the user click and parse it appropriately
         msg_return = msgbox.exec()
@@ -538,9 +540,14 @@ class ApplicationWindow(QWidget):
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
                                  )
             toolbar = NavigationToolbar(canvas=fig, parent=self, coordinates=False)
+            # Create a button to plot the entire day of data in a separate window
+            button = QPushButton("Plot Entire Day")
+            button.setFont(self.norm12)
+            button.pressed.connect(partial(self.plot_entire_day, sensor))
             # Add the figure and toolbar to this tab's layout
             tab_vbox.addWidget(toolbar, alignment=Qt.AlignHCenter)
             tab_vbox.addWidget(fig)
+            tab_vbox.addWidget(button)
             # Add this tab to the QTabWidget
             self.plot_tab.addTab(tab, sensor)
             # Hold onto the figure object for later
@@ -675,6 +682,48 @@ class ApplicationWindow(QWidget):
 
         return x_data_list, y_data_list
 
+    def _get_entire_day_data(self, sensor):
+        filepath = self.writer.get_data_directory()
+        channels = list(self.big_data_dict[sensor]["Data"].keys())
+        channels.append("time (epoch)")
+
+        cols = [f"{sensor}: {channel}" for channel in channels]
+        try:
+            data = pd.read_csv(filepath, delimiter=',', header=0, usecols=cols)
+        except FileNotFoundError as e:
+            logger.warning(f"Error in accessing csv data: {e}")
+            data = {}
+
+        return sensor, data
+    
+    def _update_entire_day_plot(self, result):
+        sensor, data = result
+        channels = list(self.big_data_dict[sensor]["Data"].keys())
+        num_subplots = len(channels)
+
+        t = data[f"{sensor}: time (epoch)"]
+        t_pacific_time = pd.to_datetime(t.to_numpy(), unit='s').tz_localize('utc').tz_convert('America/Los_Angeles')
+
+        fig = MyFigureCanvas(x_init=[t_pacific_time]*num_subplots,
+                             y_init=[data[f"{sensor}: {channel}"] for channel in channels],
+                             num_subplots=num_subplots,
+                             xlabels=["Datetime"]*num_subplots,
+                             ylabels=channels,
+                             x_range=len(t),
+                             )
+        toolbar = NavigationToolbar(fig, self)
+        self.plot_window = AnotherWindow(title=sensor)
+        self.plot_window.set_widget(toolbar)
+        self.plot_window.set_widget(fig)
+        self.plot_window.show()
+
+    
+    def plot_entire_day(self, sensor:str):
+        worker = Worker(self._get_entire_day_data, sensor)
+        worker.signals.result.connect(self._update_entire_day_plot)
+        self.threadpool.start(worker)
+        
+
     ## --------------------- DATA COLLECTION PIPELINE --------------------- ##
 
     def init_data_pipeline(self):
@@ -801,50 +850,18 @@ class ApplicationWindow(QWidget):
 ###################################### HELPER CLASSES ######################################
 
 ## --------------------- PROMPT UPON CLOSE --------------------- ##
-class AreYouSure(QWidget):
-    def __init__(self):
+class AnotherWindow(QWidget):
+    def __init__(self, title):
         super().__init__()
+        # Window settings
+        self.setWindowTitle(title)
 
-        self.QUIT = False
-        self.CANCEL = False
+        self.my_layout = QVBoxLayout()
+        self.setLayout(self.my_layout)
 
-        layout = QGridLayout()
-
-        bold12 = QFont("Helvetica", 12)
-        bold12.setBold(True)
-        norm12 = QFont("Helvetica", 12)
-        norm10 = QFont("Helvetica", 10)
-
-        label = QLabel("Are you sure you want to quit?")
-        label.setFont(bold12)
-        layout.addWidget(label, 0, 0, 0, 2) # args: widget, row, column, rowspan, columnspan
-
-        label = QLabel("This shuts down sensors and stops data collection")
-        label.setFont(norm10)
-        layout.addWidget(label, 1, 0, 0, 2)
-
-        button = QPushButton("Quit")
-        button.setStyleSheet("background-color:#D55E00")
-        button.setFont(norm10)
-        button.clicked.connect(self._on_quit)
-        layout.addWidget(button, 2, 0, 0, 1)
-
-        button = QPushButton("Cancel")
-        button.setFont(norm10)
-        button.clicked.connect(self._on_cancel)
-        layout.addWidget(button, 2, 1, 0, 1)
-
-        self.setLayout(layout)
-
-    def _on_quit(self):
-        self.QUIT = True
-        self.CANCEL = True
-        self.close()
-
-    def _on_cancel(self):
-        self.QUIT = False
-        self.CANCEL = True
-        self.close()
+    def set_widget(self, widget):
+        self.my_layout.addWidget(widget)
+    
 
 ## --------------------- PLOTTING --------------------- ##
 class MyFigureCanvas(FigureCanvas):
@@ -868,6 +885,7 @@ class MyFigureCanvas(FigureCanvas):
         self.axs = []
         for i in range(0, num_subplots):
             ax = self.figure.add_subplot(num_subplots+1, 1, i+1)
+            ax.plot(x_init[i], y_init[i], '.--')
             self.axs.append(ax)
             ax.set_xlabel(xlabels[i])
             ax.set_ylabel(ylabels[i])

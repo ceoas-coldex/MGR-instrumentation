@@ -98,6 +98,9 @@ class Writer():
             logger.warning(f"Error in reading data_saving config file: {e}. Saving to current working directory")
             self.csv_filepath = f"{date}_notes.csv"
     
+    def get_data_directory(self):
+        return self.csv_filepath
+
     def init_data_saving(self):
         """Method to set up data storage and configure internal data management"""
         # Read in the sensor config file to grab a list of all the sensors we're working with
