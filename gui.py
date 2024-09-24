@@ -130,6 +130,10 @@ class ApplicationWindow(QWidget):
         # If we actually want to shut down, shutdown the sensors and then accept the closeEvent
         if self.accept_quit:
             self.sensor.shutdown_sensors()
+            try:
+                self.executor.shutdown()
+            except:
+                pass
             event.accept()
         # Otherwise, ignore it
         else:
@@ -305,18 +309,36 @@ class ApplicationWindow(QWidget):
         for name, callback, enabled in zip(title_button_names, title_button_callbacks, title_button_enabled):
             title_buttons.update({name: {"callback":callback, "enabled":enabled}})
 
+        self.sensor_status_dict = {}
+        for name in self.sensor_names:
+            self.sensor_status_dict.update({name:0})
+
         sensor_buttons = {}
         for name in self.sensor_names:
             sensor_buttons.update({name:{}})
-        sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":self.sensor.abakus.initialize_abakus,
-                                                           "Stop Abakus":self.sensor.abakus.stop_measurement}})
-        sensor_buttons.update({"Laser Distance Sensor":{"Start Laser":self.sensor.laser.initialize_laser,
-                                                        "Stop Laser":self.sensor.laser.stop_laser}})
-        sensor_buttons.update({"Flowmeter":{"Start SLI2000":self.sensor.flowmeter_sli2000.initialize_flowmeter,
-                                            "Start SLS1500":self.sensor.flowmeter_sls1500.initialize_flowmeter}})
+        # sensor_buttons.update({"Picarro Gas": {"Start Picarro":self.sensor.picarro_gas_producer.initialize_picarro}})
+        sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":
+                                                           partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.initialize_abakus),
+                                                           "Stop Abakus":
+                                                           partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.stop_measurement)}})
+        sensor_buttons.update({"Laser Distance Sensor":{"Start Laser":
+                                                        partial(self._on_sensor_button, "Laser Distance Sensor", self.sensor.laser.initialize_laser),
+                                                        "Stop Laser":
+                                                        partial(self._on_sensor_button, "Laser Distance Sensor", self.sensor.laser.stop_laser)}})
+        sensor_buttons.update({"Flowmeter":{"Start SLI2000":
+                                            partial(self._on_sensor_button, "Flowmeter", self.sensor.flowmeter_sli2000.initialize_flowmeter),
+                                            "Start SLS1500":
+                                            partial(self._on_sensor_button, "Flowmeter", self.sensor.flowmeter_sls1500.initialize_flowmeter)}})
+        sensor_buttons.update({"Bronkhorst Pressure":{"Start Bronkhorst": 
+                                                      partial(self._on_sensor_button, "Bronkhorst Pressure", self.sensor.bronkhorst.initialize_bronkhorst)}})
 
         return title_buttons, sensor_buttons
         
+    def _on_sensor_button(self, sensor, initialization_function):
+        init_result = initialization_function()
+        self.sensor_status_dict.update({sensor: init_result})
+        self.update_sensor_status()
+
     def _on_sensor_init(self):
         """Callback function for the 'Initialize All Sensors' button
         """
