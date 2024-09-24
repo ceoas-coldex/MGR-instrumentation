@@ -1,13 +1,13 @@
 # MGR Instrumentation
-Codebase and documentation for unified data collection of the OSU COLDEX MGR lab instrumentation
+Codebase and documentation for unified data collection of the OSU COLDEX Marine and Geologic Reserve lab instrumentation.
 
 ## Overview
 
-purpose of this repo is 
+The purpose of this repository is to provide a centralized hub for the sensors and instruments used to collect ice core data at COLDEX, the Center for OLDest ice EXploration. Sensor status, control, and live data streaming are all managed with a GUI. Data and notes are timestamped and saved to the disk - for more info, see [Data Management](#data-management). 
 
-current sensors integrated are
+The current sensors integrated into this repository are the [Picarro Gas Concentration Analyzer](https://www.picarro.com/environmental/products/g2401_gas_concentration_analyzer), [Abakus Particle Counter](https://www.fa-klotz.de/particlecounters/liquids/particle-counter-liquids.php), Sensirion Liquid Flow Meters ([1](https://sensirion.com/products/catalog/SLI-2000) & [2](https://sensirion.com/products/catalog/SLS-1500)), and [Bronkhorst Pressure Controller](https://www.bronkhorst.com/en-us/products-en/pressure/iq-flow/?page=1#).
 
-This README describes installation/setup procedures, how to use the codebase, elements of the GUI, and data management. More documentation exists in each package:
+This README describes installation/setup procedures, how to use the codebase, elements of the GUI, and data management. More documentation exists in the READMEs of each subfolder:
 
 - [Sensor Interfaces README](sensor_interfaces/README.md): documentation of the **sensors**, including user manuals, interfaces, simulated hardware, and steps for adding a new sensor
 - [Data Pipeline README](main_pipeline/README.md): crunchier documentation of the **data processing pipeline**, such as how data gets passed from sensing → interpreting → saving.
@@ -66,7 +66,21 @@ To make this codebase easier to modify, it uses a set of YAML files to configure
 
 ## Running
 
+The source code of the main executable is `gui.py`, which can either be run in an IDE or by running `python gui.py` from the command line (within your virtual environment, if using).
+
+The executable form is named XXXX and is located on at XXXX on the lab computer.
+
 ## GUI 
-- tab walks you around the different widgets
+The GUI is divided into three main panels.
+
+<img src="doc/imgs/gui.png">
+
+#### 1. Sensor Status and Control:
+
+#### 2. Live Sensor Data:
+
+#### 3. Notes & Logs:
+
+
 
 ## Data Management
