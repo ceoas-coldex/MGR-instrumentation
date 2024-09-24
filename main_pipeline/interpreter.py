@@ -1,5 +1,5 @@
 # -------------
-# The intepretor class
+# The interpreter class
 # -------------
 
 import numpy as np

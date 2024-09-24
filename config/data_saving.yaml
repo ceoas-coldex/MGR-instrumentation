@@ -4,7 +4,7 @@
 Sensor Data:
   Directory: "data"
   # Directory: "C:\\Users\\ceoas_coldex\\Documents\\GitHub\\MGR-instrumentation\\data"
-  Suffix: ""
+  Suffix: "_test"
 Notes:
   Directory: "data"
   # Directory: "C:\\Users\\ceoas_coldex\\Documents\\GitHub\\MGR-instrumentation\\data"

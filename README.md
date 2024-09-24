@@ -48,7 +48,7 @@ To make this codebase easier to modify, it uses a set of YAML files to configure
 
     - <mark>**Configure upon setup**:</mark> Set the correct serial port for each sensor. You can find this information by plugging in the sensors one at a time and noting what ports become active, either in the Windows Device Manager (under COM & LPT) or through the command line.
 
-- *data_saving.yaml* - Sets the directories where sensor data and logged notes get stored.
+- *data_saving.yaml* - Sets the directories where sensor data and logged notes get stored and allows you to set a unique suffix for your saved files.
     
     - <mark>**Configure upon setup**:</mark> Set the directories to a valid location on your device
 
@@ -77,10 +77,50 @@ The GUI is divided into three main panels.
 
 #### 1. Sensor Status and Control:
 
+This panel has general buttons for sensor initialization/shutdown and data collection start/stop. For the sensors that have control capability, sensor-specific buttons exist as well.
+
+Each sensor has a status indicator that updates after initialization and shutdown. The status options are <span style="background-color:#AF5189">offline</span>, <span style="background-color:#619CD2">online</span>, <span style="background-color:#FFC107">shadow hardware</span>, and <span style="background-color:#D55E00">error</span>.
+
+<span style="background-color:#AF5189">Offline</span>: The sensor is either shut down or not initialized.
+
+<span style="background-color:#619CD2">Online</span>: The sensor initialized without error.
+
+<span style="background-color:#FFC107">Shadow Hardware</span>: The sensor is either intentionally not plugged in or its communications failed. It is running "shadow hardware", which is a mode both useful for debug/development and convenient in that it allows us to run the sensor pipeline without error despite a lack of sensors. For more detail, see the [Sensor Interfaces README](sensor_interfaces/README.md) - suffice to say here that it's expected and normal *unless* you're trying to use a real sensor.
+
+<span style="background-color:#D55E00">Error</span>: The sensor encountered an error in initialization, check the log files for more information.
+
+
 #### 2. Live Sensor Data:
+
+This panel displays live data from each of the sensors, as well as a main page with specified plots. You can switch between the sensors by clicking or scrolling through the tabs at the top of the panel. Each tab displays data for the different channels available for each sensor.
+
+The plots are interactive and controlled through the toolbar below the tabs. The toolbar has features for panning, zooming, and saving the current plots to an image.
+
+By default, the plots keep a buffer of 5000 data points - at a collection rate of one data point/second, this will be about an hour and 20 minutes of data. These values can both be changed in the GUI source code, but too long of a buffer can impact memory and performance. 
+
+In order to visualize more data, there is a separate button at the bottom of all sensor plots called "Plot Entire Day". As you might expect, this plots the entire day of data. It opens a separate window with the same sensor channels shown in the live plots, but over a longer timescale. These plots are also interactive.
+
+<img src="doc/imgs/plot-entire-day-window.png">
 
 #### 3. Notes & Logs:
 
+The notes and logs panel has text entries for a number of data collection features we might want to hold onto. This gets saved and internally timestamped every time you hit "Log". None of the text entry fields are required.
+
+<img src="doc/imgs/notes-and-logs.png">
 
 
 ## Data Management
+
+Each day the main script is run, it creates two CSV files: by default, these are named "YYYY-MM-DD.csv" and "YYYY-MM-DD_notes.csv". Sensor data gets saved to the first file and user-logged notes get saved to the second.
+
+If you want to take multiple, distinct sets of data each day, the suffix of both files can be modified by the *data_saving.yaml* configuration file. The first time the main script is run after changing the suffix, it will create a new data file with the name "YYYY-MM-DDsuffix.csv".
+
+Data is, by default, saved to the "data" directory of this package. You can also use the *data_saving.yaml* configuration file to customize this location.
+
+
+## Logs
+This package creates log files each day it's run. Errors, warnings, and info get logged and timestamped there.
+
+
+## Ali's notes:
+- add a sensor init button to all the sensors

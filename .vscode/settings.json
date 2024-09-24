@@ -3,8 +3,14 @@
         "Abakus",
         "bronkhorst",
         "bronkorst",
+        "COLDEX",
         "DIMETIX",
+        "logdecorator",
+        "matplotlib",
+        "numpy",
         "PICARRO",
+        "pyserial",
+        "readerwriterlock",
         "setpoint"
     ]
 }
