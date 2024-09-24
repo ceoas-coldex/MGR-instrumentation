@@ -7,9 +7,18 @@ The purpose of this repository is to provide a centralized hub for the sensors a
 
 The current sensors integrated into this repository are the [Picarro Gas Concentration Analyzer](https://www.picarro.com/environmental/products/g2401_gas_concentration_analyzer), [Abakus Particle Counter](https://www.fa-klotz.de/particlecounters/liquids/particle-counter-liquids.php), Sensirion Liquid Flow Meters ([1](https://sensirion.com/products/catalog/SLI-2000) & [2](https://sensirion.com/products/catalog/SLS-1500)), and [Bronkhorst Pressure Controller](https://www.bronkhorst.com/en-us/products-en/pressure/iq-flow/?page=1#).
 
-This README describes installation/setup procedures, how to use the codebase, elements of the GUI, and data management. More documentation exists in the READMEs of each subfolder:
+In this README:
 
-- [Sensor Interfaces README](sensor_interfaces/README.md): documentation of the **sensors**, including user manuals, interfaces, simulated hardware, and steps for adding a new sensor
+- [Installation/setup procedures](#getting-started)
+- [How to use the codebase](#running)
+- [Elements of the GUI](#gui)
+- [Data](#data-management) & [logs](#logs)
+- [Steps for adding a new sensor](#adding-a-new-sensor)
+
+More documentation exists in the READMEs of each subfolder:
+
+- [Sensor Interfaces README](sensor_interfaces/README.md): documentation of the **sensors**, including user manuals, interfaces, and the simulated setup hardware
+
 - [Data Pipeline README](main_pipeline/README.md): crunchier documentation of the **data processing pipeline**, such as how data gets passed from sensing → interpreting → saving.
 
 ## Getting Started
@@ -119,7 +128,39 @@ Data is, by default, saved to the "data" directory of this package. You can also
 
 
 ## Logs
-This package creates log files each day it's run. Errors, warnings, and info get logged and timestamped there.
+
+Not to be confused with user-input notes & logs about the science being done, this package creates internal log files in the `log` directory each day it's run. Errors, warnings, and info about this package's processes get logged and timestamped there.
+
+## Adding a New Sensor
+This package was built with modularity in mind, so adding new sensors should be relatively straightforward. Here are the files to modify and how to modify them.
+
+Key: **Class methods**, *Class Names*, `Files and Directories`
+
+
+- `config\sensor_comms.yaml` 
+    - Add a new entry with the name of the sensor and any information needed to communicate with the sensor, such as serial port and baud rate. The spelling here isn't critical, as long as you match it when you load the configuration file in `sensor.py`. More on that later
+- `config\sensor_data.yaml`
+    - Add a new entry with the name of the sensor and (at least) two keys: "Time (epoch)" and "Data". Under "Data", add the names of different data streams / channels you plan to gather from this sensor.
+- `sensor_interfaces`
+    - In this directory, make a new file (e.g. `my_new_sensor_name.py`) to communicate with the sensor. Set it up as a class (e.g. *MySensor*) with different methods for initializing, querying, shutting down, etc. I can't help you much with this since it's pretty sensor specific, but hopefully the existing sensor interface files help.
+- `sensor_interfaces\sim_instruments`
+    - In this file, make another *MySensor* class with methods that mirror the ones you just created in `my_new_sensor_name.py`. They can have as many or as few capabilities as you like (e.g they can all just be "pass", that's totally fine), but this allows the entire pipeline to run even when the sensor is unplugged.
+- `main_pipeline\sensor.py`
+    - Directly under the imports, add a try-except block for your new sensor. It should try to set up a connection with the specifications you set in `sensor_comms.py`. If it's able to do this, it imports the real sensor class from `sensor_interfaces`. If it's unable to do this, it imports the fake sensor class from `sim_instruments`.
+    - In **init**, instantiate the *MySensor* class and save it to a class variable.
+    - In **initialize_sensors**, call the *MySensor* initialization function and add the result to the sensor status dictionary
+    - If *MySensor* has a shutdown function, add it to **shutdown_sensors** add the result to the sensor status dictionary
+    - Make a producer method for your new sensor (**my_new_sensor_producer**), which gets the most recent raw data (probably from a "query" method in *MySensor*) and writes it to a bus.
+- `main_pipeline\interpreter.py`
+    - Make a new method to process raw the data returned from querying the sensor. This will process whatever was written to the Bus in **my_new_sensor_producer**, and is highly sensor dependent. It must also add the processed data to the big_dict file, which was created with the keys set in `config\sensor_data.yaml`.
+    - In **main_consumer_producer**, add a function argument "my_new_sensor_bus:Bus". Then, add lines to read the bus and pass that data into your new sensor processing function.
+- `GUI.py` - Adding in data streaming is automatic with external configuration files, but adding control requires some modification of source code.
+    - In **define_sensor_button_callbacks**, add a dictionary entry to sensor_buttons for any control buttons you want on the GUI. These will call the instance of MySensor that exists in the *Sensor* class, and can call whatever methods are available there (e.g self.sensor.mysensor.initialize_mysensor).
+    - In **init_data_pipeline**, add a bus for your new sensor (self.my_sensor_bus)
+    - In **_thread_data_collection**, add your new sensor to the data processing pipeline. 
+        - Submit **my_new_sensor_producer** to the executor with self.my_sensor_bus as its argument. 
+        - Add self.my_sensor_bus as an argument to the already-submitted **main_consumer_producer** method in the same position you set in `main_pipeline\interpreter.py`
+
 
 
 ## Ali's notes:

@@ -1,5 +1,5 @@
 # -------------
-# This class is a barebones example to show how the sensor>interpretor>display pipeline of the main script functions
+# This class is a barebones example to show how the sensor>interpreter>display pipeline of the main script functions
 # -------------
 
 import numpy as np
@@ -38,8 +38,8 @@ class DummySensor():
     def read_sensor(self):
         self.data = [np.random.randint(-5, 6), np.random.randint(-5, 6)]
 
-class DummyInterpretor():
-    """Class that reads data from the sensor bus, does some processing, and republishes on an interpretor bus.
+class DummyInterpreter():
+    """Class that reads data from the sensor bus, does some processing, and republishes on an interpreter bus.
     Currently just takes in the random integer from DummySensor and doubles it"""
     def __init__(self) -> None:
         self.doubled = 0.0
@@ -61,8 +61,8 @@ class DummyDisplay():
     def __init__(self) -> None:
         pass
 
-    def display_consumer(self, interpretor_bus:Bus, delay):
-        interp_data = interpretor_bus.read()
+    def display_consumer(self, interpreter_bus:Bus, delay):
+        interp_data = interpreter_bus.read()
         print(interp_data)
         
 class DummyExecutor():
@@ -70,29 +70,29 @@ class DummyExecutor():
     def __init__(self) -> None:
         # Initialize the classes
         self.sensor = DummySensor()
-        self.interpretor = DummyInterpretor()
+        self.interpreter = DummyInterpreter()
         self.display = DummyDisplay()
 
         # Initialize the busses
         self.sensor_bus = Bus()
-        self.interpretor_bus = Bus()
+        self.interpreter_bus = Bus()
 
-        # Set the delay times (sec)
+        # Set the delay times (sec) - the delays are needed to chill out the threads since we'll be running in a While True loop later
         self.sensor_delay = 0.1
         self.interp_delay = 0.1
         self.display_delay = 0.1
         
     def execute(self):
-        """Method to execute the sensor, interpretor, and display classes with threading. Calls the appropriate methods within
+        """Method to execute the sensor, interpreter, and display classes with threading. Calls the appropriate methods within
         those classes and passes them the correct busses and delay times."""
 
         while True:
             try:
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                     eSensor = executor.submit(self.sensor.sensor_producer, self.sensor_bus, self.sensor_delay)
-                    eInterpreter = executor.submit(self.interpretor.doubler_consumer_producer, self.sensor_bus, 
-                                                    self.interpretor_bus, self.interp_delay)
-                    eDisplay = executor.submit(self.display.display_consumer, self.interpretor_bus, self.display_delay)
+                    eInterpreter = executor.submit(self.interpreter.doubler_consumer_producer, self.sensor_bus, 
+                                                    self.interpreter_bus, self.interp_delay)
+                    eDisplay = executor.submit(self.display.display_consumer, self.interpreter_bus, self.display_delay)
 
                 eSensor.result()
                 eInterpreter.result()

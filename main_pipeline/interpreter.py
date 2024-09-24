@@ -58,8 +58,6 @@ class Interpreter():
                 self.big_data[name]["Data"][channel] = np.nan
                 self.channels.append(f"{name} {channel}")
 
-        print(self.channels)
-
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
