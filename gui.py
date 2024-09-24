@@ -316,7 +316,8 @@ class ApplicationWindow(QWidget):
         sensor_buttons = {}
         for name in self.sensor_names:
             sensor_buttons.update({name:{}})
-        # sensor_buttons.update({"Picarro Gas": {"Start Picarro":self.sensor.picarro_gas_producer.initialize_picarro}})
+        sensor_buttons.update({"Picarro Gas": {"Start Picarro":
+                                               partial(self._on_sensor_button, "Picarro Gas", self.sensor.gas_picarro.initialize_picarro)}})
         sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":
                                                            partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.initialize_abakus),
                                                            "Stop Abakus":

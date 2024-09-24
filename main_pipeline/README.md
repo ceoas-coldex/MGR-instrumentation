@@ -1,4 +1,4 @@
-# Main Sensor Pipeline
+# Main Data Collection Pipeline
 
 This package has the components of the main data processing pipeline. It includes three main classes - Sensor, Interpreter, and Writer - that handle the sensing, interpreting, and saving of the instrument data. Data is passed between them with instances of the Bus class when the GUI starts data collection. In `gui.py` you can see how these are all instantiated.
 
