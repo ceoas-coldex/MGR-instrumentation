@@ -126,6 +126,7 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")          
         # If it did work, process the data
         else:
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
             if data_out == "nan":
                 self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
                 return
@@ -168,7 +169,9 @@ class Interpreter():
         # If that didn't work, log it
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from flowmeter {model} reading: {e}. Probably not a tuple. Not updating measurement")
+        # If it did work, process the data
         else:
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
             if data_out == "nan":
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
                 return
@@ -176,13 +179,12 @@ class Interpreter():
             validated_data = self.check_flowmeter_data(flowmeter_data, model)
             # If it's good, try processing it
             try:
-                timestamp = flowmeter_data[0]
+                # Make sure we always update the timestamp, even if we encounter an error later in processing
+                self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
                 if validated_data:
                     rxdata = validated_data[4]
                     ticks = self.twos_comp(rxdata[0])
                     flow_rate = ticks / scale_factor
-
-                    self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
                     self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
 
             # If that didn't work, give up this measurement
@@ -283,11 +285,15 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from laser reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, process the data
         else:
-            # Process distance
+            
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
             if distance == "nan" and temp == "nan":
                 self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
                 return
+            # Process distance
             try:
+                # Make sure we always update the timestamp, even if we encounter an error later in processing
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
                 # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
                 if distance[0:4] == "g0@E":
                     logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
@@ -296,7 +302,6 @@ class Interpreter():
                 else:
                     distance = distance[3:].strip()
                     distance_cm = float(distance) / 100.0
-                    self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
                     self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
             except ValueError as e:
                 logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
