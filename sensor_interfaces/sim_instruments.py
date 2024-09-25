@@ -81,7 +81,7 @@ class Abakus():
             output = fake_abakus_data
         # Otherwise, return NAN
         else:
-            output = np.nan
+            output = "nan"
 
         return timestamp, output
 
@@ -119,7 +119,7 @@ class Picarro():
             output = fake_picarro_data
         # Otherwise, return NAN
         else:
-            output = np.nan
+            output = "nan"
 
         return timestamp, output
 
@@ -164,7 +164,7 @@ class FlowMeter():
             output = fake_flowmeter_sli2000_reading
         # Otherwise, return NAN
         else:
-            output = np.nan
+            output = "nan"
 
         return timestamp, output
 
@@ -209,7 +209,7 @@ class Dimetix():
             output = fake_laser_distance_reading
         # Otherwise, return NAN
         else:
-            output = np.nan
+            output = "nan"
 
         return timestamp, output
     
@@ -224,7 +224,7 @@ class Dimetix():
             output = fake_laser_temp_reading
         # Otherwise, return NAN
         else:
-            output = np.nan
+            output = "nan"
 
         return timestamp, output
 
@@ -260,6 +260,6 @@ class Bronkhorst():
             output = (setpoint_and_meas, fmeas_and_temp)
         # Otherwise, return NAN
         else:
-            output = (np.nan, np.nan)
+            output = ("nan", "nan")
         
         return timestamp, output

@@ -104,7 +104,6 @@ class Interpreter():
         # # Reset the dictionary to make sure we're not holding onto anything from the last data collection round
         for name in self.sensor_names:
             channels = list(self.big_data[name]["Data"].keys())
-            print(channels)
             for channel in channels:
                 self.big_data[name]["Data"][channel] = np.nan
 
@@ -127,6 +126,9 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")          
         # If it did work, process the data
         else:
+            if data_out == "nan":
+                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
+                return
             try:
                 output = data_out.split() # split into a list
                 bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
@@ -158,25 +160,36 @@ class Interpreter():
             model (str): Flowmeter model (SLI2000 or SLS1500)
             scale_factor (int): Flowmeter scale factor, unique to device
             units (str): Data units (uL/min or mL/min)
-        """        
-        # Check if reading is good
-        validated_data = self.check_flowmeter_data(flowmeter_data, model)
-        # If it's good, try processing it
+        """
+
+        # Try to split up the data into the readings we expect
         try:
-            timestamp = flowmeter_data[0]
-            if validated_data:
-                rxdata = validated_data[4]
-                ticks = self.twos_comp(rxdata[0])
-                flow_rate = ticks / scale_factor
-
+            timestamp, data_out = flowmeter_data
+        # If that didn't work, log it
+        except TypeError as e:
+            logger.warning(f"Error in extracting time and data from flowmeter {model} reading: {e}. Probably not a tuple. Not updating measurement")
+        else:
+            if data_out == "nan":
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-                self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
+                return
+            # Check if reading is good
+            validated_data = self.check_flowmeter_data(flowmeter_data, model)
+            # If it's good, try processing it
+            try:
+                timestamp = flowmeter_data[0]
+                if validated_data:
+                    rxdata = validated_data[4]
+                    ticks = self.twos_comp(rxdata[0])
+                    flow_rate = ticks / scale_factor
 
-        # If that didn't work, give up this measurement
-        except KeyError as e:
-            logger.warning(f"Error in saving flowmeter {model} data to big dictionary: No key {e}. Not updating measurement")
-        except Exception as e:
-            logger.warning(f"Unexpected exception in processing flowmeter {model}: {e}. Not updating measurement.")
+                    self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
+                    self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
+
+            # If that didn't work, give up this measurement
+            except KeyError as e:
+                logger.warning(f"Error in saving flowmeter {model} data to big dictionary: No key {e}. Not updating measurement")
+            except Exception as e:
+                logger.warning(f"Unexpected exception in processing flowmeter {model}: {e}. Not updating measurement.")
 
     def check_flowmeter_data(self, flowmeter_data, model):
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
@@ -271,6 +284,9 @@ class Interpreter():
         # If it did work, process the data
         else:
             # Process distance
+            if distance == "nan" and temp == "nan":
+                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                return
             try:
                 # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
                 if distance[0:4] == "g0@E":
@@ -325,6 +341,9 @@ class Interpreter():
                 logger.warning(f"Error in extracting time and data from picarro reading: {e}. Probably not a tuple. Not updating measurement")
             # If it succeeded, process the data
             else:
+                if data_out == "nan":
+                    self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
+                    return
                 try:
                     # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
                     # the computer clocks drift
@@ -349,8 +368,7 @@ class Interpreter():
         
         Args:
             bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
-        
-        print(self.big_data)
+    
 
         # Try to split up the data into the readings we expect
         try:
@@ -360,6 +378,9 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, parse the data
         else:
+            if setpoint_and_meas == "nan":
+                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+                return
             try:
                 # Parsing setpoint and measurement is straightforward - 
                 # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
@@ -384,8 +405,6 @@ class Interpreter():
                 logger.warning(f"Error in saving bronkhorst data to big dictionary: No key {e}. Not updating measurement")
             except Exception as e:
                 logger.warning(f"Unexpected exception in Bronkhorst data: {e}. Not updating measurement")
-
-        print(self.big_data)
 
     def mantissa_to_int(self, mantissa_str):
         """Method to convert the mantissa of the IEEE floating point to its decimal representation"""

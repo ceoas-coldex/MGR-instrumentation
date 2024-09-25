@@ -114,15 +114,15 @@ class Writer():
         self.sensor_names = big_data_dict.keys()
 
         # Pull out all the data we want to save - the timestamp and channel names of each sensor
-        data_titles = []
+        self.data_titles = []
         for name in self.sensor_names:
             channels = big_data_dict[name]["Data"].keys()
-            data_titles.append(f"{name}: time (epoch)")
+            self.data_titles.append(f"{name}: time (epoch)")
             for channel in channels:
-                data_titles.append(f"{name}: {channel}")
+                self.data_titles.append(f"{name}: {channel}")
 
         # Use our titles to initialize a csv file
-        self.init_csv(self.csv_filepath, data_titles)
+        self.init_csv(self.csv_filepath, self.data_titles)
     
     def init_notes_saving(self):
         """Method to set up notes storage
@@ -136,10 +136,10 @@ class Writer():
             notes_dict = {}
         
         # Use the keys of that dictionary to create a list of titles for our csv file
-        notes_titles = list(notes_dict.keys())
-        notes_titles.append("Internal Timestamp (epoch)")
+        self.notes_titles = list(notes_dict.keys())
+        self.notes_titles.append("Internal Timestamp (epoch)")
         # Initialize a csv file
-        self.init_csv(self.notes_filepath, notes_titles)
+        self.init_csv(self.notes_filepath, self.notes_titles)
 
     def init_csv(self, filepath, header):
         """Method to initialize a csv with given header"""
@@ -174,13 +174,21 @@ class Writer():
             logger.warning(f"Error in reading data dictionary: {e}")
         except TypeError as e: # Due to threading timing, sometimes this tries to read the processed data before it's been instantiated. Catch that here
             pass
-        # Write the data to a csv
+        # Check if the file exists
         try:
+            with open(self.csv_filepath, 'r') as csvfile:
+                pass
+        # If it doesn't, create it, give it a header, and then write the data
+        except FileNotFoundError:
+            self.init_csv(self.csv_filepath, self.data_titles)
             with open(self.csv_filepath, 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
                 writer.writerow(to_write)
-        except FileNotFoundError as e:
-            logger.warning(f"Error in accessing csv to save data: {e}")
+        # If it does, just write the data
+        else:
+            with open(self.csv_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(to_write)
 
     def save_notes(self, notes):
         """Method to save the passed in notes to a csv file. Gets called by the GUI whenever the "Log" button is pressed
@@ -188,24 +196,28 @@ class Writer():
         Args:
             notes (list): List of notes to save
         """
-        # Check if a file exists at the given path and write the notes
+        # Check if a file exists at the given path
         try:
+            with open(self.notes_filepath, 'r') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
+                writer.writerow(notes)
+        # If it doesn't, something went wrong with initialization or the file got deleted - 
+        # remake it here and then write the data
+        except FileNotFoundError:
+            self.init_csv(self.notes_filepath, self.notes_titles)            
+            with open(self.notes_filepath, 'a') as csvfile:
+                writer = csv.writer(csvfile, delimiter=',')
+                writer.writerow(notes)
+        # If it does exist, write the notes
+        else:
             with open(self.notes_filepath, 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
                 writer.writerow(notes)
-        # If it doesn't, something went wrong with initialization - remake it here and then write the data
-        except FileNotFoundError:
-            notes_titles = list(self.notes_dict.keys())
-            notes_titles.append("Internal Timestamp (epoch)")
-            self.init_csv(notes_titles)            
-            with open(self.notes_filepath, 'a') as csvfile:
-                writer = csv.writer(csvfile, delimiter=',')
-                writer.writerow(notes) # write the notes
 
-    def write_consumer(self, interpretor_bus:Bus):
+    def write_consumer(self, interpreter_bus:Bus):
         """Method to read the processed data published by the interpretor class and save it to a csv. Gets called
         by the GUI in the main data pipeline, and will be passed in a Bus object of processed sensor data"""
-        interp_data = interpretor_bus.read()
+        interp_data = interpreter_bus.read()
         self.save_data(interp_data)
         return interp_data
 

@@ -24,7 +24,7 @@ Laser Distance Sensor:
   Time (epoch): []
   Data:
     Distance (cm): []
-    # Temperature (C): []
+    Temperature (C): []
 Abakus Particle Counter:
   Time (epoch): []
   Data:
