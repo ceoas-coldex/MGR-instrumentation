@@ -37,6 +37,8 @@ Flowmeter:
   Data:
     SLI2000 (uL/min): []
     SLS1500 (mL/min): []
+  Other:
+    Samples Per Query: 15
 Bronkhorst Pressure:
   Time (epoch): []
   Data:

@@ -955,7 +955,7 @@ class MyFigureCanvas(FigureCanvas):
 
         # Set a figure size
         self.figure.set_figheight(5*num_subplots)
-        self.figure.tight_layout(h_pad=4)
+        self.figure.tight_layout(h_pad=5)
         
         self.draw()   
 
