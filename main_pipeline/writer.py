@@ -193,13 +193,13 @@ class Writer():
             with open(self.notes_filepath, 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
                 writer.writerow(notes)
-        # If it doesn't, something went wrong with initialization - remake it here
+        # If it doesn't, something went wrong with initialization - remake it here and then write the data
         except FileNotFoundError:
+            notes_titles = list(self.notes_dict.keys())
+            notes_titles.append("Internal Timestamp (epoch)")
+            self.init_csv(notes_titles)            
             with open(self.notes_filepath, 'a') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',')
-                notes_titles = list(self.notes_dict.keys())
-                notes_titles.append("Internal Timestamp (epoch)")
-                writer.writerow(notes_titles) # give it a title
                 writer.writerow(notes) # write the notes
 
     def write_consumer(self, interpretor_bus:Bus):
