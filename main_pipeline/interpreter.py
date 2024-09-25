@@ -204,8 +204,11 @@ class Interpreter():
                     # If it's bad, don't update the data
                     else:
                         flow_rates.append(np.nan)
-                # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
-                averaged_flow_rate = np.nanmean(flow_rates)
+                if np.nan in flow_rates:
+                    # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
+                    averaged_flow_rate = np.nanmean(flow_rates)
+                else:
+                    averaged_flow_rate = np.mean(flow_rates)
                 # Save the averaged list to our big data dictionary
                 self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = averaged_flow_rate
 
