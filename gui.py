@@ -633,9 +633,9 @@ class ApplicationWindow(QWidget):
         # Parse through the dictionary to extract the data channels we want to plot
         num_subplots = 0 # and keep an eye on how many subplots we need to initialize
         y_axis_labels = []
-        for key in self.main_page_plots: # Key: "sensor name"
-            if key in self.sensor_names:
-                main_page_plot_channels = self.main_page_plots[key]
+        for sensor in self.main_page_plots:
+            if sensor in self.sensor_names:
+                main_page_plot_channels = self.main_page_plots[sensor]
                 for channel in main_page_plot_channels:
                     y_axis_labels.append(channel)
                     num_subplots += 1
@@ -676,17 +676,19 @@ class ApplicationWindow(QWidget):
 
             **y_data_list** (list): List of deques from self.big_data_dict - data for each sensor channel
         """
+        # Try to extract "plot_name" from the big buffer - if it's a sensor, we'll be able to pull the data directly
         try:
+            # Extract data from the buffer
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
             t = self.big_data_dict[plot_name]["Time (epoch)"]
             y = list(self.big_data_dict[plot_name]["Data"].values())
-
-            t_pdt, y_pdt = epoch_to_pacific_time(t, y)
-        
-            y_data_list = y_pdt
-            x_data_list = [t_pdt]*num_subplots # Same timestamp for all sensor readings
+            # Convert from UTC epoch time to pacific time, passing in the y_data too to ensure the arrays
+            # stay the same shape
+            t_pacific_time, y_data_list = epoch_to_pacific_time(t, y)
+            # All sensor channels have the same timestamp, so make n_subplots copies of the time
+            x_data_list = [t_pacific_time]*num_subplots 
             
-        # If we can't do that, we're probably on the "main page plots" tab, in which case the plot name is "All"
+        # If we can't find it in the buffer, we're probably on the "main page plots" tab, in which case the plot name is "All"
         except KeyError as e:
             # If we /are/ on that page, we need to do a little more finagling to extract the data we want
             if plot_name == "All":
@@ -699,13 +701,15 @@ class ApplicationWindow(QWidget):
                 for sensor in sensors:
                     subplot_names = self.main_page_plots[sensor]
                     for subplot_name in subplot_names:
+                        # Convert from UTC epoch time to pacific time
                         t, y = epoch_to_pacific_time(time = self.big_data_dict[sensor]["Time (epoch)"], 
                                                              y_data = self.big_data_dict[sensor]["Data"][subplot_name])
                         x_data_list.append(t)
                         y_data_list.append(y)
-            # Otherwise (and we should never get here since everything is passed in externally), something went wrong. The plots safely don't update if we pass in None
+            # Otherwise (and we should never get here since all dict keys are passed in externally), something went wrong. 
+            # The plots safely don't update if we pass in None, so do that
             else:
-                logger.warning(f"Error in reading the data buffer when updating plots: {e}")
+                logger.error(f"Error in reading the data buffer when updating plots: {e}")
                 x_data_list = None
                 y_data_list = None
 
@@ -752,8 +756,6 @@ class ApplicationWindow(QWidget):
         num_subplots = len(channels)
         # Pull the time from the data input and convert it from UTC epoch time to Pacific time
         t = (data[f"{sensor}: time (epoch)"]).values
-        print(t)
-        print(type(t))
         y = [data[f"{sensor}: {channel}"] for channel in channels]
         t_pacific_time, y_data = epoch_to_pacific_time(t, y)
         # Create a figure and toolbar with the data for each sensor channel

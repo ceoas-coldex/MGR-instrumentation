@@ -1,6 +1,23 @@
 # This file sets the sensor channels we want to display on the main page of the live data streaming window. 
 # They must match the sensors and channels set in data_saving.yaml
+#
+# Just comment out the lines you don't want displayed on the main page!
 ---
-Picarro Gas: ["CO2"]
-Laser Distance Sensor: ["Distance (cm)"]
-Flowmeter: ["SLI2000 (uL/min)"]
+Picarro Gas: 
+  CO2:
+  # CH4:
+  # CO:
+  # H2O:
+Laser Distance Sensor:
+  Distance (cm):
+  # Temperature (C):
+# Abakus Particle Counter:
+#   Total Counts:
+Flowmeter:
+  SLI2000 (uL/min):
+  # SLS1500 (mL/min):
+# Bronkhorst Pressure:
+#   Setpoint:
+#   Measurement (%):
+#   Measurement (mbar a):
+#   Temperature (C):
