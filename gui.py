@@ -557,7 +557,7 @@ class ApplicationWindow(QWidget):
             # Create the figure and toolbar
             fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
-                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 xlabels=["Time"]*num_subplots,
                                  ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
@@ -595,7 +595,7 @@ class ApplicationWindow(QWidget):
         # Make a figure and toolbar for the main page and put them in the tab
         fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
-                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 xlabels=["Time"]*num_subplots,
                                  ylabels=y_axis_labels,
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
@@ -678,9 +678,14 @@ class ApplicationWindow(QWidget):
         """
         try:
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
-            x_data_list = [self.big_data_dict[plot_name]["Time (epoch)"]]*num_subplots # Same timestamp for all sensor readings
-            print(x_data_list)
-            y_data_list = list(self.big_data_dict[plot_name]["Data"].values())
+            t = self.big_data_dict[plot_name]["Time (epoch)"]
+            y = list(self.big_data_dict[plot_name]["Data"].values())
+
+            t_pdt, y_pdt = epoch_to_pacific_time(t, y)
+        
+            y_data_list = y_pdt
+            x_data_list = [t_pdt]*num_subplots # Same timestamp for all sensor readings
+            
         # If we can't do that, we're probably on the "main page plots" tab, in which case the plot name is "All"
         except KeyError as e:
             # If we /are/ on that page, we need to do a little more finagling to extract the data we want
@@ -694,8 +699,15 @@ class ApplicationWindow(QWidget):
                 for sensor in sensors:
                     subplot_names = self.main_page_plots[sensor]
                     for subplot_name in subplot_names:
-                        x_data_list.append(self.big_data_dict[sensor]["Time (epoch)"])
-                        y_data_list.append(self.big_data_dict[sensor]["Data"][subplot_name])
+                        t = self.big_data_dict[sensor]["Time (epoch)"]
+                        y = self.big_data_dict[sensor]["Data"][subplot_name]
+                        print("ALL")
+                        print(t, y)
+                        print(type(t), type(y))
+                        print(type(y[0]))
+                        t_pdt, y_pdt = epoch_to_pacific_time(t, y)
+                        x_data_list.append(t_pdt)
+                        y_data_list.append(y_pdt)
             # Otherwise (and we should never get here since everything is passed in externally), something went wrong. The plots safely don't update if we pass in None
             else:
                 logger.warning(f"Error in reading the data buffer when updating plots: {e}")
@@ -744,11 +756,14 @@ class ApplicationWindow(QWidget):
         channels = list(self.big_data_dict[sensor]["Data"].keys())
         num_subplots = len(channels)
         # Pull the time from the data input and convert it from UTC epoch time to Pacific time
-        t = data[f"{sensor}: time (epoch)"]
-        t_pacific_time = epoch_to_pacific_time(t)
+        t = (data[f"{sensor}: time (epoch)"]).values
+        print(t)
+        print(type(t))
+        y = [data[f"{sensor}: {channel}"] for channel in channels]
+        t_pacific_time, y_data = epoch_to_pacific_time(t, y)
         # Create a figure and toolbar with the data for each sensor channel
         fig = MyFigureCanvas(x_init=[t_pacific_time]*num_subplots,
-                             y_init=[data[f"{sensor}: {channel}"] for channel in channels],
+                             y_init=y_data,
                              num_subplots=num_subplots,
                              xlabels=["Datetime"]*num_subplots,
                              ylabels=channels,
@@ -978,13 +993,17 @@ class MyFigureCanvas(FigureCanvas):
             # Clear the figure without resetting the axis bounds or ticks
             for artist in ax.lines:
                 artist.remove()
-            # Plot the updated data and make sure we aren't either plotting offscreen or letting the x axis get too long
-            print(self.x_data[i], self.y_data[i])
+            # Plot the updated data
             ax.plot(self.x_data[i], self.y_data[i], '.--')
-            xlim = ax.get_xlim()
-            if (xlim[1] - xlim[0]) >= self.x_range:
-                ax.set_xlim([self.x_data[i][-1] - self.x_range, self.x_data[i][-1] + 1])
-
+            # Make sure we aren't either plotting offscreen or letting the x axis get too long
+            # We can't do math directly with Timestamp objects, so do the math in epoch time and then convert
+            current_time = time.time()
+            desired_x_min = current_time - self.x_range
+            current_time_datetime, _ = epoch_to_pacific_time(current_time)
+            x_min_datetime, _ = epoch_to_pacific_time(desired_x_min)
+            # Set the limits
+            ax.set_xlim([x_min_datetime, current_time_datetime])
+        # Finally, update the plot
         self.draw()
 
 ## --------------------- PYQT THREADING --------------------- ##
@@ -1065,26 +1084,39 @@ def find_grid_dims(num_elements, num_cols):
 
     return num_rows, num_cols
 
-def epoch_to_pacific_time(time):
+def epoch_to_pacific_time(time, y_data=None):
     """Method to convert from epoch (UTC, number of seconds since Jan 1, 1970) to a datetime format
-    in the Pacific timezone
+    in the Pacific timezone. Can also take in an accompanying array of y_data to ensure any changes in shape
+    that happen to the time (like removing np.nan values) also happens to the y_data.
 
     Args:
-        time (array_like): Anything that can be converted into a np array, e.g a list of epoch times
+        time (array_like): Anything that can be converted into a np array and sliced, e.g a list of epoch times
+        y_data (array_like): Can be an array of values or an array of arrays, either works
 
     Returns:
         t_pacific (DateTimeIndex): Datetime object in pacific time
     """
+    # Convert to numpy array
     time = np.array(time)
-    # Convert to datetime, specifying that it's in seconds
+    # Get rid of any np.nan present in t, it messes with the conversion
+    nan_mask = np.invert(np.isnan(time))
+    time = time[nan_mask]
+    # If we've passed in y_data, apply the same mask to keep the arrays matching
+    if y_data is not None:
+        # If y_data is an array of values, apply the mask
+        if type(y_data[0]) == float or type(y_data[0]) == int:
+            y_data = np.array(y_data)[nan_mask]
+        # If y_data is an array of arrays, apply the mask to each sub-array
+        elif type(y_data[0]) == deque or type(y_data[0]) == list:
+            y_data = [np.array(y)[nan_mask] for y in y_data]
+    # Convert t to datetime, specifying that it's in seconds
     t_datetime = pd.to_datetime(time, unit='s')
     # Current timezone is UTC
     t_utc = t_datetime.tz_localize('utc')
     # New timezone is pacific
     t_pacific = t_utc.tz_convert('America/Los_Angeles')
-    t_pacific = float(np.array(t_pacific))
 
-    return t_pacific
+    return t_pacific, y_data
 
 
 # If we're running from this script, spin up QApplication and start the GUI

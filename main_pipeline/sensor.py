@@ -196,7 +196,6 @@ class Sensor():
         """Method that gets data from the Abakus \n
             Returns - tuple (timestamp[float, epoch time], data_out[str, bins and counts])"""
         timestamp, data_out = self.abakus.query()
-        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
 
     ## ------------------- FLOWMETER ------------------- ##
@@ -231,7 +230,6 @@ class Sensor():
             timestamp = 0.0
             data_out = [0]
 
-        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
     
     # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
@@ -246,7 +244,6 @@ class Sensor():
             Returns - tuple (timestamp [epoch time], data_out [str])"""
         timestamp, distance = self.laser.query_distance()
         timestamp, temp = self.laser.query_temperature()
-        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, (distance, temp)
     
     ## ------------------- PICARRO ------------------- ##
@@ -271,7 +268,6 @@ class Sensor():
         else:
             timestamp = [0.0]
             data_out = ["0"]
-        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
 
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
@@ -285,34 +281,5 @@ class Sensor():
 
             Returns - tuple (timestamp [epoch time], data_out [(bytestr, bytestr)])"""
         timestamp, data_out = self.bronkhorst.query()
-        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
     
-
-def epoch_to_pacific_time(time):
-    """Method to convert from epoch (UTC, number of seconds since Jan 1, 1970) to a datetime format
-    in the Pacific timezone
-
-    Args:
-        time (array_like): Anything that can be converted into a np array, e.g a list of epoch times
-
-    Returns:
-        t_pacific (DateTimeIndex): Datetime object in pacific time
-    """
-    time = np.array(time)
-    # Convert to datetime, specifying that it's in seconds
-    t_datetime = pd.to_datetime(time, unit='s')
-    # Current timezone is UTC
-    t_utc = t_datetime.tz_localize('utc')
-    # New timezone is pacific
-    t_pacific = t_utc.tz_convert('America/Los_Angeles')
-
-    # t_pacific = datetime(t_pacific)
-    
-    # print(t_pacific)
-    # print(type(t_pacific))
-    # t_pacific = float(np.array(t_pacific))
-
-    # print(t_pacific)
-
-    return t_pacific
