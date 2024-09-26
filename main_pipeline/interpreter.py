@@ -157,12 +157,11 @@ class Interpreter():
         I want it to be consistent with the out-of-box software
 
         Args:
-            flowmeter_data (tuple): _description_
+            flowmeter_data (tuple): tuple of (timestamp [float], data_out [list of n samples, where n is set in sensor_data.yaml])
             model (str): Flowmeter model (SLI2000 or SLS1500)
             scale_factor (int): Flowmeter scale factor, unique to device
             units (str): Data units (uL/min or mL/min)
         """
-
         # Try to split up the data into the readings we expect
         try:
             timestamp, data_out = flowmeter_data
@@ -171,34 +170,54 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from flowmeter {model} reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, process the data
         else:
-            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
-            if data_out == "nan":
-                self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-                return
-            # Check if reading is good
-            validated_data = self.check_flowmeter_data(flowmeter_data, model)
-            # If it's good, try processing it
+            # First, save the timestamp to the data dictionary 
             try:
-                # Make sure we always update the timestamp, even if we encounter an error later in processing
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-                if validated_data:
-                    rxdata = validated_data[4]
-                    ticks = self.twos_comp(rxdata[0])
-                    flow_rate = ticks / scale_factor
-                    self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
-
-            # If that didn't work, give up this measurement
+            # If we can't do that, something has gone wrong with our dictionary keys
             except KeyError as e:
-                logger.warning(f"Error in saving flowmeter {model} data to big dictionary: No key {e}. Not updating measurement")
-            except Exception as e:
-                logger.warning(f"Unexpected exception in processing flowmeter {model}: {e}. Not updating measurement.")
+                logger.warning(f"Error in saving flowmeter {model} timestamp to big dictionary. No key {e}.")
+            # If we saved the timestamp OK, move on to processing the data
+            else:
+                # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
+                if data_out == "nan":
+                    return
+                # If we're not running shadow hardware, the flowmeter data is a list of n samples of flowmeter data.
+                # For each one of those samples...
+                flow_rates = []
+                for sample in data_out:
+                    # Check if the reading is good
+                    validated_data = self.check_flowmeter_data(sample, model)
+                    # If it's good, try processing it
+                    if validated_data:
+                        try:
+                            rxdata = validated_data[4]
+                            ticks = self.twos_comp(rxdata[0])
+                            flow_rate = ticks / scale_factor
+                        # If that didn't work, give up this measurement
+                        except KeyError as e:
+                            logger.warning(f"Error in saving flowmeter {model} data to big dictionary: No key {e}. Not updating measurement")
+                        except Exception as e:
+                            logger.warning(f"Unexpected exception in processing flowmeter {model}: {e}. Not updating measurement.")
+                        # If that did work, append it to our running list of flow rates
+                        else:
+                            flow_rates.append(flow_rate)
+                    # If it's bad, don't update the data
+                    else:
+                        flow_rates.append(np.nan)
+                if np.nan in flow_rates:
+                    # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
+                    averaged_flow_rate = np.nanmean(flow_rates)
+                else:
+                    averaged_flow_rate = np.mean(flow_rates)
+                # Save the averaged list to our big data dictionary
+                self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = averaged_flow_rate
 
     def check_flowmeter_data(self, flowmeter_data, model):
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
         check in with her about specifics. 
 
         Args:
-            flowmeter_data (tuple): Data (timestamp, raw_data) read from flowmeter bus
+            flowmeter_data (list): Raw data read from flowmeter. List of ints
             model (str): Flowmeter model (SLI2000 or SLS1500)
 
         Raises:
@@ -210,7 +229,7 @@ class Interpreter():
         """
         try:
             # Check if the third bit indicates a bad reply or not
-            raw_data = flowmeter_data[1]
+            raw_data = flowmeter_data
             adr = raw_data[1]
             cmd = raw_data[2]
             state = raw_data[3]
@@ -226,6 +245,10 @@ class Interpreter():
             chk = chk ^ 0xFF  # binary check
             if chkRx != chk:
                 raise Exception("Bad checksum")
+        except Exception as e:
+            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Not updating measurement.")
+            return False
+        else:
             # If we passed those checks, compile valid output
             rxdata16 = []
             if length > 1:
@@ -236,9 +259,6 @@ class Interpreter():
 
             return adr, cmd, state, length, rxdata16, chkRx
 
-        except Exception as e:
-            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Not updating measurement.")
-            return False
     
     def bytepack(self, byte1, byte2):
         """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative

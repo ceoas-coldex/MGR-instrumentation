@@ -9,6 +9,9 @@ import serial
 from serial import SerialException
 import time
 import yaml
+import numpy as np
+import pandas as pd
+import datetime
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -114,12 +117,12 @@ class Sensor():
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
             with open("config/sensor_data.yaml", 'r') as stream:
-                big_data_dict = yaml.safe_load(stream)
+                self.big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
-            big_data_dict = {}
+            self.big_data_dict = {}
         
-        self.sensor_names = list(big_data_dict.keys())
+        self.sensor_names = list(self.big_data_dict.keys())
 
         # Create a dictionary to store the status of each sensor (0: offline, 1: online, 2: disconnected/simulated)
         self.sensor_status_dict = {}
@@ -193,6 +196,7 @@ class Sensor():
         """Method that gets data from the Abakus \n
             Returns - tuple (timestamp[float, epoch time], data_out[str, bins and counts])"""
         timestamp, data_out = self.abakus.query()
+        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
 
     ## ------------------- FLOWMETER ------------------- ##
@@ -213,14 +217,21 @@ class Sensor():
 
             Returns - tuple (timestamp[float, epoch time], data_out([int], bytes)
         """
+        samples_per_query = self.big_data_dict["Flowmeter"]["Other"]["Samples Per Query"]
+        data_out = []
         if flowmeter_model == "SLI2000":
-            timestamp, data_out = self.flowmeter_sli2000.query()
+            for _ in range(samples_per_query):
+                timestamp, reading = self.flowmeter_sli2000.query()
+                data_out.append(reading)
         elif flowmeter_model == "SLS1500":
-            timestamp, data_out = self.flowmeter_sls1500.query()
+            for _ in range(samples_per_query):
+                timestamp, reading = self.flowmeter_sls1500.query()
+                data_out.append(reading)
         else:
             timestamp = 0.0
             data_out = [0]
-        
+
+        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
     
     # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
@@ -235,6 +246,7 @@ class Sensor():
             Returns - tuple (timestamp [epoch time], data_out [str])"""
         timestamp, distance = self.laser.query_distance()
         timestamp, temp = self.laser.query_temperature()
+        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, (distance, temp)
     
     ## ------------------- PICARRO ------------------- ##
@@ -259,7 +271,7 @@ class Sensor():
         else:
             timestamp = [0.0]
             data_out = ["0"]
-
+        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
 
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
@@ -273,4 +285,34 @@ class Sensor():
 
             Returns - tuple (timestamp [epoch time], data_out [(bytestr, bytestr)])"""
         timestamp, data_out = self.bronkhorst.query()
+        timestamp = epoch_to_pacific_time(timestamp)
         return timestamp, data_out
+    
+
+def epoch_to_pacific_time(time):
+    """Method to convert from epoch (UTC, number of seconds since Jan 1, 1970) to a datetime format
+    in the Pacific timezone
+
+    Args:
+        time (array_like): Anything that can be converted into a np array, e.g a list of epoch times
+
+    Returns:
+        t_pacific (DateTimeIndex): Datetime object in pacific time
+    """
+    time = np.array(time)
+    # Convert to datetime, specifying that it's in seconds
+    t_datetime = pd.to_datetime(time, unit='s')
+    # Current timezone is UTC
+    t_utc = t_datetime.tz_localize('utc')
+    # New timezone is pacific
+    t_pacific = t_utc.tz_convert('America/Los_Angeles')
+
+    # t_pacific = datetime(t_pacific)
+    
+    # print(t_pacific)
+    # print(type(t_pacific))
+    # t_pacific = float(np.array(t_pacific))
+
+    # print(t_pacific)
+
+    return t_pacific

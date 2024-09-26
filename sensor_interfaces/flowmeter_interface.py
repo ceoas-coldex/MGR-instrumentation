@@ -3,6 +3,7 @@ from serial import SerialException
 import time
 import pandas as pd
 import yaml
+import numpy as np
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -117,10 +118,13 @@ class FlowMeter():
     def query(self):
         """Queries the flowmeter. Returns raw data and timestamp
             Returns - timestamp (float, epoch time), data_out ([int], raw flowmeter reading)"""
-        logger.info(f"Querying Flowmeter {self.sensor_type}")
+        # logger.info(f"Querying Flowmeter {self.sensor_type}")
         self.ser.write(self.QUERY)
         timestamp = time.time()
         response = self._read_flowmeter()
+        b = time.time()
+
+        # print(f"read time: {b-timestamp}")
         # Decode the response
         data_out = [int(byte) for byte in response]
         return timestamp, data_out
@@ -217,15 +221,20 @@ if __name__ == "__main__":
     while not stop:
         command = input("a: Start measurement, b: Stop measurement, c: Query, x: Quit \n")
         if command == "a" or command == "A":
-            my_flow.start_measurement()
+            my_flow.initialize_flowmeter()
         elif command == "b" or command == "B":
             pass
         elif command == "c" or command == "C":
-            timestamp, raw_output = my_flow.query()
-            print(raw_output)
-            print(type(raw_output[0]))
-            procssed_output = process_flow_data(raw_output, timestamp, scale_factor)
-            print(procssed_output)
+            total = []
+            for i in range(15):
+                timestamp, raw_output = my_flow.query()
+                procssed_output = process_flow_data(raw_output, timestamp, scale_factor)
+                try:
+                    total.append(procssed_output["flow"].values)
+                except TypeError:
+                    pass
+            print(total)
+            print(np.mean(total))
         elif command == "x" or command == "X":
             stop = True
         else:

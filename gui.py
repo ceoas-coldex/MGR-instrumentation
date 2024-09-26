@@ -676,10 +676,10 @@ class ApplicationWindow(QWidget):
 
             **y_data_list** (list): List of deques from self.big_data_dict - data for each sensor channel
         """
-        # Try to extract the updated data from the big buffer
         try:
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
             x_data_list = [self.big_data_dict[plot_name]["Time (epoch)"]]*num_subplots # Same timestamp for all sensor readings
+            print(x_data_list)
             y_data_list = list(self.big_data_dict[plot_name]["Data"].values())
         # If we can't do that, we're probably on the "main page plots" tab, in which case the plot name is "All"
         except KeyError as e:
@@ -782,7 +782,7 @@ class ApplicationWindow(QWidget):
         for each sense/interpret/save process (see run_data_collection for how these are all used)
         """
         # Create each main object of the pipeline
-        self.sensor = Sensor(debug=False)
+        self.sensor = Sensor(debug=True)
         self.interpreter = Interpreter()
         self.writer = Writer()
 
@@ -955,7 +955,7 @@ class MyFigureCanvas(FigureCanvas):
 
         # Set a figure size
         self.figure.set_figheight(5*num_subplots)
-        self.figure.tight_layout(h_pad=4)
+        self.figure.tight_layout(h_pad=5)
         
         self.draw()   
 
@@ -979,6 +979,7 @@ class MyFigureCanvas(FigureCanvas):
             for artist in ax.lines:
                 artist.remove()
             # Plot the updated data and make sure we aren't either plotting offscreen or letting the x axis get too long
+            print(self.x_data[i], self.y_data[i])
             ax.plot(self.x_data[i], self.y_data[i], '.--')
             xlim = ax.get_xlim()
             if (xlim[1] - xlim[0]) >= self.x_range:
@@ -1081,7 +1082,8 @@ def epoch_to_pacific_time(time):
     t_utc = t_datetime.tz_localize('utc')
     # New timezone is pacific
     t_pacific = t_utc.tz_convert('America/Los_Angeles')
-    
+    t_pacific = float(np.array(t_pacific))
+
     return t_pacific
 
 
