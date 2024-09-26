@@ -30,8 +30,8 @@ fh.setFormatter(formatter)
 class Picarro():
     def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
         # Picarro communication codes
-        # self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
-        self.QUERY = b'_Meas_GetConc\r\n' # gets latest measurement and timestamp
+        self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
+        # self.QUERY = b'_Meas_GetConc\r\n' # gets latest measurement and timestamp
         self.STATUS = b'_Instr_GetStatus\r\n' # gets instrument status
 
         self.initialize_pyserial(serial_port, baud_rate)
@@ -93,10 +93,9 @@ class Picarro():
         buf = b''
         char = b''
         timeout = 0
-        while char != b'\r' and timeout <= 5:
+        while char != b'\r' and timeout <= 70:
             char = self.ser.read(1)
             buf = buf + char
-            print(buf)
             timeout += 1
 
         logger.info(f"read {timeout} bytes")
@@ -116,10 +115,20 @@ class Picarro():
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
+        print("trying with readline")
         self.ser.write(self.QUERY)
-        print("queried")
         print(self.ser.readline())
-        output = self._read_picarro().decode()
+
+        print("trying with read_until")
+        self.ser.write(self.QUERY)
+        print(self.ser.read_until(b'\n\r'))
+        
+        print("trying with custom")
+        self.ser.write(self.QUERY)
+        output = self._read_picarro()
+        print(output)
+
+        output = output.decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")
@@ -128,7 +137,7 @@ class Picarro():
     
 
 if __name__ == "__main__":
-    my_picarro = Picarro(serial_port="COM9", baud_rate=19200)
+    my_picarro = Picarro(serial_port="COM3", baud_rate=19200)
     # order of the gas measurements returned by query()
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
     gasses = ["CO2", "CH4", "CO", "H2O"]
