@@ -699,15 +699,10 @@ class ApplicationWindow(QWidget):
                 for sensor in sensors:
                     subplot_names = self.main_page_plots[sensor]
                     for subplot_name in subplot_names:
-                        t = self.big_data_dict[sensor]["Time (epoch)"]
-                        y = self.big_data_dict[sensor]["Data"][subplot_name]
-                        print("ALL")
-                        print(t, y)
-                        print(type(t), type(y))
-                        print(type(y[0]))
-                        t_pdt, y_pdt = epoch_to_pacific_time(t, y)
-                        x_data_list.append(t_pdt)
-                        y_data_list.append(y_pdt)
+                        t, y = epoch_to_pacific_time(time = self.big_data_dict[sensor]["Time (epoch)"], 
+                                                             y_data = self.big_data_dict[sensor]["Data"][subplot_name])
+                        x_data_list.append(t)
+                        y_data_list.append(y)
             # Otherwise (and we should never get here since everything is passed in externally), something went wrong. The plots safely don't update if we pass in None
             else:
                 logger.warning(f"Error in reading the data buffer when updating plots: {e}")
@@ -1102,12 +1097,16 @@ def epoch_to_pacific_time(time, y_data=None):
     nan_mask = np.invert(np.isnan(time))
     time = time[nan_mask]
     # If we've passed in y_data, apply the same mask to keep the arrays matching
-    if y_data is not None:
-        # If y_data is an array of values, apply the mask
-        if type(y_data[0]) == float or type(y_data[0]) == int:
+    if y_data is not None:        
+        # See if the first value of y_data has a length. If it does (no error), y_data is a list of lists.
+        # If it throws a TypeError, it's a list of values
+        try:
+            len(y_data[0])
+        # If y_data is an array of values, apply the mask directly
+        except TypeError:
             y_data = np.array(y_data)[nan_mask]
         # If y_data is an array of arrays, apply the mask to each sub-array
-        elif type(y_data[0]) == deque or type(y_data[0]) == list:
+        else:
             y_data = [np.array(y)[nan_mask] for y in y_data]
     # Convert t to datetime, specifying that it's in seconds
     t_datetime = pd.to_datetime(time, unit='s')

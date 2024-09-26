@@ -200,7 +200,6 @@ class Writer():
         try:
             with open(self.notes_filepath, 'r') as csvfile:
                 writer = csv.writer(csvfile, delimiter=',', lineterminator='\r')
-                writer.writerow(notes)
         # If it doesn't, something went wrong with initialization or the file got deleted - 
         # remake it here and then write the data
         except FileNotFoundError:
