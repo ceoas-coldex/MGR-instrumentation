@@ -81,7 +81,6 @@ class Bronkhorst():
                 # Check if the measurements are the lengths we expect and the timestamp is the type we expect
                 if len(setpoint_and_meas) == 25 and len(fmeas_and_temp) == 33 and type(timestamp) == float:
                     logger.info("Bronkhorst initialized")
-                    print("returning 1")
                     return 1
                 
         except Exception as e:
