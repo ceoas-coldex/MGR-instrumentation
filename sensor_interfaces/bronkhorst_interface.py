@@ -84,9 +84,9 @@ class Bronkhorst():
                 self.fmeasure_unit = bytearray.fromhex(unit).decode().strip()
                 # grab the device measurements
                 timestamp, output = self.query()
-                setpoint_and_meas, fmeas_and_temp = output
+                fsetpoint, meas, fmeas_and_temp = output
                 # Check if the measurements are the lengths we expect and the timestamp is the type we expect
-                if len(setpoint_and_meas) == 25 and len(fmeas_and_temp) == 33 and type(timestamp) == float:
+                if len(fsetpoint) == 21 and len(meas) == 17 and len(fmeas_and_temp) == 33 and type(timestamp) == float:
                     logger.info("Bronkhorst initialized")
                     return 1
                 
@@ -105,7 +105,6 @@ class Bronkhorst():
                 - timestamp: float, epoch time
                 - output: (bytestr, bytestr), chained responses for measure & setpoint and fmeasure & temperature
         """
-
         self.ser.write(self.GET_FSETPOINT)
         fsetpoint = self.ser.read_until(b'\r\n').decode()
         self.ser.write(self.GET_MEAS)
