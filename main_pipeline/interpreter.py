@@ -1,10 +1,11 @@
 # -------------
-# The intepretor class
+# The interpreter class
 # -------------
 
 import numpy as np
 import time
 import yaml
+import copy
 
 try:
     from main_pipeline.bus import Bus
@@ -47,13 +48,16 @@ class Interpreter():
             self.big_data = {}
 
         t_i = time.time()
+        self.channels = []
         # Comb through the keys, set the timestamp to the current time and the data to np.nan
-        sensor_names = self.big_data.keys()
-        for name in sensor_names:
+        self.sensor_names = self.big_data.keys()
+        for name in self.sensor_names:
             self.big_data[name]["Time (epoch)"] = t_i
             channels = list(self.big_data[name]["Data"].keys())
             for channel in channels:
                 self.big_data[name]["Data"][channel] = np.nan
+                self.channels.append(f"{name} {channel}")
+
     
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
@@ -95,7 +99,14 @@ class Interpreter():
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
         # Write to the output bus
-        output_bus.write(self.big_data)
+        output_bus.write(copy.deepcopy(self.big_data))
+
+        # # Reset the dictionary to make sure we're not holding onto anything from the last data collection round
+        for name in self.sensor_names:
+            channels = list(self.big_data[name]["Data"].keys())
+            for channel in channels:
+                self.big_data[name]["Data"][channel] = np.nan
+
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):
@@ -107,26 +118,37 @@ class Interpreter():
         Args:
             abakus_data (tuple): Data (timestamp, raw_data) read from the Abakus bus
         """
-        
+        # Try to split up the data into the readings we expect
         try:
             timestamp, data_out = abakus_data
-            output = data_out.split() # split into a list
-            bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
-            counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
-
-            # If we've recieved the correct number of bins, update the measurement. Otherwise, log an error
-            abakus_bin_num = 32
-            if len(bins) == abakus_bin_num: 
-                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
-                self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
-                self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
-                self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = int(np.sum(counts))
-            else:
-                logger.warning("Didn't recieve the expected 32 Abakus channels. Not updating measurement")
-        except KeyError as e:
-            logger.warning(f"Error in saving Abakus data to big dict: {e}. Not updating measurement")
+        # If that didn't work, log it
         except TypeError as e:
-            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")
+            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")          
+        # If it did work, process the data
+        else:
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
+            if data_out == "nan":
+                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
+                return
+            try:
+                output = data_out.split() # split into a list
+                bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
+                counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
+                total_counts = int(np.sum(counts))
+                
+                # If we've received the correct number of bins, update the measurement. Otherwise, log an error
+                abakus_bin_num = 32
+                if len(bins) == abakus_bin_num: 
+                    self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
+                    self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
+                    self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
+                    self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
+                else:
+                    logger.warning("Didn't receive the expected 32 Abakus channels. Not updating measurement")
+            except KeyError as e:
+                logger.warning(f"Error in saving Abakus data to big dictionary: No key {e}. Not updating measurement")
+            except Exception as e:
+                logger.warning(f"Unexpected exception in processing abakus data: {e}. Not updating measurement.")
             
     ## ------------------- FLOWMETER ------------------- ##
     def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
@@ -135,34 +157,67 @@ class Interpreter():
         I want it to be consistent with the out-of-box software
 
         Args:
-            flowmeter_data (tuple): _description_
+            flowmeter_data (tuple): tuple of (timestamp [float], data_out [list of n samples, where n is set in sensor_data.yaml])
             model (str): Flowmeter model (SLI2000 or SLS1500)
             scale_factor (int): Flowmeter scale factor, unique to device
             units (str): Data units (uL/min or mL/min)
-        """        
-        # Check if reading is good
-        validated_data = self.check_flowmeter_data(flowmeter_data, model)
-        # If it's good, try processing it
+        """
+        # Try to split up the data into the readings we expect
         try:
-            timestamp = flowmeter_data[0]
-            if validated_data:
-                rxdata = validated_data[4]
-                ticks = self.twos_comp(rxdata[0])
-                flow_rate = ticks / scale_factor
-
+            timestamp, data_out = flowmeter_data
+        # If that didn't work, log it
+        except TypeError as e:
+            logger.warning(f"Error in extracting time and data from flowmeter {model} reading: {e}. Probably not a tuple. Not updating measurement")
+        # If it did work, process the data
+        else:
+            # First, save the timestamp to the data dictionary 
+            try:
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-                self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = flow_rate
-
-        # If that didn't work, give up this measurement
-        except Exception as e:
-            logger.warning(f"Encountered exception in processing flowmeter {model}: {e}. Not updating measurement.")
+            # If we can't do that, something has gone wrong with our dictionary keys
+            except KeyError as e:
+                logger.warning(f"Error in saving flowmeter {model} timestamp to big dictionary. No key {e}.")
+            # If we saved the timestamp OK, move on to processing the data
+            else:
+                # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
+                if data_out == "nan":
+                    return
+                # If we're not running shadow hardware, the flowmeter data is a list of n samples of flowmeter data.
+                # For each one of those samples...
+                flow_rates = []
+                for sample in data_out:
+                    # Check if the reading is good
+                    validated_data = self.check_flowmeter_data(sample, model)
+                    # If it's good, try processing it
+                    if validated_data:
+                        try:
+                            rxdata = validated_data[4]
+                            ticks = self.twos_comp(rxdata[0])
+                            flow_rate = ticks / scale_factor
+                        # If that didn't work, give up this measurement
+                        except KeyError as e:
+                            logger.warning(f"Error in saving flowmeter {model} data to big dictionary: No key {e}. Not updating measurement")
+                        except Exception as e:
+                            logger.warning(f"Unexpected exception in processing flowmeter {model}: {e}. Not updating measurement.")
+                        # If that did work, append it to our running list of flow rates
+                        else:
+                            flow_rates.append(flow_rate)
+                    # If it's bad, don't update the data
+                    else:
+                        flow_rates.append(np.nan)
+                if np.nan in flow_rates:
+                    # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
+                    averaged_flow_rate = np.nanmean(flow_rates)
+                else:
+                    averaged_flow_rate = np.mean(flow_rates)
+                # Save the averaged list to our big data dictionary
+                self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = averaged_flow_rate
 
     def check_flowmeter_data(self, flowmeter_data, model):
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
         check in with her about specifics. 
 
         Args:
-            flowmeter_data (tuple): Data (timestamp, raw_data) read from flowmeter bus
+            flowmeter_data (list): Raw data read from flowmeter. List of ints
             model (str): Flowmeter model (SLI2000 or SLS1500)
 
         Raises:
@@ -174,7 +229,7 @@ class Interpreter():
         """
         try:
             # Check if the third bit indicates a bad reply or not
-            raw_data = flowmeter_data[1]
+            raw_data = flowmeter_data
             adr = raw_data[1]
             cmd = raw_data[2]
             state = raw_data[3]
@@ -190,6 +245,10 @@ class Interpreter():
             chk = chk ^ 0xFF  # binary check
             if chkRx != chk:
                 raise Exception("Bad checksum")
+        except Exception as e:
+            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Not updating measurement.")
+            return False
+        else:
             # If we passed those checks, compile valid output
             rxdata16 = []
             if length > 1:
@@ -200,9 +259,6 @@ class Interpreter():
 
             return adr, cmd, state, length, rxdata16, chkRx
 
-        except Exception as e:
-            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Not updating measurement.")
-            return False
     
     def bytepack(self, byte1, byte2):
         """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
@@ -240,43 +296,58 @@ class Interpreter():
         Args:
             laser_data (tuple): Data (timestamp, raw_data) read from laser bus
         """
-        # Split up the data
+        # Try to split up the data into the readings we expect
         try:
             timestamp, data_out = laser_data
             distance, temp = data_out
+        # If that didn't work, log it
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from laser reading: {e}. Probably not a tuple. Not updating measurement")
-            return
-
-        # Process distance
-        try:
-            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
-            if distance[0:4] == "g0@E":
-                logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
-            # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.
-            # We need to slice away the first three characters, strip whitespace, and divide by 100 to get distance in cm
-            else:
-                distance = distance[3:].strip()
-                distance_cm = float(distance) / 100.0
+        # If it did work, process the data
+        else:
+            
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
+            if distance == "nan" and temp == "nan":
                 self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
-                self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
-        except ValueError as e:
-            logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
-
-        # Process temperature
-        try:
-            # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
-            if temp[0:4] == "g0@E":
-                logger.warning(f"Recieved error message from laser temperature: {temp}. Check manual for error code. Not updating measurement")
-            # Otherwise, the laser returns successful temperature as "g0t±aaaaaaaa", where "±a" is the temp in 0.1°C.
-            # We need to slice away the first three characters, strip whitespace, and divide by 10 to get distance in °C
-            else:
-                temp = temp[3:].strip()
-                temp_c = float(temp) / 10.0
+                return
+            # Process distance
+            try:
+                # Make sure we always update the timestamp, even if we encounter an error later in processing
                 self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
-                self.big_data["Laser Distance Sensor"]["Data"]["Temperature (C)"] = temp_c
-        except ValueError as e:
-            logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
+                # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+                if distance[0:4] == "g0@E":
+                    logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
+                # Otherwise, the laser returns a successful distance reading as "g0g+aaaaaaaa", where "+a" is the dist in 0.1mm.
+                # We need to slice away the first three characters, strip whitespace, and divide by 100 to get distance in cm
+                else:
+                    distance = distance[3:].strip()
+                    distance_cm = float(distance) / 100.0
+                    self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
+            except ValueError as e:
+                logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
+            except KeyError as e:
+                logger.warning(f"Error in saving laser distance to big dictionary: No key {e}. Not updating measurement")
+            except Exception as e:
+                logger.warning(f"Unexpected exception in processing laser distance: {e}. Not updating measurement")
+
+            # Process temperature
+            try:
+                # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
+                if temp[0:4] == "g0@E":
+                    logger.warning(f"Recieved error message from laser temperature: {temp}. Check manual for error code. Not updating measurement")
+                # Otherwise, the laser returns successful temperature as "g0t±aaaaaaaa", where "±a" is the temp in 0.1°C.
+                # We need to slice away the first three characters, strip whitespace, and divide by 10 to get distance in °C
+                else:
+                    temp = temp[3:].strip()
+                    temp_c = float(temp) / 10.0
+                    self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+                    self.big_data["Laser Distance Sensor"]["Data"]["Temperature (C)"] = temp_c
+            except ValueError as e:
+                logger.warning(f"Error in converting temperature reading to float: {e}. Not updating measurement")
+            except KeyError as e:
+                logger.warning(f"Error in saving laser temperature to big dictionary: No key {e}. Not updating measurement")
+            except Exception as e:
+                logger.warning(f"Unexpected exception in processing laser temperature: {e}. Not updating measurement")
 
     ## ------------------- PICARRO ------------------- ##
     def process_picarro_data(self, picarro_data, model):
@@ -287,20 +358,29 @@ class Interpreter():
             model (str): Picarro model ("GAS" or "WATER")
         """
         if model == "GAS":
+            # Try to split up the data into the readings we expect
             try:
                 timestamp, data_out = picarro_data
-
-                # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
-                # the computer clocks drift
-
-                self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
-                self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
-                self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[2])
-                self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
-                self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
-
-            except Exception as e:
-                logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
+            # If that failed, log it
+            except TypeError as e:
+                logger.warning(f"Error in extracting time and data from picarro reading: {e}. Probably not a tuple. Not updating measurement")
+            # If it succeeded, process the data
+            else:
+                if data_out == "nan":
+                    self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
+                    return
+                try:
+                    # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
+                    # the computer clocks drift
+                    self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
+                    self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
+                    self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[2])
+                    self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
+                    self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
+                except KeyError as e:
+                    logger.warning(f"Encountered exception in processing picarro {model}: No key {e}. Not updating measurement.")
+                except Exception as e:
+                    logger.warning(f"Unexpected exception in processing picarro {model} data: {e}. Not updating measurement")
         elif model == "WATER":
             try:
                 timestamp, data_out = picarro_data
@@ -313,31 +393,43 @@ class Interpreter():
         
         Args:
             bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
+    
 
+        # Try to split up the data into the readings we expect
         try:
             timestamp, (setpoint_and_meas, fmeas_and_temp) = bronkhorst_data
-            
-            # Parsing setpoint and measurement is straightforward - 
-            # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
-            setpoint = int(setpoint_and_meas[11:15], 16)
-            measure = int(setpoint_and_meas[19:], 16)
-            # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
-            setpoint = np.interp(setpoint, [0,32000], [0,100.0])
-            measure = np.interp(measure, [0,41942], [0,131.07]) # This is bascially the same as the setpoint, but can measure over 100%
+        # If that didn't work, log it
+        except KeyError as e:
+            logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
+        # If it did work, parse the data
+        else:
+            if setpoint_and_meas == "nan":
+                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+                return
+            try:
+                # Parsing setpoint and measurement is straightforward - 
+                # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
+                setpoint = int(setpoint_and_meas[11:15], 16)
+                measure = int(setpoint_and_meas[19:], 16)
+                # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
+                setpoint = np.interp(setpoint, [0,32000], [0,100.0])
+                measure = np.interp(measure, [0,41942], [0,131.07]) # This is basically the same as the setpoint, but can measure over 100%
 
-            # Parsing fmeasure and temperature is a little more complicated -
-            # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
-            fmeasure = self.hex_to_ieee754_dec(fmeas_and_temp[11:19])
-            temp = self.hex_to_ieee754_dec(fmeas_and_temp[23:])
+                # Parsing fmeasure and temperature is a little more complicated -
+                # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
+                fmeasure = self.hex_to_ieee754_dec(fmeas_and_temp[11:19])
+                temp = self.hex_to_ieee754_dec(fmeas_and_temp[23:])
 
-            self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
-            self.big_data["Bronkhorst Pressure"]["Data"]["Setpoint"] = setpoint
-            self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
-            self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (mbar a)"] = fmeasure
-            self.big_data["Bronkhorst Pressure"]["Data"]["Temperature (C)"] = temp
-
-        except Exception as e:
-            logger.warning(f"Encountered exception in processing Bronkhorst data: {e}. Not updating measurement")
+                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+                self.big_data["Bronkhorst Pressure"]["Data"]["Setpoint"] = setpoint
+                self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
+                self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (mbar a)"] = fmeasure
+                self.big_data["Bronkhorst Pressure"]["Data"]["Temperature (C)"] = temp
+                
+            except KeyError as e:
+                logger.warning(f"Error in saving bronkhorst data to big dictionary: No key {e}. Not updating measurement")
+            except Exception as e:
+                logger.warning(f"Unexpected exception in Bronkhorst data: {e}. Not updating measurement")
 
     def mantissa_to_int(self, mantissa_str):
         """Method to convert the mantissa of the IEEE floating point to its decimal representation"""
@@ -366,7 +458,7 @@ class Interpreter():
             Bit: 31   | [30 - 23] |  [22        -         0]
 
         Args:
-            hex_str (str, hexadecmial representation of binary string)
+            hex_str (str, hexadecimal representation of binary string)
 
         Returns:
             dec (float, number in decimal notation)

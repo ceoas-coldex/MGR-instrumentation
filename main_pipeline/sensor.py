@@ -1,7 +1,7 @@
 # -------------
 # The sensor class
 # 
-# Currently can't be run from here, since it's importing things from the sensor_interfaces package. Need to figure that out, run it from executor()
+# Currently can't be run from here, since it's importing things from the sensor_interfaces package. Need to figure that out.
 # -------------
 
 # General imports
@@ -9,6 +9,9 @@ import serial
 from serial import SerialException
 import time
 import yaml
+import numpy as np
+import pandas as pd
+import datetime
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -114,12 +117,12 @@ class Sensor():
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
             with open("config/sensor_data.yaml", 'r') as stream:
-                big_data_dict = yaml.safe_load(stream)
+                self.big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
-            big_data_dict = {}
+            self.big_data_dict = {}
         
-        self.sensor_names = list(big_data_dict.keys())
+        self.sensor_names = list(self.big_data_dict.keys())
 
         # Create a dictionary to store the status of each sensor (0: offline, 1: online, 2: disconnected/simulated)
         self.sensor_status_dict = {}
@@ -213,14 +216,20 @@ class Sensor():
 
             Returns - tuple (timestamp[float, epoch time], data_out([int], bytes)
         """
+        samples_per_query = self.big_data_dict["Flowmeter"]["Other"]["Samples Per Query"]
+        data_out = []
         if flowmeter_model == "SLI2000":
-            timestamp, data_out = self.flowmeter_sli2000.query()
+            for _ in range(samples_per_query):
+                timestamp, reading = self.flowmeter_sli2000.query()
+                data_out.append(reading)
         elif flowmeter_model == "SLS1500":
-            timestamp, data_out = self.flowmeter_sls1500.query()
+            for _ in range(samples_per_query):
+                timestamp, reading = self.flowmeter_sls1500.query()
+                data_out.append(reading)
         else:
             timestamp = 0.0
             data_out = [0]
-        
+
         return timestamp, data_out
     
     # ------------------- DIMETIX LASER DISTANCE SENSOR ------------------- ##
@@ -259,7 +268,6 @@ class Sensor():
         else:
             timestamp = [0.0]
             data_out = ["0"]
-
         return timestamp, data_out
 
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
@@ -274,3 +282,4 @@ class Sensor():
             Returns - tuple (timestamp [epoch time], data_out [(bytestr, bytestr)])"""
         timestamp, data_out = self.bronkhorst.query()
         return timestamp, data_out
+    

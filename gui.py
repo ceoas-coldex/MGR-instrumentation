@@ -130,6 +130,10 @@ class ApplicationWindow(QWidget):
         # If we actually want to shut down, shutdown the sensors and then accept the closeEvent
         if self.accept_quit:
             self.sensor.shutdown_sensors()
+            try:
+                self.executor.shutdown()
+            except:
+                pass
             event.accept()
         # Otherwise, ignore it
         else:
@@ -276,7 +280,7 @@ class ApplicationWindow(QWidget):
                         parent.addWidget(b, row+2, col+c)
                         c+=1
                 except KeyError:
-                    print("no command buttons for this sensor")
+                    logger.info("no command buttons for this sensor")
                 # Fourth widget - dividing line
                 line = QFrame(self)
                 line.setFrameShape(QFrame.HLine)
@@ -305,18 +309,37 @@ class ApplicationWindow(QWidget):
         for name, callback, enabled in zip(title_button_names, title_button_callbacks, title_button_enabled):
             title_buttons.update({name: {"callback":callback, "enabled":enabled}})
 
+        self.sensor_status_dict = {}
+        for name in self.sensor_names:
+            self.sensor_status_dict.update({name:0})
+
         sensor_buttons = {}
         for name in self.sensor_names:
             sensor_buttons.update({name:{}})
-        sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":self.sensor.abakus.initialize_abakus,
-                                                           "Stop Abakus":self.sensor.abakus.stop_measurement}})
-        sensor_buttons.update({"Laser Distance Sensor":{"Start Laser":self.sensor.laser.initialize_laser,
-                                                        "Stop Laser":self.sensor.laser.stop_laser}})
-        sensor_buttons.update({"Flowmeter":{"Start SLI2000":self.sensor.flowmeter_sli2000.initialize_flowmeter,
-                                            "Start SLS1500":self.sensor.flowmeter_sls1500.initialize_flowmeter}})
+        sensor_buttons.update({"Picarro Gas": {"Start Picarro":
+                                               partial(self._on_sensor_button, "Picarro Gas", self.sensor.gas_picarro.initialize_picarro)}})
+        sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":
+                                                           partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.initialize_abakus),
+                                                           "Stop Abakus":
+                                                           partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.stop_measurement)}})
+        sensor_buttons.update({"Laser Distance Sensor":{"Start Laser":
+                                                        partial(self._on_sensor_button, "Laser Distance Sensor", self.sensor.laser.initialize_laser),
+                                                        "Stop Laser":
+                                                        partial(self._on_sensor_button, "Laser Distance Sensor", self.sensor.laser.stop_laser)}})
+        sensor_buttons.update({"Flowmeter":{"Start SLI2000":
+                                            partial(self._on_sensor_button, "Flowmeter", self.sensor.flowmeter_sli2000.initialize_flowmeter),
+                                            "Start SLS1500":
+                                            partial(self._on_sensor_button, "Flowmeter", self.sensor.flowmeter_sls1500.initialize_flowmeter)}})
+        sensor_buttons.update({"Bronkhorst Pressure":{"Start Bronkhorst": 
+                                                      partial(self._on_sensor_button, "Bronkhorst Pressure", self.sensor.bronkhorst.initialize_bronkhorst)}})
 
         return title_buttons, sensor_buttons
         
+    def _on_sensor_button(self, sensor, initialization_function):
+        init_result = initialization_function()
+        self.sensor_status_dict.update({sensor: init_result})
+        self.update_sensor_status()
+
     def _on_sensor_init(self):
         """Callback function for the 'Initialize All Sensors' button
         """
@@ -534,7 +557,7 @@ class ApplicationWindow(QWidget):
             # Create the figure and toolbar
             fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
-                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 xlabels=["Time"]*num_subplots,
                                  ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
@@ -572,7 +595,7 @@ class ApplicationWindow(QWidget):
         # Make a figure and toolbar for the main page and put them in the tab
         fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
-                                 xlabels=["Time (epoch)"]*num_subplots,
+                                 xlabels=["Time"]*num_subplots,
                                  ylabels=y_axis_labels,
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
@@ -603,16 +626,16 @@ class ApplicationWindow(QWidget):
             with open("config/main_page_plots.yaml", 'r') as stream:
                 self.main_page_plots = yaml.safe_load(stream)
         # If we can't find it, note that
-        except:
+        except FileNotFoundError:
             logger.warning("Error in reading the main_page_plots configuration file. Check your directories.")
             self.main_page_plots = {}
 
         # Parse through the dictionary to extract the data channels we want to plot
         num_subplots = 0 # and keep an eye on how many subplots we need to initialize
         y_axis_labels = []
-        for key in self.main_page_plots: # Key: "sensor name"
-            if key in self.sensor_names:
-                main_page_plot_channels = self.main_page_plots[key]
+        for sensor in self.main_page_plots:
+            if sensor in self.sensor_names:
+                main_page_plot_channels = self.main_page_plots[sensor]
                 for channel in main_page_plot_channels:
                     y_axis_labels.append(channel)
                     num_subplots += 1
@@ -653,12 +676,19 @@ class ApplicationWindow(QWidget):
 
             **y_data_list** (list): List of deques from self.big_data_dict - data for each sensor channel
         """
-        # Try to extract the updated data from the big buffer
+        # Try to extract "plot_name" from the big buffer - if it's a sensor, we'll be able to pull the data directly
         try:
+            # Extract data from the buffer
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
-            x_data_list = [self.big_data_dict[plot_name]["Time (epoch)"]]*num_subplots # Same timestamp for all sensor readings
-            y_data_list = list(self.big_data_dict[plot_name]["Data"].values())
-        # If we can't do that, we're probably on the "main page plots" tab, in which case the plot name is "All"
+            t = self.big_data_dict[plot_name]["Time (epoch)"]
+            y = list(self.big_data_dict[plot_name]["Data"].values())
+            # Convert from UTC epoch time to pacific time, passing in the y_data too to ensure the arrays
+            # stay the same shape
+            t_pacific_time, y_data_list = epoch_to_pacific_time(t, y)
+            # All sensor channels have the same timestamp, so make n_subplots copies of the time
+            x_data_list = [t_pacific_time]*num_subplots 
+            
+        # If we can't find it in the buffer, we're probably on the "main page plots" tab, in which case the plot name is "All"
         except KeyError as e:
             # If we /are/ on that page, we need to do a little more finagling to extract the data we want
             if plot_name == "All":
@@ -671,11 +701,15 @@ class ApplicationWindow(QWidget):
                 for sensor in sensors:
                     subplot_names = self.main_page_plots[sensor]
                     for subplot_name in subplot_names:
-                        x_data_list.append(self.big_data_dict[sensor]["Time (epoch)"])
-                        y_data_list.append(self.big_data_dict[sensor]["Data"][subplot_name])
-            # Otherwise (and we should never get here since everything is passed in externally), something went wrong. The plots safely don't update if we pass in None
+                        # Convert from UTC epoch time to pacific time
+                        t, y = epoch_to_pacific_time(time = self.big_data_dict[sensor]["Time (epoch)"], 
+                                                             y_data = self.big_data_dict[sensor]["Data"][subplot_name])
+                        x_data_list.append(t)
+                        y_data_list.append(y)
+            # Otherwise (and we should never get here since all dict keys are passed in externally), something went wrong. 
+            # The plots safely don't update if we pass in None, so do that
             else:
-                logger.warning(f"Error in reading the data buffer when updating plots: {e}")
+                logger.error(f"Error in reading the data buffer when updating plots: {e}")
                 x_data_list = None
                 y_data_list = None
 
@@ -721,11 +755,12 @@ class ApplicationWindow(QWidget):
         channels = list(self.big_data_dict[sensor]["Data"].keys())
         num_subplots = len(channels)
         # Pull the time from the data input and convert it from UTC epoch time to Pacific time
-        t = data[f"{sensor}: time (epoch)"]
-        t_pacific_time = epoch_to_pacific_time(t)
+        t = (data[f"{sensor}: time (epoch)"]).values
+        y = [data[f"{sensor}: {channel}"] for channel in channels]
+        t_pacific_time, y_data = epoch_to_pacific_time(t, y)
         # Create a figure and toolbar with the data for each sensor channel
         fig = MyFigureCanvas(x_init=[t_pacific_time]*num_subplots,
-                             y_init=[data[f"{sensor}: {channel}"] for channel in channels],
+                             y_init=y_data,
                              num_subplots=num_subplots,
                              xlabels=["Datetime"]*num_subplots,
                              ylabels=channels,
@@ -760,7 +795,7 @@ class ApplicationWindow(QWidget):
         """
         # Create each main object of the pipeline
         self.sensor = Sensor(debug=True)
-        self.interpretor = Interpreter()
+        self.interpreter = Interpreter()
         self.writer = Writer()
 
         # Initialize a bus for each thread we plan to spin up later
@@ -793,8 +828,8 @@ class ApplicationWindow(QWidget):
         # Comb through the keys, set the timestamp to the current time and the data to zero
         sensor_names = self.big_data_dict.keys()
         for name in sensor_names:
-            self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
             channels = self.big_data_dict[name]["Data"].keys()
+            self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
             for channel in channels:
                 self.big_data_dict[name]["Data"][channel] = deque([np.nan], maxlen=self.max_buffer_length)
 
@@ -802,7 +837,7 @@ class ApplicationWindow(QWidget):
         self.sensor_names = list(sensor_names)
 
     def _thread_data_collection(self):
-        """Method to spin up threads for each sensor, plus the interpretor and the writer. 
+        """Method to spin up threads for each sensor, plus the interpreter and the writer. 
         Allows us to take, process, and save data (mostly) simultaneously
 
         Returns:
@@ -818,13 +853,13 @@ class ApplicationWindow(QWidget):
                 self.executor.submit(self.sensor.laser_producer, self.laser_bus)
                 self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
                 self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
-                self.executor.submit(self.interpretor.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
+                self.executor.submit(self.interpreter.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                             self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
                                             self.main_interp_bus)
 
                 eWriter = self.executor.submit(self.writer.write_consumer, self.main_interp_bus)
         except RuntimeError as e:
-            logger.warning(f"Encoutered Error in data threading: {e}")
+            logger.warning(f"Encountered Error in data threading: {e}")
 
         # Get the processed data from the final class (also blocks until everything has completed its task)
         data = eWriter.result()
@@ -846,7 +881,7 @@ class ApplicationWindow(QWidget):
             except KeyError as e:   # ... otherwise log an exception
                 logger.warning(f"Error updating the {name} buffer timestamp: {e}")
             except TypeError as e:  # Sometimes due to threading shenanigans it comes through as "NoneType", check for that too
-                # logger.warning(f"Error updating the {name} buffer timestamp: {e}")
+                logger.warning(f"Error updating the {name} buffer timestamp: {e}")
                 pass
             
             # Grab and append the data from each channel
@@ -859,7 +894,7 @@ class ApplicationWindow(QWidget):
                     logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
                 except TypeError as e: 
-                    # logger.warning(f"Error updating the {name} buffer data: {e}")
+                    logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
     
     def run_data_collection(self):
@@ -932,7 +967,7 @@ class MyFigureCanvas(FigureCanvas):
 
         # Set a figure size
         self.figure.set_figheight(5*num_subplots)
-        self.figure.tight_layout(h_pad=4)
+        self.figure.tight_layout(h_pad=5)
         
         self.draw()   
 
@@ -955,12 +990,17 @@ class MyFigureCanvas(FigureCanvas):
             # Clear the figure without resetting the axis bounds or ticks
             for artist in ax.lines:
                 artist.remove()
-            # Plot the updated data and make sure we aren't either plotting offscreen or letting the x axis get too long
+            # Plot the updated data
             ax.plot(self.x_data[i], self.y_data[i], '.--')
-            xlim = ax.get_xlim()
-            if (xlim[1] - xlim[0]) >= self.x_range:
-                ax.set_xlim([self.x_data[i][-1] - self.x_range, self.x_data[i][-1] + 1])
-
+            # Make sure we aren't either plotting offscreen or letting the x axis get too long
+            # We can't do math directly with Timestamp objects, so do the math in epoch time and then convert
+            current_time = time.time()
+            desired_x_min = current_time - self.x_range
+            current_time_datetime, _ = epoch_to_pacific_time(current_time)
+            x_min_datetime, _ = epoch_to_pacific_time(desired_x_min)
+            # Set the limits
+            ax.set_xlim([x_min_datetime, current_time_datetime])
+        # Finally, update the plot
         self.draw()
 
 ## --------------------- PYQT THREADING --------------------- ##
@@ -1041,25 +1081,43 @@ def find_grid_dims(num_elements, num_cols):
 
     return num_rows, num_cols
 
-def epoch_to_pacific_time(time):
+def epoch_to_pacific_time(time, y_data=None):
     """Method to convert from epoch (UTC, number of seconds since Jan 1, 1970) to a datetime format
-    in the Pacific timezone
+    in the Pacific timezone. Can also take in an accompanying array of y_data to ensure any changes in shape
+    that happen to the time (like removing np.nan values) also happens to the y_data.
 
     Args:
-        time (array_like): Anything that can be converted into a np array, e.g a list of epoch times
+        time (array_like): Anything that can be converted into a np array and sliced, e.g a list of epoch times
+        y_data (array_like): Can be an array of values or an array of arrays, either works
 
     Returns:
         t_pacific (DateTimeIndex): Datetime object in pacific time
     """
+    # Convert to numpy array
     time = np.array(time)
-    # Convert to datetime, specifying that it's in seconds
+    # Get rid of any np.nan present in t, it messes with the conversion
+    nan_mask = np.invert(np.isnan(time))
+    time = time[nan_mask]
+    # If we've passed in y_data, apply the same mask to keep the arrays matching
+    if y_data is not None:        
+        # See if the first value of y_data has a length. If it does (no error), y_data is a list of lists.
+        # If it throws a TypeError, it's a list of values
+        try:
+            len(y_data[0])
+        # If y_data is an array of values, apply the mask directly
+        except TypeError:
+            y_data = np.array(y_data)[nan_mask]
+        # If y_data is an array of arrays, apply the mask to each sub-array
+        else:
+            y_data = [np.array(y)[nan_mask] for y in y_data]
+    # Convert t to datetime, specifying that it's in seconds
     t_datetime = pd.to_datetime(time, unit='s')
     # Current timezone is UTC
     t_utc = t_datetime.tz_localize('utc')
     # New timezone is pacific
     t_pacific = t_utc.tz_convert('America/Los_Angeles')
-    
-    return t_pacific
+
+    return t_pacific, y_data
 
 
 # If we're running from this script, spin up QApplication and start the GUI
