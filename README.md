@@ -119,12 +119,24 @@ The notes and logs panel has text entries for a number of data collection featur
 
 ## Data Management
 
-### Data Savings
+### Data Saving
 Each day the main script is run, it creates two CSV files: by default, these are named "YYYY-MM-DD.csv" and "YYYY-MM-DD_notes.csv". Sensor data gets saved to the first file and user-logged notes get saved to the second.
 
 If you want to take multiple, distinct sets of data each day, the **suffix** of both files can be modified by the *data_saving.yaml* configuration file. The first time the main script is run after changing the suffix, it will create a new data file with the name "YYYY-MM-DDsuffix.csv".
 
 Data is, by default, saved to the "data" directory of this package. You can also use the *data_saving.yaml* configuration file to customize this location.
+
+## Data Backup
+
+In the main folder of this repository is the shell script **auto-commit.sh**. This script adds, commits, and pushes everything in this repository to GitHub. On Windows, you can automate this process by adding it to *Task Scheduler*. I've done this for the MGR lab computer - it runs every hour, assuming ceoas_coldex is logged in, and expires on 9/28/2025.
+
+To manually back up to GitHub, you can use GitHub Desktop, use the GitHub command line interface, or trigger the shell script with the following:
+
+    cd Documents\GitHub\MGR-instrumentation
+    start auto-commit.sh
+
+
+<img src="doc/imgs/data-backup.png">
 
 ### Timestamps
 
