@@ -246,7 +246,7 @@ class Interpreter():
             if chkRx != chk:
                 raise Exception("Bad checksum")
         except Exception as e:
-            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Not updating measurement.")
+            logger.warning(f"Encountered exception in validating flowmeter {model}: {e}. Raw output {raw_data}")
             return False
         else:
             # If we passed those checks, compile valid output
