@@ -58,9 +58,6 @@ class Bronkhorst():
         output = self.ser.read_until(b'\r\n').decode()
         return output
     
-    def get_setpoint(self):
-        pass
-
     def send_setpoint(self):
         self.SEND_SETPOINT = b':0880012143442f0000\r\n' # sets the setpoint in mBAR
         pass
