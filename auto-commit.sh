@@ -1,5 +1,5 @@
 #!/bin/sh
-cd /full/path/to/your/project
+cd C:\\Users\\ceoas_coldex\\Documents\\GitHub\\MGR-instrumentation
 git add --all
 timestamp() {
   date +"at %H:%M:%S on %d/%m/%Y"
