@@ -25,7 +25,7 @@ class Bronkhorst():
         # Bronkhorst communication codes
         self.GET_MEAS = b':06030401210120\r\n' # gets the measurement as a percent of the total (0-32000 => 0-100%)
         self.GET_FMEAS = b':06800421402140\r\n' # gets the measurement as a float
-        self.GET_SETPOINT = b':06030401210121\r\n' # gets the setpoint as a percent of the total
+        self.GET_FSETPOINT = b':06800421412143\r\n' # gets the setpoint in mBAR
         self.GET_TEMP = b':06800421472147\r\n' # gets the temp as a float
         self.GET_UNIT = b':078004017F017F07\r\n' # gets the unit as a string
 
@@ -57,6 +57,13 @@ class Bronkhorst():
         self.ser.write(self.GET_UNIT)
         output = self.ser.read_until(b'\r\n').decode()
         return output
+    
+    def get_setpoint(self):
+        pass
+
+    def send_setpoint(self):
+        self.SEND_SETPOINT = b':08800121433F800000\r\n' # sets the setpoint in mBAR
+        pass
     
     def initialize_bronkhorst(self, timeout=10):
         """
@@ -99,13 +106,15 @@ class Bronkhorst():
                 - output: (bytestr, bytestr), chained responses for measure & setpoint and fmeasure & temperature
         """
 
-        self.ser.write(self.GET_SETPOINT_MEAS)
-        setpoint_and_meas = self.ser.read_until(b'\r\n').decode()
+        self.ser.write(self.GET_FSETPOINT)
+        fsetpoint = self.ser.read_until(b'\r\n').decode()
+        self.ser.write(self.GET_MEAS)
+        meas = self.ser.read_until(b'\r\n').decode()
         self.ser.write(self.GET_FMEAS_TEMP)
         fmeas_and_temp = self.ser.read_until(b'\r\n').decode()
         timestamp = time.time()
 
-        output = (setpoint_and_meas, fmeas_and_temp)
+        output = (fsetpoint, meas, fmeas_and_temp)
         
         return timestamp, output
     
