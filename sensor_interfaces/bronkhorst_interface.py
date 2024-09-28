@@ -62,7 +62,7 @@ class Bronkhorst():
         pass
 
     def send_setpoint(self):
-        self.SEND_SETPOINT = b':08800121433F800000\r\n' # sets the setpoint in mBAR
+        self.SEND_SETPOINT = b':0880012143442f0000\r\n' # sets the setpoint in mBAR
         pass
     
     def initialize_bronkhorst(self, timeout=10):
