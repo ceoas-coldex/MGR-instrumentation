@@ -282,3 +282,13 @@ WARNING: 11:36:51 - main_pipeline.interpreter:  Encountered exception in validat
 WARNING: 11:36:51 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Not updating measurement.
 WARNING: 11:36:51 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Not updating measurement.
 WARNING: 11:36:51 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Not updating measurement.
+INFO: 11:40:06 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:43:56 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:45:28 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:46:18 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:47:42 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:48:30 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 11:49:37 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 12:03:23 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 12:03:34 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 12:03:53 - __main__:  Connected to serial port COM7 with baud 38400
