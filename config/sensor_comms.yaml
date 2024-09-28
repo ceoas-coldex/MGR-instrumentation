@@ -21,4 +21,6 @@ Flowmeter SLS1500 (Black):
 Bronkhorst Pressure:
   serial port: "COM7" # lab computer
   baud rate: 38400
-# Melthead:
+Melthead:
+  serial port: "COM7"
+  baud rate: 38400
