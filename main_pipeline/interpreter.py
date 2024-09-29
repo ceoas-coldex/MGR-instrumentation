@@ -68,7 +68,6 @@ class Interpreter():
                 self.big_data[name]["Data"][channel] = np.nan
                 self.channels.append(f"{name} {channel}")
 
-    
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
         """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
@@ -116,7 +115,6 @@ class Interpreter():
             channels = list(self.big_data[name]["Data"].keys())
             for channel in channels:
                 self.big_data[name]["Data"][channel] = np.nan
-
 
     ## ------------------- ABAKUS PARTICLE COUNTER ------------------- ##
     def process_abakus_data(self, abakus_data):
@@ -268,7 +266,6 @@ class Interpreter():
                     i = i + 2  # +2 for pairs of bytes
 
             return adr, cmd, state, length, rxdata16, chkRx
-
     
     def bytepack(self, byte1, byte2):
         """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
@@ -439,56 +436,6 @@ class Interpreter():
                 logger.warning(f"Error in saving bronkhorst data to big dictionary: No key {e}. Not updating measurement")
             except Exception as e:
                 logger.warning(f"Unexpected exception in Bronkhorst data: {e}. Not updating measurement")
-
-    def mantissa_to_int(self, mantissa_str):
-        """Method to convert the mantissa of the IEEE floating point to its decimal representation"""
-        # Variable to be our exponent as we loop through the mantissa
-        power = -1
-        # Variable to store the decimal value of mantissa
-        mantissa = 0
-        # Iterate through binary number and convert it from binary
-        for i in mantissa_str:
-            mantissa += (int(i)*pow(2, power))
-            power -= 1
-            
-        return (mantissa + 1)
-
-    def hex_to_ieee754_dec(self, hex_str:str) -> float:
-        """
-        Method to convert a hexadecimal string (e.g what is returned from the Bronkhorst) into an IEEE floating point. It's gnarly,
-        more details https://www.mimosa.org/ieee-floating-point-format/ and https://www.h-schmidt.net/FloatConverter/IEEE754.html
-        
-        In short, the IEEE 754 standard formats a floating point as N = 1.F x 2E-127, 
-        where N = floating point number, F = fractional part in binary notation, E = exponent in bias 127 representation.
-
-        The hex input corresponds to a 32 bit binary:
-                Sign | Exponent  |  Fractional parts of number
-                0    | 00000000  |  00000000000000000000000
-            Bit: 31   | [30 - 23] |  [22        -         0]
-
-        Args:
-            hex_str (str, hexadecimal representation of binary string)
-
-        Returns:
-            dec (float, number in decimal notation)
-        """
-
-        # Convert to integer, keeping its hex representation
-        ieee_32_hex = int(hex_str, 16)
-        # Convert to 32 bit binary
-        ieee_32 = f'{ieee_32_hex:0>32b}'
-        # The first bit is the sign bit
-        sign_bit = int(ieee_32[0])
-        # The next 8 bits are exponent bias in biased form - subtract 127 to get the unbiased form
-        exponent_bias = int(ieee_32[1:9], 2)
-        exponent_unbias = exponent_bias - 127
-        # Next 23 bits are the mantissa
-        mantissa_str = ieee_32[9:]
-        mantissa_int = self.mantissa_to_int(mantissa_str)
-        # Finally, convert to decimal
-        dec = pow(-1, sign_bit) * mantissa_int * pow(2, exponent_unbias)
-
-        return dec
 
 if __name__ == "__main__":
     interp = Interpreter()

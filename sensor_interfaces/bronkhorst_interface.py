@@ -76,8 +76,8 @@ class Bronkhorst():
             setpoint (float): Pressure setpoint in mBar to send to the Bronkhorst
         """
         hex_representation = ieee754_conversions.dec_to_hex(setpoint) # converts to the proper format
-        self.SEND_SETPOINT = b':0880012143'+(hex_representation).encode()+b'\r\n' # sets the setpoint in mBar
-        self.ser.write(self.SEND_SETPOINT)
+        self.SEND_SETPOINT = b':0880012143'+(hex_representation).encode()+b'\r\n' # combines with the rest of the command string
+        self.ser.write(self.SEND_SETPOINT) # sets the setpoint in mBar
         self.ser.read_until(b'\n').decode()
     
     def initialize_bronkhorst(self, timeout=10):
