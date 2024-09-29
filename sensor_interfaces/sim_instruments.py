@@ -3,7 +3,7 @@
 # with simulated values that have the same representation and type as real data 
 # 
 # Ali Jones
-# Last updated 9/20/24
+# Last updated 9/28/24
 # -------------
 
 import time
@@ -247,17 +247,22 @@ class Bronkhorst():
         logger.info("Bronkhorst initialized")
         return 2
     
+    def send_setpoint(self, setpoint):
+        logger.info(f"Set setpoint to {setpoint} mbar")
+
     # @log_on_end(logging.INFO, "Bronkhorst queried", logger=logger)
     def query(self):
-        """Returns - timestamp (float, epoch time), output ((bytestr, bytestr), chained responses for setpoint & measure and 
-            fmeasure  & temperature)"""
-        setpoint_and_meas = ':0A800281215DC001217CE0'
+        """Returns - timestamp (float, epoch time), output ((bytestr, bytestr, bytestr), responses for fsetpoint, measure, and a
+            chained response for fmeasure  & temperature)"""
+        
+        fsetpoint = ':0880022141453B8000\r\n'
+        meas = ':06800201217D00\r\n'
         fmeas_and_temp = ':0E8002A1404479C0E0214741C80000'
         timestamp = time.time()
 
         # If we're in debug mode, return this fake reading
         if debug:
-            output = (setpoint_and_meas, fmeas_and_temp)
+            output = (fsetpoint, meas, fmeas_and_temp)
         # Otherwise, return NAN
         else:
             output = ("nan", "nan")

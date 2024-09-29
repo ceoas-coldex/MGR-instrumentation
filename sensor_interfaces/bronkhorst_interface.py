@@ -68,21 +68,17 @@ class Bronkhorst():
         output = self.ser.read_until(b'\r\n').decode()
         return output
 
-    def send_setpoint(self):
-        self.SEND_SETPOINT = b':0880012143443B8000\r\n' # sets the setpoint in mBAR
+    def send_setpoint(self, setpoint):
+        """Converts a floating point value setpoint to IEEE754 hexadecimal representation and sends
+        it to the Bronkhorst.
+
+        Args:
+            setpoint (float): Pressure setpoint in mBar to send to the Bronkhorst
+        """
+        hex_representation = ieee754_conversions.dec_to_hex(setpoint) # converts to the proper format
+        self.SEND_SETPOINT = b':0880012143'+(hex_representation).encode()+b'\r\n' # sets the setpoint in mBar
         self.ser.write(self.SEND_SETPOINT)
         self.ser.read_until(b'\n').decode()
-
-        # self.ser.write(self.GET_FSETPOINT)
-        # fsetpoint = self.ser.read_until(b'\n').decode()
-        # print(fsetpoint)
-        # try:
-        #     fsetpoint = hex_to_ieee754_dec(fsetpoint[11:19])
-        # except:
-        #     fsetpoint = int(fsetpoint[7:11], 16)
-        #     print(fsetpoint)
-        # else:
-        #     print(fsetpoint)
     
     def initialize_bronkhorst(self, timeout=10):
         """
@@ -117,12 +113,12 @@ class Bronkhorst():
     
     def query(self):
         """
-        Method to query the Bronkhorst, need to check in with the folks about what data we want specifically
-        because we can chain the queries.
+        Method to query the Bronkhorst.
             
             Returns - 
                 - timestamp: float, epoch time
-                - output: (bytestr, bytestr), chained responses for measure & setpoint and fmeasure & temperature
+                - output: ((bytestr, bytestr, bytestr), responses for fsetpoint, measure, and a
+                chained response for fmeasure & temperature)
         """
         self.ser.write(self.GET_FSETPOINT)
         fsetpoint = self.ser.read_until(b'\r\n').decode()
@@ -195,26 +191,21 @@ if __name__ == "__main__":
 
         fsetpoint, measure, fmeas_and_temp = output
 
-        # print(setpoint_and_meas)
-        print(fmeas_and_temp)
-        
-        # Parsing setpoint and measurement is straightforward - 
+        # Parsing measurement is straightforward - 
         # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
+        measure = int(measure[11:15], 16)
         # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
-        # setpoint = int(setpoint_and_meas[11:15], 16)
-        # measure = int(setpoint_and_meas[19:], 16)
+        measure = np.interp(measure, [0,41942], [0,131.07]) # This is basically the same as the setpoint, but can measure over 100%
 
-        # setpoint = np.interp(setpoint, [0,32000], [0,100.0])
-        # measure = np.interp(measure, [0,41942], [0,131.07]) # This is bascially the same as the setpoint, but can measure over 100%
-
-        # Parsing fmeasure and temperature is a little more complicated -
+        # Parsing fsetpoint, fmeasure and temperature is a little more complicated -
         # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
-        fmeasure = hex_to_ieee754_dec(fmeas_and_temp[11:19])
-        temp = hex_to_ieee754_dec(fmeas_and_temp[23:])
-
+        fsetpoint = ieee754_conversions.dec_from_hex(fsetpoint[11:19])
+        fmeasure = ieee754_conversions.dec_from_hex(fmeas_and_temp[11:19])
+        temp = ieee754_conversions.dec_from_hex(fmeas_and_temp[23:])
+    
         print(timestamp)
-        # print(f"Setpoint: {setpoint}%")
-        # print(f"Measurement: {measure}%")
+        print(f"Setpoint: {fsetpoint} {unit}")
+        print(f"Measurement: {measure}%")
         print(f"Fmeasure: {fmeasure} {unit}")
         print(f"Temperature: {temp}°C")
 

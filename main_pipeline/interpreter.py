@@ -12,6 +12,16 @@ try:
 except ImportError:
     from bus import Bus
 
+try:
+    import ieee754_conversions
+except ImportError:
+    import pathlib
+    import sys
+    _parentdir = pathlib.Path(__file__).parent.parent.resolve()
+    sys.path.insert(0, str(_parentdir))
+    import ieee754_conversions
+    sys.path.remove(str(_parentdir))
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
@@ -413,12 +423,12 @@ class Interpreter():
                 # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
                 measure = np.interp(measure, [0,41942], [0,131.07]) # This is basically the same as the setpoint, but can measure over 100%
 
-                # Parsing fmeasure and temperature is a little more complicated -
+                # Parsing fsetpoint, fmeasure and temperature is a little more complicated -
                 # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
-                fsetpoint = self.hex_to_ieee754_dec(fsetpoint[11:19])
-                fmeasure = self.hex_to_ieee754_dec(fmeas_and_temp[11:19])
-                temp = self.hex_to_ieee754_dec(fmeas_and_temp[23:])
-
+                fsetpoint = ieee754_conversions.dec_from_hex(fsetpoint[11:19])
+                fmeasure = ieee754_conversions.dec_from_hex(fmeas_and_temp[11:19])
+                temp = ieee754_conversions.dec_from_hex(fmeas_and_temp[23:])
+                
                 self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
                 self.big_data["Bronkhorst Pressure"]["Data"]["Setpoint (mbar a)"] = fsetpoint
                 self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
