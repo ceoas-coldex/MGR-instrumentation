@@ -97,13 +97,10 @@ class MeltHead:
         self.ser.write(cmd)
 
     def start_control_loop(self):
-        # print(self.melthead_on)
-        # if not self.melthead_on:
         self.ser.write(self.AUTO)
         self.melthead_on = True
 
     def stop_control_loop(self):
-        # if self.melthead_on:
         self.ser.write(self.OFF)
         self.melthead_on = False
 
@@ -140,55 +137,3 @@ if __name__ == "__main__":
             stop = True
         else:
             print("Invalid entry. Try again")
-
-# cmd = b'\x01\x03\x01\x68\x00\x02\x44\x2B'
-
-# cmd = bytes.fromhex('55 FF 05 10 00 00 06 E8 01 03 01 04 01 01 E3 99')
-
-# cmd = bytes.fromhex('55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 3F 80 00 00 8D DF') # -17.2, should be 1
-
-# cmd = bytes.fromhex("55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 C1 89 99 9A 6C 6F" ) # -27.3, should be -17.2
-
-# cmd = bytes.fromhex("55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 41 20 00 00 5D 24") # -12.2, should be 10
-
-# cmd = bytes.fromhex("55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 41 A0 00 00 B1 28") # -6.7, should be 20
-
-                      #55FF 0510 0000 0AEC 0104 0701 0108 41f0 28f6 18d4
-# cmd = bytes.fromhex("55FF 0510 0000 0AEC 0104 0701 0108 41F0 0000 52AB") # -1.1, should be 30
-
-                     #"55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 42 00 00 00 ab 02"
-
-# cmd = bytes.fromhex("55 FF 05 10 00 00 0A EC 01 04 07 01 01 08 42 00 00 00 AB 02") # 0, should be 32 ### OH SHIT IT'S CELSIUS
-
-# cmd = bytes.fromhex(" 55 FF        05             10                00           00 0A                 EC      01 04     07 01      01 08   42 0C 00 00         08 A7")             # 1.7, should be 35
-#                     |preamble|Frame type (?)|dest. addr (zone)|source addr.|length (MSB first)(10)|header crc|        ^parameter^           ^ iEEE 754 ^   |data crc (LSB first)|   
-#                                  
-#                       BACnet Data Expecting Reply?
-#                        
-# cmd = bytes.fromhex("55 FF    05  10   00 00 0A EC 01 04 07 01 01 08 42 20 00 00 90 01") # 4.4, should be 40
-
-                      #55FF 0510 0000 0AEC 01 04 07 01 01 08 42 48 00 00 1f c2
-# cmd = bytes.fromhex("55FF 0510 0000 0AEC 01 04 07 01 01 08 42 48 00 00 1F C2") # 10, should be 50
-
-# cmd = bytes.fromhex("55FF 0510 0000 06E8 0103 0107 0101 8776")
-
-# cmd = bytes.fromhex("55 FF 05 10 03 00 06 43 01 03 02 08 1F 01 0C 16")
-
-# myserial = serial.Serial(port="COM7", baudrate=38400, timeout=1)
-
-# res_list = []
-# for i in range(1):
-#     myserial.flush()
-#     myserial.write(cmd)
-#     res = myserial.readline()
-#     # res = read_temp()
-#     # print(res)
-#     res_str = [str(res.hex())]
-#     # print([res_str[i:i+2] for i in range(0, len(res_str), 2)])
-#     res_list.append(res_str)
-#     # time.sleep(1)
-
-# print(res_list)
-
-# myserial.close()
-

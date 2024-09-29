@@ -332,6 +332,11 @@ class ApplicationWindow(QWidget):
                                             partial(self._on_sensor_button, "Flowmeter", self.sensor.flowmeter_sls1500.initialize_flowmeter)}})
         sensor_buttons.update({"Bronkhorst Pressure":{"Start Bronkhorst": 
                                                       partial(self._on_sensor_button, "Bronkhorst Pressure", self.sensor.bronkhorst.initialize_bronkhorst)}})
+        
+        sensor_buttons.update({"Melthead": {"Start Control Loop":
+                                            self.sensor.melthead.start_control_loop,
+                                            "Stop Control Loop":
+                                            self.sensor.melthead.stop_control_loop}})
 
         return title_buttons, sensor_buttons
         

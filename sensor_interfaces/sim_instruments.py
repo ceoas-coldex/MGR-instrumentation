@@ -230,7 +230,7 @@ class Dimetix():
 
 class Bronkhorst():
     def __init__(self, serial_port, baud_rate=38400) -> None:
-        """Not yet done. Fake hardware, pretends to do everything the real Dimetix laser class does"""
+        """Not yet done. Fake hardware, pretends to do everything the real melthead class does"""
         self.initialize_pyserial(serial_port, baud_rate)
 
     def initialize_pyserial(self, port, baud):
@@ -268,3 +268,24 @@ class Bronkhorst():
             output = ("nan", "nan")
         
         return timestamp, output
+    
+class MeltHead:
+    def __init__(self, serial_port, baud_rate=38400) -> None:
+        """Fake hardware, pretends to do everything the real melthead does"""
+        self.initialize_pyserial(serial_port, baud_rate)
+
+    def initialize_pyserial(self, port, baud):
+        pass
+
+    @log_on_end(logging.INFO, "Started PID control loop", logger=logger)
+    def start_control_loop(self):
+        pass
+
+    @log_on_end(logging.INFO, "Stopped PID control loop", logger=logger)
+    def stop_control_loop(self):
+        pass
+
+    def send_setpoint(self, setpoint):
+        pass
+
+

@@ -101,6 +101,17 @@ except SerialException:
 except KeyError as e:
     logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
+# Melthead
+try:
+    serial.Serial(port=comms_config['Melthead']['serial port'], baudrate=comms_config['Melthead']['baud rate'])
+    from sensor_interfaces.melthead_interface import MeltHead
+    logger.info(f"Successfully connected to port {comms_config['Melthead']['serial port']}, using real Melthead hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import MeltHead
+    logger.warning(f"Couldn't find Melthead at port {comms_config['Melthead']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
+
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
     @log_on_end(logging.INFO, "Sensor class initiated", logger=logger)
@@ -113,6 +124,7 @@ class Sensor():
         self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
         # self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
         self.bronkhorst = Bronkhorst(serial_port=comms_config["Bronkhorst Pressure"]["serial port"], baud_rate=comms_config["Bronkhorst Pressure"]["baud rate"])
+        self.melthead = MeltHead(serial_port=comms_config["Melthead"]["serial port"], baud_rate=comms_config["Melthead"]["baud rate"])
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
