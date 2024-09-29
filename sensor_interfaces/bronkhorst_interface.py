@@ -4,6 +4,16 @@ import time
 import yaml
 import numpy as np
 
+try:
+    import ieee754_conversions
+except ImportError:
+    import pathlib
+    import sys
+    _parentdir = pathlib.Path(__file__).parent.parent.resolve()
+    sys.path.insert(0, str(_parentdir))
+    import ieee754_conversions
+    sys.path.remove(str(_parentdir))
+
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
 
@@ -187,7 +197,7 @@ if __name__ == "__main__":
         measure = int(setpoint_and_meas[19:], 16)
 
         setpoint = np.interp(setpoint, [0,32000], [0,100.0])
-        measure = np.interp(measure, [0,41942], [0,131.07]) # This is bascially the same as the setpoint, but can measure over 100%
+        measure = np.interp(measure, [0,41942], [0,131.07]) # This is basically the same as the setpoint, but can measure over 100%
 
         # Parsing fmeasure and temperature is a little more complicated -
         # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
