@@ -286,6 +286,6 @@ class MeltHead:
         pass
 
     def send_setpoint(self, setpoint):
-        pass
+        logger.info(f"Set setpoint to {setpoint} degC")
 
 

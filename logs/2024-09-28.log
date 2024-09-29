@@ -166,3 +166,6 @@ INFO: 21:54:47 - main_pipeline.sensor:  Shutting down sensors
 INFO: 21:54:47 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
 INFO: 21:54:47 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
 INFO: 21:54:47 - main_pipeline.sensor:  Finished shutting down sensors
+WARNING: 22:25:11 - __main__:  Could not connect to serial port COM7
+WARNING: 22:25:35 - __main__:  Could not connect to serial port COM7
+WARNING: 22:29:33 - __main__:  Could not connect to serial port COM7
