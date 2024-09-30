@@ -163,6 +163,7 @@ class Sensor():
         self.sensor_status_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
         self.sensor_status_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
         self.sensor_status_dict["Bronkhorst Pressure"] = self.bronkhorst.initialize_bronkhorst()
+        self.sensor_status_dict["Melthead"] = self.melthead.initialize_pid()
 
         # The flowmeters are a little special, since it's two sensors in one - deal with that here
         # Initialize and grab the results of flowmeter initialization

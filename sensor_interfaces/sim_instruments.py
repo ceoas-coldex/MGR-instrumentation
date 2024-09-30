@@ -297,6 +297,17 @@ class MeltHead:
     def initialize_pyserial(self, port, baud):
         pass
 
+    @log_on_start(logging.INFO, "Initializing Melthead", logger=logger)
+    def initialize_pid(self, timeout=10):
+        """
+        The initialization methods return one of three values: 
+        1 (real hardware, initialization succeeded), 2 (simulated hardware), 3 (initialization failed / error)
+            
+            Returns - 2
+        """
+        logger.info("Melthead initialized")
+        return 2
+    
     def validate_setpoint(self, setpoint):
         """Method to make sure we're giving the controller a valid reading and that it's within acceptable temperature bounds"""
         valid_setpoint = False

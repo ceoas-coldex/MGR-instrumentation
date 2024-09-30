@@ -55,9 +55,28 @@ class MeltHead:
         except SerialException:
             logger.warning(f"Could not connect to serial port {port}")
     
-    def initialize_pid(self):
-        pass
-    
+    @log_on_start(logging.INFO, "Initializing Melthead", logger=logger)
+    def initialize_pid(self, timeout):
+        """
+        I don't have a great way to verify the Melthead is working as expected since I don't have full comms, all 
+        I can do is see if we're reading data and can decode it properly.
+        
+        The initialization methods return one of three values: 
+        1 (real hardware, succeeded), 2 (simulated hardware), 3 (failed to initialize/error)
+        """
+
+        for _ in range(timeout):
+            try:
+                result = self.ser.read_until()
+                result_decoded = result.hex()
+                if type(result_decoded) == str and len(result_decoded) > 1:
+                    logger.info("Melthead initialized")
+                    return 1
+            except Exception as e:
+                logger.info(f"Encountered exception in Melthead initialization: {e}")
+            
+        return 3
+
     def query(self):
         pass
 

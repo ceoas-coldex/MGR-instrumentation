@@ -1821,3 +1821,1514 @@ INFO: 14:55:34 - main_pipeline.sensor:  Shutting down sensors
 INFO: 14:55:34 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
 INFO: 14:55:34 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
 INFO: 14:55:34 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 15:40:49 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 15:40:49 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+WARNING: 15:40:49 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM5, shadowing sensor calls with substitute functions
+WARNING: 15:40:49 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 15:40:49 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 15:40:49 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 15:40:49 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 15:40:49 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 15:40:49 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM5 with baud 115200
+INFO: 15:40:49 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 15:40:49 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 15:40:49 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 15:40:49 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:40:49 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:40:49 - main_pipeline.writer:  Display class initiated
+INFO: 15:40:49 - __main__:  No control inputs for the Picarro Gas
+INFO: 15:40:49 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 15:40:49 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 15:40:49 - __main__:  No control inputs for the Flowmeter
+INFO: 15:40:55 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:41:22 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 15:41:22 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+WARNING: 15:41:22 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM5, shadowing sensor calls with substitute functions
+WARNING: 15:41:22 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 15:41:22 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 15:41:22 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 15:41:22 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 15:41:22 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 15:41:22 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM5 with baud 115200
+INFO: 15:41:22 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 15:41:22 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 15:41:22 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 15:41:22 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:41:22 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:41:22 - main_pipeline.writer:  Display class initiated
+INFO: 15:41:22 - __main__:  No control inputs for the Picarro Gas
+INFO: 15:41:22 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 15:41:22 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 15:41:22 - __main__:  No control inputs for the Flowmeter
+INFO: 15:41:25 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:41:25 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 15:41:33 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:41:54 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:41:54 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:41:54 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM9, shadowing sensor calls with substitute functions
+WARNING: 15:41:54 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 15:41:54 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 15:41:54 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 15:41:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 15:41:54 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:41:54 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:41:54 - main_pipeline.writer:  Display class initiated
+INFO: 15:41:54 - __main__:  No control inputs for the Picarro Gas
+INFO: 15:41:54 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 15:41:54 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 15:41:54 - __main__:  No control inputs for the Flowmeter
+INFO: 15:41:58 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:41:58 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 15:41:58 - main_pipeline.sensor:  Finished initializing sensors
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:01 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:01 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:02 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:02 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:03 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:03 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:04 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:04 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:05 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:05 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:06 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:06 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:07 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:07 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:08 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:08 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:09 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:09 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:10 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:10 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:11 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:11 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:12 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:12 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:13 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:13 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:14 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:14 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:15 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:15 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:16 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:16 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:17 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:18 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:19 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:20 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:20 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:21 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:21 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:22 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:22 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:23 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:23 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:24 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:24 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 15:42:25 - sensor_interfaces.sim_instruments:  Set melthead setpoint to 5 degC
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:25 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:25 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:26 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:26 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLS1500: string index out of range. Raw output nan
+WARNING: 15:42:27 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:42:27 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 15:42:29 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:42:29 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 15:42:29 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 15:42:29 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 15:42:32 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:42:32 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 15:42:32 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 15:42:32 - main_pipeline.sensor:  Finished shutting down sensors
+WARNING: 15:52:16 - __main__:  Could not connect to serial port COM7
+INFO: 15:52:23 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:52:23 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:52:23 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM9, shadowing sensor calls with substitute functions
+WARNING: 15:52:23 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 15:52:23 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 15:52:23 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 15:52:23 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 15:52:23 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:52:23 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:52:23 - main_pipeline.writer:  Display class initiated
+INFO: 15:52:23 - __main__:  No control inputs for the Picarro Gas
+INFO: 15:52:23 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 15:52:23 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 15:52:23 - __main__:  No control inputs for the Flowmeter
+INFO: 15:52:32 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:52:32 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 15:52:32 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 15:52:34 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:52:34 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 15:52:34 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 15:52:34 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 15:53:05 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:53:05 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 15:53:05 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM9, shadowing sensor calls with substitute functions
+WARNING: 15:53:05 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 15:53:05 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 15:53:05 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 15:53:05 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 15:53:05 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:53:05 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:53:05 - main_pipeline.writer:  Display class initiated
+INFO: 15:53:05 - __main__:  No control inputs for the Picarro Gas
+INFO: 15:53:05 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 15:53:05 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 15:53:05 - __main__:  No control inputs for the Flowmeter
+INFO: 15:53:08 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 15:53:08 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 15:53:08 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 15:53:13 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:53:13 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 15:53:13 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 15:53:13 - main_pipeline.sensor:  Finished shutting down sensors
