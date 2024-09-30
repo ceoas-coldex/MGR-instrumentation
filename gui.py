@@ -175,7 +175,6 @@ class ApplicationWindow(QWidget):
         left_layout.setContentsMargins(0, 20, 10, 0)
         # Initialize variables to store sensor control parameters, like temperature and pressure setpoint
         self.init_sensor_control_params()
-        print(self.sensor_control_inputs)
         # Grab button information for both the main title array and the individual sensors
         title_button_info, sensor_button_info, control_button_info = self.define_sensor_button_callbacks()
         # Make the title row - has general buttons for initializing sensors and starting data collection
