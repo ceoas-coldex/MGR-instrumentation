@@ -97,8 +97,12 @@ class MeltHead:
         valid_setpoint = False
         try:
             setpoint = float(setpoint)
-        except ValueError as e:
-            logger.info(f"Invalid setpoint: {setpoint}. {e}")
+        # If we're passed a string that we can't parse, we'll get a ValueError. If we're passed a Nonetype or other input 
+        # we can't convert to a float, we'll get a TypeError. Catch both.
+        except (ValueError, TypeError) as e:
+            logger.info(f"Invalid melthead setpoint: {setpoint}. {e}")
+        except Exception as e:
+            logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid melthead setpoint: {setpoint}. {e}")
         else:
             if setpoint < 25:
                 valid_setpoint = True
@@ -112,33 +116,37 @@ class MeltHead:
         Args:
             setpoint (float): Desired melthead setpoint, in degC
         """
-        # Assemble the first parts of the message
-        preamble = '55 FF' 
-        frame_type = '05'
-        destination_address = '10' 
-        source_address = '00' 
-        length = '00 0A'
-        # This crc depends on the previous bits, so is constant for setpoint messages. Would NOT be this value if you sent something else
-        header_crc = 'EC' 
-        # Not sure what this is exactly - I think it encodes which channel in the device we're sending the command to
-        #  (i.e setpoint and not heater power), but it could mean other things as well
-        setpoint_command = '01 04 07 01 01 08'
-        # Convert to fahrenheit, since that's what the device takes
-        setpoint_f = self.c_to_f(setpoint)
-        # Convert from a floating point to IEEE hexadecimal format
-        setpoint_data = ieee754_conversions.dec_to_hex(setpoint_f)
-        # Finally, calculate the CRC for our data
-        data_crc = self.calc_data_crc(setpoint_command+setpoint_data)
-        # Assemble the message in order
-        cmd = preamble+frame_type+destination_address+source_address+length+header_crc+setpoint_command+setpoint_data+data_crc
-        print(cmd)
-        # Convert it to bytes
-        cmd = bytes.fromhex(cmd)
-        # And, finally, write it to the device
-        self.ser.flush()
-        self.ser.write(cmd)
+        setpoint_valid = self.validate_setpoint(setpoint)
+        if setpoint_valid:
+            # Assemble the first parts of the message
+            preamble = '55 FF' 
+            frame_type = '05'
+            destination_address = '10' 
+            source_address = '00' 
+            length = '00 0A'
+            # This crc depends on the previous bits, so is constant for setpoint messages. Would NOT be this value if you sent something else
+            header_crc = 'EC' 
+            # Not sure what this is exactly - I think it encodes which channel in the device we're sending the command to
+            #  (i.e setpoint and not heater power), but it could mean other things as well
+            setpoint_command = '01 04 07 01 01 08'
+            # Convert to fahrenheit, since that's what the device takes
+            setpoint_f = self.c_to_f(setpoint)
+            # Convert from a floating point to IEEE hexadecimal format
+            setpoint_data = ieee754_conversions.dec_to_hex(setpoint_f)
+            # Finally, calculate the CRC for our data
+            data_crc = self.calc_data_crc(setpoint_command+setpoint_data)
+            # Assemble the message in order
+            cmd = preamble+frame_type+destination_address+source_address+length+header_crc+setpoint_command+setpoint_data+data_crc
+            print(cmd)
+            # Convert it to bytes
+            cmd = bytes.fromhex(cmd)
+            # And, finally, write it to the device
+            self.ser.flush()
+            self.ser.write(cmd)
 
-        logger.info(f"Set setpoint to {setpoint} degC")
+            logger.info(f"Set setpoint to {setpoint} degC")
+        else:
+            return
 
     def start_control_loop(self):
         """Method to start the PID control loop"""

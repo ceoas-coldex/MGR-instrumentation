@@ -166,16 +166,32 @@ class ApplicationWindow(QWidget):
             left_layout (QLayout): The layout we want to store our status & control widgets in
         """
         left_layout.setContentsMargins(0, 20, 0, 0)
+        # Initialize variables to store sensor control parameters, like temperature and pressure setpoint
+        self.init_sensor_control_params()
+        print(self.sensor_control_inputs)
         # Grab button information for both the main title array and the individual sensors
-        title_button_info, sensor_button_info = self.define_sensor_button_callbacks()
+        title_button_info, sensor_button_info, control_button_info = self.define_sensor_button_callbacks()
         # Make the title row - has general buttons for initializing sensors and starting data collection
         start_next_row, title_colspan = self.make_title_control_panel(left_layout, title_button_info)
         # Make the individual button rows
-        self.make_sensor_control_panel(left_layout, sensor_button_info, starting_row=start_next_row, colspan=title_colspan)
+        self.make_sensor_control_panel(left_layout, sensor_button_info, control_button_info, starting_row=start_next_row, colspan=title_colspan)
         # Position the panel at the top of the window
         left_layout.setAlignment(QtCore.Qt.AlignTop)
 
         return left_layout
+    
+    def init_sensor_control_params(self):
+        """
+        """
+        self.sensor_control_inputs = {}
+        for sensor in self.sensor_names:
+            try:
+                self.big_data_dict[sensor]["Control"]
+            except KeyError:
+                pass
+            else:
+                for control_param in self.big_data_dict[sensor]["Control"]:
+                    self.sensor_control_inputs.update({sensor: {control_param: None}})
 
     def make_title_control_panel(self, parent:QGridLayout, title_button_info:dict, colspan=2):
         """Builds the panel for general sensor control - has buttons to initialize/shutdown sensors and start/stop data collection
@@ -228,26 +244,29 @@ class ApplicationWindow(QWidget):
 
         return start_next_row, colspan
     
-    def make_sensor_control_panel(self, parent:QGridLayout, sensor_buttons:dict, starting_row, colspan):
+    def make_sensor_control_panel(self, parent:QGridLayout, sensor_buttons:dict, control_buttons:dict, starting_row, colspan):
         """Builds the panel for specific sensor control - has buttons that depend upon sensor functionality
 
         Args:
             parent (QGridLayout): Parent layout
             sensor_buttons (dict): Dictionary containing key-value pairs of "sensor_name":{button_1_name:button_1_callback, ...}
-            starting_row (_type_): What row of the parent layout we should start building from
-            colspan (_type_): How many columns are already being used in the parent layout
+                for the buttons that do whatever they say in their names
+            control_buttons (dict): Dictionary containing key-value pairs of "sensor_name":{button_1_name:button_1_callback, ...}
+                for the buttons that send setpoint commands
+            starting_row (int): What row of the parent layout we should start building from
+            colspan (int): How many columns are already being used in the parent layout
 
         Returns:
-            start_next_row (int): What row of a QGridLayout we any further widgets should start on
+            start_next_row (int): What row of a QGridLayout any further widgets should start on
         """
         # Determine how many rows we need for a status & control block per sensor
         num_rows, num_cols = find_grid_dims(num_elements=len(self.sensor_names), num_cols=1)
         # For all the sensors, create control buttons (if applicable) and a status indicator
         i = 0
         self.sensor_status_display = {} # Holding onto the status displays for later
-        # We want to place 4 widgets per sensor panel, so we need to be a little funky with the for loop - 
-        elements_per_row = 4
-        # - we increment by 4 each 'row' of the loop, and manually increment inside the loop
+        # We want to place 5 widgets per sensor panel, so we need to be a little funky with the for loop - 
+        elements_per_row = 5
+        # - we increment by 5 each 'row' of the loop, and manually increment inside the loop
         for row in range(starting_row, (elements_per_row*num_rows)+starting_row, elements_per_row): 
             for col in range(num_cols):
                 # Extract the sensor name
@@ -276,21 +295,40 @@ class ApplicationWindow(QWidget):
                         b = QPushButton(self)
                         b.setText(button)
                         b.setFont(self.norm12)
+                        b.setMinimumWidth(300)
                         b.pressed.connect(sensor_buttons[sensor][button])
                         parent.addWidget(b, row+2, col+c)
                         c+=1
                 except KeyError:
-                    logger.info("no command buttons for this sensor")
-                # Fourth widget - dividing line
+                    logger.info(f"No command buttons for the {sensor}")
+                # Fourth widget - control input
+                try:
+                    control_inputs = self.sensor_control_inputs[sensor]
+                    buttons = control_buttons[sensor]
+                    for button, ctrl_input in zip(buttons, control_inputs):
+                        b = QPushButton(self)
+                        b.setText(button)
+                        b.setFont(self.norm12)
+                        b.pressed.connect(control_buttons[sensor][button])
+                        parent.addWidget(b, row+3, col)
+
+                        line = QLineEdit(self)
+                        line.setFont(self.norm12)
+                        line.setPlaceholderText(f"{ctrl_input}: {self.sensor_control_inputs[sensor][ctrl_input]}")
+                        line.editingFinished.connect(partial(self._save_control_input, line, sensor, ctrl_input))
+                        parent.addWidget(line, row+3, col+1)
+                except KeyError:
+                    logger.info(f"No control inputs for the {sensor}")
+                # Fifth widget - dividing line
                 line = QFrame(self)
                 line.setFrameShape(QFrame.HLine)
-                parent.addWidget(line, row+3, col, 1, colspan)
+                parent.addWidget(line, row+4, col, 1, colspan)
 
-        # We should add any further widgets after the last dividing line, so 5 rows after the last 'row' iterator
-        start_next_row = (elements_per_row*num_rows)+starting_row + 5
+        # We should add any further widgets after the last dividing line
+        start_next_row = (elements_per_row*num_rows)+starting_row + elements_per_row + 1
 
         return start_next_row
-
+    
     def define_sensor_button_callbacks(self):
         """Method that sets the button callbacks for the sensor status & control panel. **If you're adding a new sensor, you'll
         likely need to add to this method.**
@@ -314,8 +352,6 @@ class ApplicationWindow(QWidget):
             self.sensor_status_dict.update({name:0})
 
         sensor_buttons = {}
-        for name in self.sensor_names:
-            sensor_buttons.update({name:{}})
         sensor_buttons.update({"Picarro Gas": {"Start Picarro":
                                                partial(self._on_sensor_button, "Picarro Gas", self.sensor.gas_picarro.initialize_picarro)}})
         sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":
@@ -333,12 +369,20 @@ class ApplicationWindow(QWidget):
         sensor_buttons.update({"Bronkhorst Pressure":{"Start Bronkhorst": 
                                                       partial(self._on_sensor_button, "Bronkhorst Pressure", self.sensor.bronkhorst.initialize_bronkhorst)}})
         
-        sensor_buttons.update({"Melthead": {"Start Control Loop":
-                                            self.sensor.melthead.start_control_loop,
-                                            "Stop Control Loop":
-                                            self.sensor.melthead.stop_control_loop}})
+        sensor_buttons.update({"Melthead": {"Start Control Loop": self.sensor.melthead.start_control_loop,
+                                            "Stop Control Loop": self.sensor.melthead.stop_control_loop,}})
+        
+        control_buttons = {}
+        for name in self.sensor_control_inputs:
+            control_buttons.update({name:{}})
 
-        return title_buttons, sensor_buttons
+        control_buttons.update({"Melthead": {"Send Setpoint": 
+                                             partial(self._send_control_input, "Melthead", "Temperature (C)", self.sensor.melthead.send_setpoint)}})
+        control_buttons.update({"Bronkhorst Pressure": {"Send Setpoint":
+                                               partial(self._send_control_input, "Bronkhorst Pressure", "Pressure (mbar)", self.sensor.bronkhorst.send_setpoint)}})
+        
+
+        return title_buttons, sensor_buttons, control_buttons
         
     def _on_sensor_button(self, sensor, initialization_function):
         init_result = initialization_function()
@@ -399,6 +443,17 @@ class ApplicationWindow(QWidget):
         """Callback function for the "Stop Data Collection" button. Sets the data_collection flag to false
         """
         self.data_collection = False
+
+    def _send_control_input(self, sensor:str, input_name:str, control_function):
+        control_input = self.sensor_control_inputs[sensor][input_name]
+        control_function(control_input)
+
+    def _save_control_input(self, line:QLineEdit, sensor:str, control_input:str):
+        current_input = line.text()
+        self.sensor_control_inputs[sensor][control_input] = current_input
+        line.setPlaceholderText(f"{control_input}: {current_input}")
+        line.clear()
+
 
     def update_sensor_status(self):
         """Method to update the sensor status upon initialization or shutdown. Uses the values stored in

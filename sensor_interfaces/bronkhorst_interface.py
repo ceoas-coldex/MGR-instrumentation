@@ -68,6 +68,24 @@ class Bronkhorst():
         output = self.ser.read_until(b'\r\n').decode()
         return output
 
+    def validate_setpoint(self, setpoint):
+        """Method to make sure we're giving the controller a valid reading and that it's within acceptable pressure bounds"""
+        valid_setpoint = False
+        try:
+            setpoint = float(setpoint)
+        # If we're passed a string that we can't parse, we'll get a ValueError. If we're passed a Nonetype or other input 
+        # we can't convert to a float, we'll get a TypeError. Catch both.
+        except (ValueError, TypeError) as e:
+            logger.info(f"Invalid bronkhorst setpoint: {setpoint}. {e}")
+        except Exception as e:
+            logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid bronkhorst setpoint: {setpoint}. {e}")
+        else:
+            # if within some pressure bound:
+                # do a thing
+            valid_setpoint = True
+
+        return valid_setpoint
+    
     def send_setpoint(self, setpoint):
         """Converts a floating point value setpoint to IEEE754 hexadecimal representation and sends
         it to the Bronkhorst.
@@ -75,10 +93,16 @@ class Bronkhorst():
         Args:
             setpoint (float): Pressure setpoint in mBar to send to the Bronkhorst
         """
-        hex_representation = ieee754_conversions.dec_to_hex(setpoint) # converts to the proper format
-        self.SEND_SETPOINT = b':0880012143'+(hex_representation).encode()+b'\r\n' # combines with the rest of the command string
-        self.ser.write(self.SEND_SETPOINT) # sets the setpoint in mBar
-        self.ser.read_until(b'\n').decode()
+        setpoint_valid = self.validate_setpoint(setpoint)
+        if setpoint_valid:
+            # Convert the setpoint to the proper format (hexadecimal IEEE754 representation)
+            hex_representation = ieee754_conversions.dec_to_hex(setpoint)
+            # Combine the setpoint data with the rest of the command string
+            self.SEND_SETPOINT = b':0880012143'+(hex_representation).encode()+b'\r\n'
+            # Send it
+            self.ser.write(self.SEND_SETPOINT)
+            # Read to clear the input buffer
+            self.ser.read_until(b'\n').decode()
     
     def initialize_bronkhorst(self, timeout=10):
         """

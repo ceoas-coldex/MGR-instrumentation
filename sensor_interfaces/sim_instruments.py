@@ -247,8 +247,28 @@ class Bronkhorst():
         logger.info("Bronkhorst initialized")
         return 2
     
+    def validate_setpoint(self, setpoint):
+        """Method to make sure we're giving the controller a valid reading and that it's within acceptable pressure bounds"""
+        valid_setpoint = False
+        try:
+            setpoint = float(setpoint)
+        # If we're passed a string that we can't parse, we'll get a ValueError. If we're passed a Nonetype or other input 
+        # we can't convert to a float, we'll get a TypeError. Catch both.
+        except (ValueError, TypeError) as e:
+            logger.info(f"Invalid bronkhorst setpoint: {setpoint}. {e}")
+        except Exception as e:
+            logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid bronkhorst setpoint: {setpoint}. {e}")
+        else:
+            # if within some pressure bound:
+                # do a thing
+            valid_setpoint = True
+
+        return valid_setpoint
+    
     def send_setpoint(self, setpoint):
-        logger.info(f"Set setpoint to {setpoint} mbar")
+        setpoint_valid = self.validate_setpoint(setpoint)
+        if setpoint_valid:
+            logger.info(f"Set Bronkhorst setpoint to {setpoint} mbar")
 
     # @log_on_end(logging.INFO, "Bronkhorst queried", logger=logger)
     def query(self):
@@ -277,6 +297,23 @@ class MeltHead:
     def initialize_pyserial(self, port, baud):
         pass
 
+    def validate_setpoint(self, setpoint):
+        """Method to make sure we're giving the controller a valid reading and that it's within acceptable temperature bounds"""
+        valid_setpoint = False
+        try:
+            setpoint = float(setpoint)
+        # If we're passed a string that we can't parse, we'll get a ValueError. If we're passed a Nonetype or other input 
+        # we can't convert to a float, we'll get a TypeError. Catch both.
+        except (ValueError, TypeError) as e:
+            logger.info(f"Invalid melthead setpoint: {setpoint}. {e}")
+        except Exception as e:
+            logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid melthead setpoint: {setpoint}. {e}")
+        else:
+            if setpoint < 25:
+                valid_setpoint = True
+
+        return valid_setpoint
+
     @log_on_end(logging.INFO, "Started PID control loop", logger=logger)
     def start_control_loop(self):
         pass
@@ -286,6 +323,8 @@ class MeltHead:
         pass
 
     def send_setpoint(self, setpoint):
-        logger.info(f"Set setpoint to {setpoint} degC")
+        setpoint_valid = self.validate_setpoint(setpoint)
+        if setpoint_valid:
+            logger.info(f"Set melthead setpoint to {setpoint} degC")
 
 

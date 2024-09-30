@@ -46,8 +46,11 @@ Bronkhorst Pressure:
     Measurement (%): []
     Measurement (mbar a): []
     Temperature (C): []
+  Control:
+    Pressure (mbar):
 Melthead:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    Temperature (Not Yet Integrated): []
-  
+    Temperature (Not Yet Integrated):
+  Control:
+    Temperature (C):
