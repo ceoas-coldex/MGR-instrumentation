@@ -5,21 +5,30 @@ Here is a list of the sensors currently integrated into this framework and a bri
 
 ### Abakus
 - Particle counter
+- [Website](https://www.fa-klotz.de/particlecounters/liquids/products-particle-counter-liquids/11-particle-counter-liquids-abakus-mobil-touch.php)
+- Out-of-box software: Log & Show. Doesn't seem to be downloadable, but might exist on a CD somewhere in the lab
 - Communicates with: Serial (baud rate 38400)
 - Sensor output: string of *bins* and *counts*. The Abakus has 32 bins, each corresponding to a different particle size. It provides the bin label and the counts of each bin.
 
 ### Picarro Gas Analyzer
 - Spectrograph used to measure the concentrations of different gasses. Currently measures CH4, CO2, H2O, and CO
+- [Website](https://www.picarro.com/environmental/products/g2401_gas_concentration_analyzer)
+- [User manuals](../doc/instrument-manuals/Picarro/)
+- Out-of-box software:
 - Communicates with: Serial (baud rate 19200)
 - Sensor output: string of gas concentrations
 
 ### Sensirion flow meters
-- Two liquid flow meters (SLI2000 and SLS1500) that measure water flow
+- Two liquid flow meters that measure water flow
+- Website: [SLI2000](https://sensirion.com/products/catalog/SLI-2000) and [SLS1500](https://sensirion.com/products/catalog/SLS-1500)
+- Out-of-box software: [USB RS485 Sensor Viewer](https://sensirion.com/products/downloads?category=7&topic=5)
 - Communicates with: Serial (baud rate 115200)
 - Sensor output: bytestring. The flow meters have the most complicated data processing, as their output includes validation bits and must be further validated with a checksum. Check out that interface for more info.
 
 ### Dimetix laser
 - Laser distance sensor used to measure the ice core. Also has a temperature reading.
+- [Website](https://dimetix.com/en/?product=d-series)
+- [User manual](../doc/instrument-manuals/LaserDistance_TechnicalReferenceManual_DSeries_V114-1.pdf)
 - Communicates with: Serial (baud rate 19200)
 - Sensor output: string with either temperature or distance in 0.1cm or 0.1C
 
@@ -30,7 +39,11 @@ Here is a list of the sensors currently integrated into this framework and a bri
 
 ### Melthead (aka Watlow EZ-Zone PID Controller)
 - PID Controller
-- Communicates with: Serial (baud rate 38400)
+- Communicates with: Serial (baud rate 38400) (sortof)
+    - This one's a doozy! Per it's documentation, any model numbers of the form `PM _ _ _ _ _ - A _ _ _ _ _ _` don't support any external communications options. Our model number is `PM _ _ _ _ _ - AAAAAA`.
+<img src="../doc/imgs/watlow-manual-comms-options.png">
+    - However, it does say that *Standard Bus EIA-485* is included for all models, so I went deep down a rabbit hole trying to figure 
+
 - To monitor the PID controller on the device:
     - Hold down the two grey up/down buttons for ~3 seconds, until the device reads AI, oPEr. You're now in operation mode, parameter Analog Input. Repeatedly press the grey down button until the device reads MON (Monitor mode). Press the blue button with circular arrows to enter this menu. The device will read "1". Press the blue button again to enter the Monitor 1 channel. Now you can cycle through different device information with the blue button. This displays the control loop mode (Off or Auto), the heater percentage (0-100%), the setpoint (deg C), and the current analog reading (Temp, deg C)
     
