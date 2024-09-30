@@ -1798,3 +1798,26 @@ INFO: 13:24:58 - main_pipeline.sensor:  Shutting down sensors
 INFO: 13:24:58 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
 INFO: 13:24:58 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
 INFO: 13:24:58 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 14:55:27 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 14:55:27 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 14:55:27 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM9, shadowing sensor calls with substitute functions
+WARNING: 14:55:27 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 14:55:27 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM7, shadowing sensor calls with substitute functions
+WARNING: 14:55:27 - main_pipeline.sensor:  Couldn't find Melthead at port COM7, shadowing sensor calls with substitute functions
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 14:55:27 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 38400
+INFO: 14:55:27 - main_pipeline.sensor:  Sensor class initiated
+INFO: 14:55:27 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 14:55:27 - main_pipeline.writer:  Display class initiated
+INFO: 14:55:27 - __main__:  No control inputs for the Picarro Gas
+INFO: 14:55:27 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 14:55:27 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 14:55:27 - __main__:  No control inputs for the Flowmeter
+INFO: 14:55:34 - main_pipeline.sensor:  Shutting down sensors
+INFO: 14:55:34 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 14:55:34 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 14:55:34 - main_pipeline.sensor:  Finished shutting down sensors
