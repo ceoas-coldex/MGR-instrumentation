@@ -79,12 +79,13 @@ class Bronkhorst():
             logger.info(f"Invalid bronkhorst setpoint: {setpoint}. {e}")
         except Exception as e:
             logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid bronkhorst setpoint: {setpoint}. {e}")
+            return False
         else:
             # if within some pressure bound:
                 # do a thing
             valid_setpoint = True
 
-        return valid_setpoint
+        return valid_setpoint, setpoint
     
     def send_setpoint(self, setpoint):
         """Converts a floating point value setpoint to IEEE754 hexadecimal representation and sends
@@ -93,7 +94,7 @@ class Bronkhorst():
         Args:
             setpoint (float): Pressure setpoint in mBar to send to the Bronkhorst
         """
-        setpoint_valid = self.validate_setpoint(setpoint)
+        setpoint_valid, setpoint = self.validate_setpoint(setpoint)
         if setpoint_valid:
             # Convert the setpoint to the proper format (hexadecimal IEEE754 representation)
             hex_representation = ieee754_conversions.dec_to_hex(setpoint)

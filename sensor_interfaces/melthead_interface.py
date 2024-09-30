@@ -103,11 +103,12 @@ class MeltHead:
             logger.info(f"Invalid melthead setpoint: {setpoint}. {e}")
         except Exception as e:
             logger.info(f"Not sure how you managed to trigger this error, nicely done! Invalid melthead setpoint: {setpoint}. {e}")
+            return False
         else:
             if setpoint < 25:
                 valid_setpoint = True
 
-        return valid_setpoint
+        return valid_setpoint, setpoint
     
     def send_setpoint(self, setpoint):
         """Method to compile and send the setpoint command for the given melthead temperature. The PID module takes 
@@ -116,7 +117,7 @@ class MeltHead:
         Args:
             setpoint (float): Desired melthead setpoint, in degC
         """
-        setpoint_valid = self.validate_setpoint(setpoint)
+        setpoint_valid, setpoint = self.validate_setpoint(setpoint)
         if setpoint_valid:
             # Assemble the first parts of the message
             preamble = '55 FF' 
