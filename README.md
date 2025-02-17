@@ -1,5 +1,5 @@
 # MGR Instrumentation
-Codebase and documentation for unified data collection of the OSU COLDEX Marine and Geologic Reserve lab instrumentation.
+Codebase and documentation for unified data collection of the OSU COLDEX Marine and Geologic Repository instrumentation.
 
 <style>
     .highlight {
@@ -7,6 +7,18 @@ Codebase and documentation for unified data collection of the OSU COLDEX Marine 
         background-color: #FFC107;
     }
 </style>
+
+## Status Update
+As of 9/30/24
+- I cloned this repository to the lab computer and stress-tested the GUI with real hardware for approximately 1 hour, didn't see any performance degradation.
+- I wasn't able to finish adding the ability to send sensor setpoint commands before leaving the lab. I've since updated those, they work with simulated instruments in the `dev` branch of this repository.
+    - I'd appreciate hopping on a Zoom call to ensure we can pull/merge those changes smoothly! Extra nice if someone can be there who's is familiar with GitHub.
+- This codebase includes support for all sensors discussed in the contract except for the Picarro water isotope analyzer - last I saw that instrument, it was being disassembled and diagnosed by Andy Schauer. Disassembly aside, I wasn't able to get serial communication working for that instrument, and wasn't sure why. It should have been identical to the Picarro gas analyzer
+- The Picarro gas analyzer is **not plugged in** to the lab computer - this was an oversight, I didn't get an appropriate serial cable that would reach before leaving. The Picarro needs a *9-pin null modem* serial cable, I'd reccomend something like [this one](https://www.amazon.com/StarTech-com-10-Feet-RS232-Serial-SCNM9FF/dp/B00006B8BJ/ref=sr_1_5?crid=62VXALQWCT0N&dib=eyJ2IjoiMSJ9.BbnTvXI0wr7mrf1Cowdv4B_audb1ZUq_DCDDe3ZRQoKOZmA3jGZNteFHo82Jrg5UubuNArgf8b9B0iPNl51QcnR1N2IYkKGfA_S86QEvV1KKyskNCVlizIuW2wZOHhm-OkqGXz7K7Cmo_MgMpNS8rym9C7i-GTu9E0xxOaWOjgHl1jm-YzXDB2YfBkQKImOnMi-oqXmOCRh3uRyMLk6MlsOGisDr4p5kRzMaRFRt32o.a841jhqOl5ciOw59JeFzDVSWw8ua8qbry5Pcyy-Ec5U&dib_tag=se&keywords=null+modem+serial+cable&qid=1727473465&sprefix=null+modem+serial+cabl%2Caps%2C181&sr=8-5). 
+    - Once a cable has been aquired, plug it into COM2 on the Picarro and, through a Serial->USB converter, into the lab computer. Check which COM port has been assigned to the instrument (either through Device Manager or the command line), and update this accordingly in `sensor_comms.yaml`
+- The melthead **needs drivers installed**. I didn't have administrator access on the lab computer, so wasn't able to install these. You can download the drivers that support the serial -> usb converter that the melthead uses [here](https://www.advantech.com/en-us/support/details/driver?id=1-HIPU-30). Download the .zip file, extract it, then run the executable under `BBSmartWorx -> Windows -> dpinst.64.exe`. I promise it's legit, I did it on my own personal laptop
+    - Once the drivers are installed, plugging in the Melthead will allow the computer to recognize it as a serial device. Then, as you did (or will do) with the Picarro, check which COM port has been assigned to the instrument (either through Device Manager or the command line), and update this accordingly in `sensor_comms.yaml`
+- While you have administrator access on the lab computer, I'd also reccomend installing the out-of-box software available for all the sensors. I've documented those in the [Sensor Interfaces README](sensor_interfaces/README.md).
 
 ## Overview
 
