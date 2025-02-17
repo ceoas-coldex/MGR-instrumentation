@@ -581,3 +581,29 @@ INFO: 12:28:19 - main_pipeline.sensor:  Shutting down sensors
 INFO: 12:28:19 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 12:28:19 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 12:28:19 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 12:30:53 - __main__:  Connected to serial port COM7 with baud 19200
+INFO: 12:31:34 - __main__:  read 71 bytes
+INFO: 12:31:34 - __main__:  Picarro queried
+INFO: 12:34:36 - __main__:  read 71 bytes
+INFO: 12:34:36 - __main__:  Picarro queried
+INFO: 12:36:15 - __main__:  Connected to serial port COM7 with baud 19200
+INFO: 12:36:57 - __main__:  read 71 bytes
+INFO: 12:36:57 - __main__:  Picarro queried
+INFO: 12:37:43 - __main__:  Connected to serial port COM8 with baud 19200
+INFO: 12:37:49 - __main__:  read 51 bytes
+INFO: 12:37:49 - __main__:  Picarro queried
+INFO: 12:39:44 - __main__:  Connected to serial port COM7 with baud 19200
+INFO: 12:40:23 - __main__:  read 71 bytes
+INFO: 12:40:23 - __main__:  Picarro queried
+INFO: 12:43:27 - __main__:  Connected to serial port COM7 with baud 19200
+INFO: 12:44:06 - __main__:  read 71 bytes
+INFO: 12:44:06 - __main__:  Picarro queried
+INFO: 12:44:37 - __main__:  Connected to serial port COM8 with baud 19200
+INFO: 12:44:45 - __main__:  read 51 bytes
+INFO: 12:44:45 - __main__:  Picarro queried
+INFO: 13:32:42 - __main__:  Connected to serial port COM7 with baud 19200
+INFO: 13:33:21 - __main__:  read 71 bytes
+INFO: 13:33:21 - __main__:  Picarro queried
+INFO: 13:33:27 - __main__:  Connected to serial port COM7 with baud 9600
+INFO: 13:33:36 - __main__:  read 11 bytes
+INFO: 13:33:36 - __main__:  Picarro queried
