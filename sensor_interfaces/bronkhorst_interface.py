@@ -104,6 +104,9 @@ class Bronkhorst():
             self.ser.write(self.SEND_SETPOINT)
             # Read to clear the input buffer
             self.ser.read_until(b'\n').decode()
+            print(f"sent setpoint {self.SEND_SETPOINT}")
+        else:
+            print("setpoint not valid")
     
     def initialize_bronkhorst(self, timeout=10):
         """
@@ -258,7 +261,8 @@ if __name__ == "__main__":
             unit_ascii = bytearray.fromhex(unit).decode().strip()
             print(f"Bronkhorst returning measurements in {unit_ascii}")
         elif command == "d" or command == "D":
-            my_bronkhorst.send_setpoint()
+            setpoint = input("Setpoint: ")
+            my_bronkhorst.send_setpoint(setpoint)
             
         elif command == "x" or command == "X":
             stop = True

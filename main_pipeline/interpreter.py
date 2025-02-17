@@ -393,7 +393,22 @@ class Interpreter():
                 timestamp, data_out = picarro_data
             except Exception as e:
                 logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
-
+            else:
+                if data_out == "nan":
+                    self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
+                    return
+                try:
+                    # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
+                    # the computer clocks drift
+                    self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
+                    self.big_data["Picarro Water"]["Data"]["H2O (ppm)"] = float(data_out[1])
+                    self.big_data["Picarro Water"]["Data"]["Delta_18_16 (%o)"] = float(data_out[2])
+                    self.big_data["Picarro Water"]["Data"]["Delta_D_H (%o)"] = float(data_out[3])
+                except KeyError as e:
+                    logger.warning(f"Encountered exception in processing picarro {model}: No key {e}. Not updating measurement.")
+                except Exception as e:
+                    logger.warning(f"Unexpected exception in processing picarro {model} data: {e}. Not updating measurement")
+                
     ## ------------------- BRONKHORST PRESSURE SENSOR ------------------- ##
     def process_bronkhorst_data(self, bronkhorst_data):
         """Method to process Bronkhorst output when querying setpoint/measurement and fmeasure/temperature

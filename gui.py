@@ -387,6 +387,8 @@ class ApplicationWindow(QWidget):
         sensor_buttons = {}
         sensor_buttons.update({"Picarro Gas": {"Start Picarro":
                                                partial(self._on_sensor_button, "Picarro Gas", self.sensor.gas_picarro.initialize_picarro)}})
+        # sensor_buttons.update({"Picarro Water": {"Start Picarro":
+        #                                        partial(self._on_sensor_button, "Picarro Water", self.sensor.water_picarro.initialize_picarro)}})
         sensor_buttons.update({"Abakus Particle Counter": {"Start Abakus":
                                                            partial(self._on_sensor_button, "Abakus Particle Counter", self.sensor.abakus.initialize_abakus),
                                                            "Stop Abakus":
@@ -920,6 +922,7 @@ class ApplicationWindow(QWidget):
         self.flowmeter_sls1500_bus = Bus()
         self.laser_bus = Bus()
         self.picarro_gas_bus = Bus()
+        # self.picarro_water_bus = Bus()
         self.bronkhorst_bus = Bus()
         self.main_interp_bus = Bus()
 
@@ -968,6 +971,7 @@ class ApplicationWindow(QWidget):
                 self.executor.submit(self.sensor.flowmeter_sls1500_producer, self.flowmeter_sls1500_bus)
                 self.executor.submit(self.sensor.laser_producer, self.laser_bus)
                 self.executor.submit(self.sensor.picarro_gas_producer, self.picarro_gas_bus)
+                # self.executor.submit(self.sensor.picarro_water_producer, self.picarro_water_bus)
                 self.executor.submit(self.sensor.bronkhorst_producer, self.bronkhorst_bus)
                 self.executor.submit(self.interpreter.main_consumer_producer, self.abakus_bus, self.flowmeter_sli2000_bus,
                                             self.flowmeter_sls1500_bus, self.laser_bus, self.picarro_gas_bus, self.bronkhorst_bus, 
@@ -1030,6 +1034,7 @@ class ApplicationWindow(QWidget):
 
 ## --------------------- SEPARATE WINDOW --------------------- ##
 class AnotherWindow(QWidget):
+
     """This class is a skeleton window with the capability of adding external widgets. If we need another window 
     (e.g to plot all that day's data on a new screen) we can call this class and add widgets. It's bare-bones and
     really only good for simple windows; if you need more functionality, you'd probably want to make a custom class.

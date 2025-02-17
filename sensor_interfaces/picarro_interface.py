@@ -137,7 +137,7 @@ class Picarro():
     
 
 if __name__ == "__main__":
-    my_picarro = Picarro(serial_port="COM3", baud_rate=19200)
+    my_picarro = Picarro(serial_port="COM8", baud_rate=19200)
     # order of the gas measurements returned by query()
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
     gasses = ["CO2", "CH4", "CO", "H2O"]

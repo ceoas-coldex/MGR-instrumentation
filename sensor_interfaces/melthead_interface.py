@@ -31,8 +31,8 @@ fh.setFormatter(formatter)
 
 
 class MeltHead:
-    def __init__(self, serial_port="COM7", baudrate=38400) -> None:
-        self.initialize_pyserial(serial_port, baudrate)
+    def __init__(self, serial_port="COM7", baud_rate=38400) -> None:
+        self.initialize_pyserial(serial_port, baud_rate)
 
         self.AUTO = bytes.fromhex("55 FF 05 10 03 00 09 46 01 04 08 01 01 0F 01 00 0A 38 7C")
         self.OFF = bytes.fromhex("55 FF 05 10 03 00 09 46 01 04 08 01 01 0F 01 00 3E 9F 0B")
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     port = comms_config["Melthead"]["serial port"]
     baud = comms_config["Melthead"]["baud rate"]
 
-    mymelt = MeltHead(serial_port=port, baudrate=baud)
+    mymelt = MeltHead(serial_port=port, baud_rate=baud)
 
     print("Testing melthead (EZ-ZONE) serial communication\n")
     stop = False
