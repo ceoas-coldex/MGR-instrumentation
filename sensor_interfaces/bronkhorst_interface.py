@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh = logging.FileHandler(f"logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 # fh = logging.StreamHandler()
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)

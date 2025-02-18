@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh = logging.FileHandler(f"logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -58,7 +58,7 @@ class Writer():
             # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
             directory = saving_config_dict["Notes"]["Directory"]
             suffix = saving_config_dict["Notes"]["Suffix"]
-            self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
+            self.notes_filepath = f"{directory}/{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
             logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
@@ -88,7 +88,7 @@ class Writer():
             # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
             directory = saving_config_dict["Sensor Data"]["Directory"]
             suffix = saving_config_dict["Sensor Data"]["Suffix"]
-            self.csv_filepath = f"{directory}\\{date}{suffix}.csv"
+            self.csv_filepath = f"{directory}/{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
             logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")

@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+fh = logging.FileHandler(f"logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -402,10 +402,8 @@ class Interpreter():
             logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, parse the data
         else:
-            if fsetpoint == "nan":
-                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
-                return
             try:
+                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
                 # Parsing measurement is straightforward - 
                 # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
                 measure = int(meas[11:15], 16)
