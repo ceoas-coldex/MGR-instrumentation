@@ -98,6 +98,8 @@ class Interpreter():
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
+        # print(self.big_data)
+        
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))
 
@@ -135,7 +137,6 @@ class Interpreter():
                 bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
                 counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
                 total_counts = int(np.sum(counts))
-                
                 # If we've received the correct number of bins, update the measurement. Otherwise, log an error
                 abakus_bin_num = 32
                 if len(bins) == abakus_bin_num: 
@@ -259,7 +260,6 @@ class Interpreter():
 
             return adr, cmd, state, length, rxdata16, chkRx
 
-    
     def bytepack(self, byte1, byte2):
         """Helper method to concatenate two uint8 bytes to uint16. Takes two's complement if negative
 
@@ -393,7 +393,6 @@ class Interpreter():
         
         Args:
             bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
-    
 
         # Try to split up the data into the readings we expect
         try:

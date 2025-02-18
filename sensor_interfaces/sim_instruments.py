@@ -251,13 +251,14 @@ class Bronkhorst():
     def query(self):
         """Returns - timestamp (float, epoch time), output ((bytestr, bytestr), chained responses for setpoint & measure and 
             fmeasure  & temperature)"""
-        setpoint_and_meas = ':0A800281215DC001217CE0'
+        fsetpoint = ':0880022141453B8000\r\n'
+        meas = ':06800201217D00\r\n'
         fmeas_and_temp = ':0E8002A1404479C0E0214741C80000'
         timestamp = time.time()
 
         # If we're in debug mode, return this fake reading
         if debug:
-            output = (setpoint_and_meas, fmeas_and_temp)
+            output = (fsetpoint, meas, fmeas_and_temp)
         # Otherwise, return NAN
         else:
             output = ("nan", "nan")
