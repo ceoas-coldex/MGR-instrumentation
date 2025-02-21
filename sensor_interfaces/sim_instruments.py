@@ -93,7 +93,6 @@ class Picarro():
     def initialize_pyserial(self, port, baud):
         logger.info(f"Fake hardware, pretending to use serial port {port} with baud {baud}")
 
-    
     @log_on_start(logging.INFO, "Initializing Picarro", logger=logger)
     def initialize_picarro(self):
         """
@@ -257,10 +256,12 @@ class Bronkhorst():
         timestamp = time.time()
 
         # If we're in debug mode, return this fake reading
-        if debug:
-            output = (fsetpoint, meas, fmeas_and_temp)
-        # Otherwise, return NAN
-        else:
-            output = ("nan", "nan")
+        # if debug:
+        #     output = (fsetpoint, meas, fmeas_and_temp)
+        # # Otherwise, return NAN
+        # else:
+        #     output = ("nan", "nan")
+
+        output = np.nan
         
         return timestamp, output
