@@ -992,6 +992,7 @@ class ApplicationWindow(QWidget):
             new_data (dict): Most recent data update. Should have the same key/value structure as big_data_dict
             use_noise (bool): Adds some random noise if true. For testing only
         """
+        print(new_data)
         # For each sensor, grab the timestamp and the data from each sensor channel
         for name in self.sensor_names:
             # Grab and append the timestamp

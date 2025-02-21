@@ -419,16 +419,17 @@ class Interpreter():
 
         # Try to split up the data into the readings we expect
         try:
-            timestamp, (fsetpoint, meas, fmeas_and_temp) = bronkhorst_data
+            timestamp, data_out = bronkhorst_data
         # If that didn't work, log it
-        except KeyError as e:
+        except TypeError as e:
             logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, parse the data
         else:
-            if fsetpoint == "nan":
+            if data_out == "nan":
                 self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
                 return
             try:
+                (fsetpoint, meas, fmeas_and_temp) = data_out
                 # Parsing measurement is straightforward - 
                 # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
                 measure = int(meas[11:15], 16)
