@@ -28,7 +28,7 @@ formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message
 fh.setFormatter(formatter)
 
 class Picarro():
-    def __init__(self, serial_port="COM3", baud_rate=19200) -> None:
+    def __init__(self, serial_port="COM7", baud_rate=19200) -> None:
         # Picarro communication codes
         self.QUERY = b"_Meas_GetConcEx\r\n" # gets latest measurement and timestamp
         # self.QUERY = b'_Meas_GetConc\r\n' # gets latest measurement and timestamp
@@ -70,8 +70,8 @@ class Picarro():
                 logger.info(f"Initialization attempt {i+1}/{timeout}")
                 timestamp, data_out = self.query()
             
-                # Validity check - should return a list with 5 elements
-                if type(timestamp) == float and len(data_out) == 5:
+                # Validity check - should return a list with 6 elements
+                if type(timestamp) == float and len(data_out) == 7:
                     logger.info("Picarro initialized")
                     return 1
 
@@ -115,38 +115,49 @@ class Picarro():
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
-        print("trying with readline")
-        self.ser.write(self.QUERY)
-        print(self.ser.readline())
+        # print("trying with readline")
+        # self.ser.write(self.QUERY)
+        # print(self.ser.readline())
 
-        print("trying with read_until")
+        # print("trying with read_until")
         self.ser.write(self.QUERY)
-        print(self.ser.read_until(b'\n\r'))
+        output = self.ser.read_until(b'\n\r')
+        # print(output)
         
-        print("trying with custom")
-        self.ser.write(self.QUERY)
-        output = self._read_picarro()
-        print(output)
+        
+        # print("trying with custom")
+        # self.ser.write(self.QUERY)
+        # output = self._read_picarro()
+        # print(output)
 
         output = output.decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")
+
         
         return timestamp, output
     
 
 if __name__ == "__main__":
-    my_picarro = Picarro(serial_port="COM7", baud_rate=9600)
+    my_picarro = Picarro(serial_port="COM7", baud_rate=19200)
     # order of the gas measurements returned by query()
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
-    gasses = ["CO2", "CH4", "CO", "H2O"]
-
-    isotopes = ["H20", "Delta_18", "Delta_D"]
+    gasses = ["Cavity Pressure", "Outlet Valve", "CO", "CO2", "CH4", "H2O"]
+    isotopes = ["Cavity Pressure", "Outlet Valve", "H20", "Delta_18", "Delta_D", "Valco Position"]
 
     ## ------- UNIT TESTING  ------- ##
     stop = False
     while not stop:
+        picarro_type = input("Enter Picarro type -- w: Water, a: Air \n")
+        if picarro_type == "a" or picarro_type == "A":
+            output_names = gasses
+        elif picarro_type == "w" or picarro_type == "W":
+            output_names = isotopes
+        else:
+            print("Unknown. Try again")
+            continue
+        
         command = input("a: Query, x: Quit \n")
         if command == "a" or command == "A":
             timestamp, output = my_picarro.query()
@@ -155,7 +166,7 @@ if __name__ == "__main__":
             print("My timestamp: ", timestamp)
             print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp)))
             for i, value in enumerate(output[1:]): # the gas concentrations
-                print(f"data: ", value)
+                print(f"{output_names[i]}: ", float(value))
         elif command == "x" or command == "X":
             stop = True
         else:

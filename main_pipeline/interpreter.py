@@ -69,7 +69,7 @@ class Interpreter():
                 self.channels.append(f"{name} {channel}")
 
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
-                               picarro_gas_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
+                               picarro_gas_bus:Bus, picarro_water_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
         """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
         **If you add new sensors, you'll need to modify this method**
 
@@ -89,7 +89,7 @@ class Interpreter():
         flowmeter_sls_output = flowmeter_sls_bus.read()
         laser_output = laser_bus.read()
         picarro_gas_output = picarro_gas_bus.read()
-        # picarro_water_timestamp, picarro_water_data = picarro_water_bus.read()
+        picarro_water_data = picarro_water_bus.read()
         bronkhorst_output = bronkhorst_bus.read()
 
         # Process the raw data from each bus (saves the data in self.big_data)
@@ -98,7 +98,7 @@ class Interpreter():
         self.process_flowmeter_data(flowmeter_sls_output, model="SLS1500", scale_factor=500, units="mL/min")
         self.process_laser_data(laser_output)
         self.process_picarro_data(picarro_gas_output, model="GAS")
-        # self.process_picarro_data(picarro_water_timestamp, picarro_water_data, model="WATER")
+        self.process_picarro_data(picarro_water_data, model="WATER")
         self.process_bronkhorst_data(bronkhorst_output)
         
         # Uncomment these lines to check the difference in timestamps between the sensors
@@ -107,6 +107,8 @@ class Interpreter():
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
+        print(self.big_data)
+
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))
 
@@ -157,6 +159,8 @@ class Interpreter():
                 logger.warning(f"Error in saving Abakus data to big dictionary: No key {e}. Not updating measurement")
             except Exception as e:
                 logger.warning(f"Unexpected exception in processing abakus data: {e}. Not updating measurement.")
+
+            print(self.big_data)
             
     ## ------------------- FLOWMETER ------------------- ##
     def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
@@ -214,7 +218,10 @@ class Interpreter():
                         flow_rates.append(np.nan)
                 if np.nan in flow_rates:
                     # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
-                    averaged_flow_rate = np.nanmean(flow_rates)
+                    if all(flow_rates == np.nan):
+                        averaged_flow_rate = np.nan
+                    else:
+                        averaged_flow_rate = np.nanmean(flow_rates)
                 else:
                     averaged_flow_rate = np.mean(flow_rates)
                 # Save the averaged list to our big data dictionary
@@ -380,9 +387,11 @@ class Interpreter():
                     # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
                     # the computer clocks drift
                     self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
-                    self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[1])
-                    self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[2])
+                    self.big_data["Picarro Gas"]["Data"]["CavityPressure"] = float(data_out[1])
+                    self.big_data["Picarro Gas"]["Data"]["OutletValve"] = float(data_out[2])
                     self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
+                    self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[2])
+                    self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[3])
                     self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
                 except KeyError as e:
                     logger.warning(f"Encountered exception in processing picarro {model}: No key {e}. Not updating measurement.")
@@ -391,8 +400,8 @@ class Interpreter():
         elif model == "WATER":
             try:
                 timestamp, data_out = picarro_data
-            except Exception as e:
-                logger.warning(f"Encountered exception in processing picarro {model}: {e}. Not updating measurement.")
+            except TypeError as e:
+                logger.warning(f"Encountered exception in processing picarro {model}: {e}. Probably not a tuple. Not updating measurement.")
             else:
                 if data_out == "nan":
                     self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
@@ -401,9 +410,12 @@ class Interpreter():
                     # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
                     # the computer clocks drift
                     self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
-                    self.big_data["Picarro Water"]["Data"]["H2O (ppm)"] = float(data_out[1])
-                    self.big_data["Picarro Water"]["Data"]["Delta_18_16 (%o)"] = float(data_out[2])
-                    self.big_data["Picarro Water"]["Data"]["Delta_D_H (%o)"] = float(data_out[3])
+                    self.big_data["Picarro Water"]["Data"]["CavityPressure"] = float(data_out[1])
+                    self.big_data["Picarro Water"]["Data"]["OutletValve"] = float(data_out[2])
+                    self.big_data["Picarro Water"]["Data"]["H2O"] = float(data_out[3])
+                    self.big_data["Picarro Water"]["Data"]["Delta_18"] = float(data_out[4])
+                    self.big_data["Picarro Water"]["Data"]["Delta_D"] = float(data_out[5])
+                    self.big_data["Picarro Water"]["Data"]["ValcoPosition"] = float(data_out[6])
                 except KeyError as e:
                     logger.warning(f"Encountered exception in processing picarro {model}: No key {e}. Not updating measurement.")
                 except Exception as e:

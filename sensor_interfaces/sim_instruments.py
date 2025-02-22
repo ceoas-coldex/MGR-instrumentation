@@ -108,7 +108,7 @@ class Picarro():
     # @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
         """Returns - timestamp (float, epoch time), picarro_reading (str, raw data)"""
-        fake_picarro_data = "2024-08-22 13:52:47.246;-0.990;-0.001;-0.006;0.021"
+        fake_picarro_data = "2025-02-17 17:02:32.618;39.984;24024.625;0.058;198.716;0.383;0.021" # fake air reading
         timestamp = time.time()
 
         # Split along the semicolons

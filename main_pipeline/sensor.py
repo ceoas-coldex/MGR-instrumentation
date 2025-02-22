@@ -55,15 +55,15 @@ except KeyError as e:
     logger.warning(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 # Picarro Water
-# try:
-#     serial.Serial(port=comms_config["Picarro Water"]["serial port"], baudrate=comms_config["Picarro Water"]["baud rate"])
-#     from sensor_interfaces.picarro_interface import Picarro
-#     logger.info(f"Successfully connected to port {comms_config['Picarro Water']['serial port']}, using real Picarro Water hardware")
-# except SerialException:
-#     from sensor_interfaces.sim_instruments import Picarro
-#     logger.info(f"Couldn't find Picarro at port {comms_config['Picarro Water']['serial port']}, shadowing sensor calls with substitute functions")
-# except KeyError as e:
-#     logger.warning(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
+try:
+    serial.Serial(port=comms_config["Picarro Water"]["serial port"], baudrate=comms_config["Picarro Water"]["baud rate"])
+    from sensor_interfaces.picarro_interface import Picarro
+    logger.info(f"Successfully connected to port {comms_config['Picarro Water']['serial port']}, using real Picarro Water hardware")
+except SerialException:
+    from sensor_interfaces.sim_instruments import Picarro
+    logger.info(f"Couldn't find Picarro at port {comms_config['Picarro Water']['serial port']}, shadowing sensor calls with substitute functions")
+except KeyError as e:
+    logger.warning(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
 # Abakus 
 try:
@@ -133,7 +133,7 @@ class Sensor():
         self.flowmeter_sls1500 = FlowMeter(sensor_type="sls1500", serial_port=comms_config["Flowmeter SLS1500 (Black)"]["serial port"], baud_rate=comms_config["Flowmeter SLS1500 (Black)"]["baud rate"])
         self.laser = Dimetix(serial_port=comms_config["Laser Distance Sensor"]["serial port"], baud_rate=comms_config["Laser Distance Sensor"]["baud rate"])
         self.gas_picarro = Picarro(serial_port=comms_config["Picarro Gas"]["serial port"], baud_rate=comms_config["Picarro Gas"]["baud rate"])
-        # self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
+        self.water_picarro = Picarro(serial_port=comms_config["Picarro Water"]["serial port"], baud_rate=comms_config["Picarro Water"]["baud rate"])
         self.bronkhorst = Bronkhorst(serial_port=comms_config["Bronkhorst Pressure"]["serial port"], baud_rate=comms_config["Bronkhorst Pressure"]["baud rate"])
         self.melthead = MeltHead(serial_port=comms_config["Melthead"]["serial port"], baud_rate=comms_config["Melthead"]["baud rate"])
 
@@ -172,7 +172,7 @@ class Sensor():
         # Fill in the dictionary with the results of calling the sensor init functions
         self.sensor_status_dict["Abakus Particle Counter"] = self.abakus.initialize_abakus()
         self.sensor_status_dict["Picarro Gas"] = self.gas_picarro.initialize_picarro()
-        # self.sensor_status_dict["Picarro Water"] = self.water_picarro.initialize_picarro()
+        self.sensor_status_dict["Picarro Water"] = self.water_picarro.initialize_picarro()
         self.sensor_status_dict["Laser Distance Sensor"] = self.laser.initialize_laser()
         self.sensor_status_dict["Bronkhorst Pressure"] = self.bronkhorst.initialize_bronkhorst()
         self.sensor_status_dict["Melthead"] = self.melthead.initialize_pid()
@@ -215,6 +215,7 @@ class Sensor():
     def abakus_producer(self, abakus_bus:Bus):
         """Method that writes Abakus data to its bus"""
         data = self.read_abakus()
+        print(f"abakus: {data}")
         abakus_bus.write(data)
 
     def read_abakus(self):

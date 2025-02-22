@@ -10,16 +10,21 @@
 Picarro Gas:
   Time (epoch): []
   Data:
+    CavityPressure: []
+    OutletValve: []
+    CO: []
     CO2: []
     CH4: []
-    CO: []
     H2O: []
-# Picarro Water:
-#   Time (epoch): []
-#   Data:
-#     H2O (ppm): []
-#     Delta_18_16 (%o): []
-#     Delta_D_H (%o): []
+Picarro Water:
+  Time (epoch): []
+  Data:
+    CavityPressure: []
+    OutletValve: []
+    H2O: []
+    Delta_18: []
+    Delta_D: []
+    ValcoPosition: []
 Laser Distance Sensor:
   Time (epoch): []
   Data:
