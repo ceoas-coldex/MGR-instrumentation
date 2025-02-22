@@ -3,3 +3,5 @@
 # *.log
 # Uncomment to ignore all .csv
 # *.csv
+
+.venv

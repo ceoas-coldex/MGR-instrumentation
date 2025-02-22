@@ -1036,3 +1036,293 @@ INFO: 15:10:34 - main_pipeline.sensor:  Shutting down sensors
 INFO: 15:10:34 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 15:10:34 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 15:10:34 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 15:39:01 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 15:39:01 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 15:39:02 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 15:39:02 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 15:39:02 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+INFO: 15:39:02 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 15:39:02 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 15:39:02 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 15:39:02 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 15:39:02 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 15:39:02 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 15:39:02 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:39:02 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:39:02 - main_pipeline.writer:  Display class initiated
+INFO: 15:39:33 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:39:33 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 15:39:33 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 15:39:33 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 15:39:34 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 15:39:34 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 15:39:34 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 15:39:34 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 15:39:35 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:35 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 15:39:35 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:35 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 15:39:36 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:36 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 15:39:36 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:36 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 15:39:37 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:37 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 15:39:37 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:37 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 15:39:38 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:38 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 15:39:38 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:38 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 15:39:39 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:39 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 15:39:39 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:39 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 15:39:39 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 15:39:39 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 15:39:39 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 15:39:39 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 15:39:39 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 15:39:39 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:39:39 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:39:39 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:39:39 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 15:39:43 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:39:43 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 15:39:43 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:39:43 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 15:39:47 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:39:47 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 15:39:47 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 15:39:51 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:39:51 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 15:39:51 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 15:39:51 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 15:39:51 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 15:39:51 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 15:39:52 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:52 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 15:39:52 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:52 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 15:39:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:53 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 15:39:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:53 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 15:39:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:54 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 15:39:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:54 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 15:39:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:55 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 15:39:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:55 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 15:39:56 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:56 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 15:39:56 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:39:56 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 15:39:56 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 15:39:56 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 15:39:56 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 15:39:56 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 15:39:56 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 15:39:56 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:39:56 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:39:56 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:39:56 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from Abakus reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLS1500 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from laser reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from picarro reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:01 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:40:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 3/10
+INFO: 15:40:01 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:40:02 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:02 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:02 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:02 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:40:03 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:03 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:03 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:03 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:03 - sensor_interfaces.flowmeter_interface:  Initialization attempt 4/10
+WARNING: 15:40:04 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:04 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:04 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:04 - sensor_interfaces.flowmeter_interface:  Initialization attempt 5/10
+INFO: 15:40:04 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:40:05 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:05 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:05 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:05 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:07 - sensor_interfaces.flowmeter_interface:  Initialization attempt 6/10
+INFO: 15:40:08 - sensor_interfaces.flowmeter_interface:  Initialization attempt 7/10
+INFO: 15:40:11 - sensor_interfaces.flowmeter_interface:  Initialization attempt 8/10
+INFO: 15:40:14 - sensor_interfaces.flowmeter_interface:  Initialization attempt 9/10
+INFO: 15:40:17 - sensor_interfaces.flowmeter_interface:  Initialization attempt 10/10
+INFO: 15:40:19 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialization failed after 10 attempts
+INFO: 15:40:19 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:40:19 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 15:40:25 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:40:25 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 15:40:25 - main_pipeline.sensor:  Finished initializing sensors
+WARNING: 15:40:25 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:25 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:25 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:38 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:40:38 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 15:40:38 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 15:40:38 - main_pipeline.sensor:  Finished shutting down sensors
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 53, 0, 2, 0, 160, 0, 53, 0, 2, 40]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [218, 255, 0, 39, 126, 53, 38, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [53, 162, 2, 38, 162, 0, 158, 126, 53, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 0, 126, 53, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 255, 0, 0, 158]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: invalid literal for int() with base 16: 'x0'. Raw output [0, 0, 0, 0, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 41, 0, 53, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 2, 0, 53, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0, 0, 43, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 0, 0, 2]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [53, 0, 0, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:40 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 2, 126, 0, 2, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [126, 53, 2, 42, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 2, 234, 126, 153, 53, 0, 47, 153, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [255, 157, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 53, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [0, 0, 39, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: invalid literal for int() with base 16: 'x0'. Raw output [0, 0, 0, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad reply from flow meter. Raw output [0, 0, 0, 157, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 0, 126, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: invalid literal for int() with base 16: 'x0'. Raw output [0, 0, 0, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [0, 53, 0, 0, 0, 53]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [137, 0, 0, 0, 126]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [0, 0, 41, 0, 0, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: list index out of range. Raw output [0, 126, 0]
+WARNING: 15:40:40 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:40:40 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:40:40 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:40 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:47 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 15:40:47 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 15:40:47 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 15:40:47 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 15:40:47 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+INFO: 15:40:47 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 15:40:47 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 15:40:47 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 15:40:47 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 15:40:47 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 15:40:47 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 15:40:47 - main_pipeline.sensor:  Sensor class initiated
+INFO: 15:40:47 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 15:40:47 - main_pipeline.writer:  Display class initiated
+INFO: 15:40:50 - main_pipeline.sensor:  Initializing sensors
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 15:40:50 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 15:40:50 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 15:40:51 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:51 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 15:40:51 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:51 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 15:40:52 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:52 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 15:40:52 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:52 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 15:40:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:53 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 15:40:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:53 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 15:40:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:54 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 15:40:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:54 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 15:40:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:55 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 15:40:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:40:55 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 15:40:56 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 15:40:56 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 15:40:56 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 15:40:56 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 15:40:56 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 15:40:56 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 15:40:56 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 15:40:56 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:40:56 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 15:41:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:41:01 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 15:41:01 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 15:41:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 15:41:04 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 15:41:04 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 15:41:04 - main_pipeline.sensor:  Finished initializing sensors
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from Abakus reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLS1500 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from laser reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from picarro reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 15:41:06 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:07 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:07 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 15:41:07 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:07 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:08 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:08 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:08 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:09 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:09 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:09 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:10 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:10 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:10 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:11 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:11 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:11 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:12 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:12 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:12 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:13 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:13 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:13 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:14 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 15:41:14 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 15:41:14 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable float object. Probably not a tuple. Not updating measurement
+INFO: 15:41:15 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 15:41:15 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:41:15 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 15:41:15 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 15:41:15 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 15:41:18 - main_pipeline.sensor:  Shutting down sensors
+INFO: 15:41:18 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 15:41:18 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 15:41:18 - main_pipeline.sensor:  Finished shutting down sensors
