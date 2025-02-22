@@ -178,6 +178,9 @@ class Interpreter():
         # If that didn't work, log it
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from flowmeter {model} reading: {e}. Probably not a tuple. Not updating measurement")
+        # If something else happened, log it and make sure we know it was unexpected.
+        except Exception as e:
+            logger.error(f"Unexpected Exception in extracting Flowmeter data {e}")
         # If it did work, process the data
         else:
             # First, save the timestamp to the data dictionary 
@@ -312,20 +315,26 @@ class Interpreter():
         try:
             timestamp, data_out = laser_data
             distance, temp = data_out
-        # If that didn't work, log it
+        # If that didn't work, log it.
         except TypeError as e:
-            logger.warning(f"Error in extracting time and data from laser reading: {e}. Probably not a tuple. Not updating measurement")
+            logger.warning(f"Error in extracting Dimetix laser data: {e}. Probably not a tuple. Not updating measurement")
+        # If something else happened, log it and make sure we know it was unexpected.
+        except Exception as e:
+            logger.error(f"Unexpected Exception in extracting Dimetix laser data {e}")
         # If it did work, process the data
         else:
-            
-            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
-            if distance == "nan" and temp == "nan":
+            # Update the timestamp. Make sure we do this first in case we encounter an error later in processing.
+            try:
                 self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
+            except KeyError as e:
+                logger.warning(f"Error in saving bronkhorst data to big dictionary: No key {e}. Not updating measurement")
+
+            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that.
+            if distance == "nan" or temp == "nan":
                 return
+
             # Process distance
             try:
-                # Make sure we always update the timestamp, even if we encounter an error later in processing
-                self.big_data["Laser Distance Sensor"]["Time (epoch)"] = timestamp
                 # The laser starts error messages as "g0@Eaaa", where "aaa" is the error code. If we get that, we've errored
                 if distance[0:4] == "g0@E":
                     logger.warning(f"Recieved error message from laser distance: {distance} Check manual for error code. Not updating measurement")
@@ -375,16 +384,20 @@ class Interpreter():
                 timestamp, data_out = picarro_data
             # If that failed, log it
             except TypeError as e:
-                logger.warning(f"Error in extracting time and data from picarro reading: {e}. Probably not a tuple. Not updating measurement")
+                logger.warning(f"Encountered exception in extracting picarro {model} data: {e}. Probably not a tuple. Not updating measurement.")
+            # If something else happened, log it and make sure we know it was unexpected.
+            except Exception as e:
+                logger.error(f"Unexpected Exception in extracting Picarro {model} data {e}")
             # If it succeeded, process the data
             else:
-                if data_out == "nan":
-                    self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
-                    return
                 try:
-                    # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
-                    # the computer clocks drift
+                    # First, update the timestamp.
                     self.big_data["Picarro Gas"]["Time (epoch)"] = timestamp
+                    # If we're running in simulated, non-debug mode, the sensors return "nan". Check for that and exit if true.
+                    if data_out == "nan":
+                        return
+                    # If we're getting real data or running in simulated debug mode, data_out will be a list of values. Assign those accordingly
+                    # data_out[0] # the time at which the measurement was sampled
                     self.big_data["Picarro Gas"]["Data"]["CavityPressure"] = float(data_out[1])
                     self.big_data["Picarro Gas"]["Data"]["OutletValve"] = float(data_out[2])
                     self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
@@ -392,22 +405,28 @@ class Interpreter():
                     self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[3])
                     self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
                 except KeyError as e:
-                    logger.warning(f"Encountered exception in processing picarro {model}: No key {e}. Not updating measurement.")
+                    logger.warning(f"Encountered exception in processing picarro {model} data: No key {e}. Not updating measurement.")
                 except Exception as e:
                     logger.warning(f"Unexpected exception in processing picarro {model} data: {e}. Not updating measurement")
         elif model == "WATER":
+            # Try to split up the data into the readings we expect
             try:
                 timestamp, data_out = picarro_data
+            # If that failed, log it
             except TypeError as e:
-                logger.warning(f"Encountered exception in processing picarro {model}: {e}. Probably not a tuple. Not updating measurement.")
+                logger.warning(f"Encountered exception in extracting picarro {model}: {e}. Probably not a tuple. Not updating measurement.")
+            # If something else happened, log it and make sure we know it was unexpected.
+            except Exception as e:
+                logger.error(f"Unexpected Exception in extracting Picarro {model} data {e}")
             else:
-                if data_out == "nan":
-                    self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
-                    return
                 try:
-                    # data_out[0] # the time at which the measurement was sampled, probably different than timestamp because
-                    # the computer clocks drift
+                    # First, update the timestamp.
                     self.big_data["Picarro Water"]["Time (epoch)"] = timestamp
+                    # If we're running in simulated, non-debug mode, the sensors return "nan". Check for that and exit if true.
+                    if data_out == "nan":
+                        return
+                    # If we're getting real data or running in simulated debug mode, data_out will be a list of values. Assign those accordingly
+                    # data_out[0] # the time at which the measurement was sampled
                     self.big_data["Picarro Water"]["Data"]["CavityPressure"] = float(data_out[1])
                     self.big_data["Picarro Water"]["Data"]["OutletValve"] = float(data_out[2])
                     self.big_data["Picarro Water"]["Data"]["H2O"] = float(data_out[3])
@@ -426,7 +445,6 @@ class Interpreter():
         Args:
             bronkhorst_data (tuple): Data (timestamp, data) read from bronkhorst bus"""
     
-
         # Try to split up the data into the readings we expect
         try:
             timestamp, data_out = bronkhorst_data
