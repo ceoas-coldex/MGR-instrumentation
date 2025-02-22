@@ -106,8 +106,6 @@ class Interpreter():
         # print(f"time difference 2: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Laser Distance Sensor"]["Time (epoch)"]}")
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
-        
-        # print(self.big_data)
 
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))
@@ -133,23 +131,26 @@ class Interpreter():
             timestamp, data_out = abakus_data
         # If that didn't work, log it
         except TypeError as e:
-            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")          
+            logger.warning(f"Error in extracting time and data from Abakus reading: {e}. Probably not a tuple. Not updating measurement")  
+        # If something else happened, log it and make sure we know it was unexpected.
+        except Exception as e:
+            logger.error(f"Unexpected Exception in processing Abakus data: {e}")        
         # If it did work, process the data
         else:
-            # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
-            if data_out == "nan":
-                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
-                return
             try:
+                # First, update the timestamp
+                self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
+                # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
+                if data_out == "nan":
+                    return
+                # If we're running real hardware or simulated debug mode, the output is a list of bins and counts
                 output = data_out.split() # split into a list
                 bins = [int(i) for i in output[::2]] # grab every other element, starting at 0, and make it an integer while we're at it
                 counts = [int(i) for i in output[1::2]] # grab every other element, starting at 1, and make it an integer
                 total_counts = int(np.sum(counts))
-                
                 # If we've received the correct number of bins, update the measurement. Otherwise, log an error
                 abakus_bin_num = 32
                 if len(bins) == abakus_bin_num: 
-                    self.big_data["Abakus Particle Counter"]["Time (epoch)"] = timestamp
                     self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
                     self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
                     self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
@@ -186,11 +187,6 @@ class Interpreter():
             # First, save the timestamp to the data dictionary 
             try:
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-            # If we can't do that, something has gone wrong with our dictionary keys
-            except KeyError as e:
-                logger.warning(f"Error in saving flowmeter {model} timestamp to big dictionary. No key {e}.")
-            # If we saved the timestamp OK, move on to processing the data
-            else:
                 # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
                 if data_out == "nan":
                     return
@@ -227,6 +223,11 @@ class Interpreter():
                     averaged_flow_rate = np.mean(flow_rates)
                 # Save the averaged list to our big data dictionary
                 self.big_data["Flowmeter"]["Data"][f"{model} ({units})"] = averaged_flow_rate
+                # If we can't do that, something has gone wrong with our dictionary keys
+            except KeyError as e:
+                logger.warning(f"Error in saving flowmeter {model} timestamp to big dictionary. No key {e}.")
+            except Exception as e:
+                logger.warning(f"Unexpected error in processing flowmeter {model}: {e}")
 
     def check_flowmeter_data(self, flowmeter_data, model):
         """Method to validate the flowmeter data with a checksum and some other things. From Abby, I should
