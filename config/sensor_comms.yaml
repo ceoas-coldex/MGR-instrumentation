@@ -1,12 +1,12 @@
 # This file sets up configuration parameters for sensor communication, like serial ports and baud rates
 ---
 Picarro Gas:
-  # serial port: "COM8" # lab computer
-  serial port: "COM9"
+  serial port: "COM8" # lab computer
+  # serial port: "COM9"
   baud rate: 19200
 Picarro Water:
-  # serial port: "COM7" #lab computer
-  serial port: "COM9"
+  serial port: "COM7" #lab computer
+  # serial port: "COM9"
   baud rate: 19200
 Laser Distance Sensor:
   serial port: "COM6" # lab computer
@@ -25,8 +25,8 @@ Flowmeter SLS1500 (Black):
   # serial port: "COM9"
   baud rate: 115200
 Bronkhorst Pressure:
-  serial port: "COM7" # lab computer
-  # serial port: "COM9"
+  # serial port: "COM7" # lab computer
+  serial port: "COM9"
   baud rate: 38400
 Melthead:
   serial port: "COM9" # Nothing

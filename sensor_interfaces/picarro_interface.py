@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-# fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
-fh = logging.StreamHandler()
+fh = logging.FileHandler(f"logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
+# fh = logging.StreamHandler()
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -115,18 +115,15 @@ class Picarro():
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
-        print("trying with readline")
+        # print("trying with readline")
         self.ser.write(self.QUERY)
-        print(self.ser.readline())
+        output = self.ser.readline()
+        # print(output)
 
-        print("trying with read_until")
-        self.ser.write(self.QUERY)
-        print(self.ser.read_until(b'\n\r'))
-        
-        print("trying with custom")
-        self.ser.write(self.QUERY)
-        output = self._read_picarro()
-        print(output)
+        # print("trying with read_until")
+        # self.ser.write(self.QUERY)
+        # output = self.ser.read_until(b'\n\r')
+        # print(output)
 
         output = output.decode()
         timestamp = time.time()
