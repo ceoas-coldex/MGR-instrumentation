@@ -107,7 +107,7 @@ class Interpreter():
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
         
-        print(self.big_data)
+        # print(self.big_data)
 
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))
@@ -159,8 +159,6 @@ class Interpreter():
                 logger.warning(f"Error in saving Abakus data to big dictionary: No key {e}. Not updating measurement")
             except Exception as e:
                 logger.warning(f"Unexpected exception in processing abakus data: {e}. Not updating measurement.")
-
-            print(self.big_data)
             
     ## ------------------- FLOWMETER ------------------- ##
     def process_flowmeter_data(self, flowmeter_data, model, scale_factor, units):
@@ -376,7 +374,7 @@ class Interpreter():
             try:
                 timestamp, data_out = picarro_data
             # If that failed, log it
-            except TypeError as e:
+            except KeyError as e:
                 logger.warning(f"Error in extracting time and data from picarro reading: {e}. Probably not a tuple. Not updating measurement")
             # If it succeeded, process the data
             else:
@@ -433,7 +431,7 @@ class Interpreter():
         try:
             timestamp, (fsetpoint, meas, fmeas_and_temp) = bronkhorst_data
         # If that didn't work, log it
-        except KeyError as e:
+        except TypeError as e:
             logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
         # If it did work, parse the data
         else:
