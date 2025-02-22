@@ -215,7 +215,6 @@ class Sensor():
     def abakus_producer(self, abakus_bus:Bus):
         """Method that writes Abakus data to its bus"""
         data = self.read_abakus()
-        print(f"abakus: {data}")
         abakus_bus.write(data)
 
     def read_abakus(self):

@@ -285,7 +285,7 @@ class Bronkhorst():
             output = (fsetpoint, meas, fmeas_and_temp)
         # Otherwise, return NAN
         else:
-            output = ("nan", "nan")
+            output = "nan"
         
         return timestamp, output
     

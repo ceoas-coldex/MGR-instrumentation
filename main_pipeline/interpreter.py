@@ -374,7 +374,7 @@ class Interpreter():
             try:
                 timestamp, data_out = picarro_data
             # If that failed, log it
-            except KeyError as e:
+            except TypeError as e:
                 logger.warning(f"Error in extracting time and data from picarro reading: {e}. Probably not a tuple. Not updating measurement")
             # If it succeeded, process the data
             else:
@@ -429,34 +429,40 @@ class Interpreter():
 
         # Try to split up the data into the readings we expect
         try:
-            timestamp, (fsetpoint, meas, fmeas_and_temp) = bronkhorst_data
-        # If that didn't work, log it
+            timestamp, data_out = bronkhorst_data
+        # If that didn't work, it /should/ trigger a TypeError. Log it
         except TypeError as e:
             logger.warning(f"Error in extracting time and data from bronkhorst reading: {e}. Probably not a tuple. Not updating measurement")
+        # If something else happened, log it and make sure we know it was unexpected.
+        except Exception as e:
+            logger.error(f"Unexpected Exception in processing Bronkhorst data {e}")
         # If it did work, parse the data
         else:
-            if fsetpoint == "nan":
-                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
-                return
             try:
+                # First, update the timestamp
+                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+                # If we're running in simulated, non-debug mode, the sensors return "nan". Check for that and exit if true.
+                if data_out == "nan":
+                    return
+                # If we're getting real data or running in simulated debug mode, data_out will be three values:
+                (fsetpoint, meas, fmeas_and_temp) = data_out
+                # 1.
                 # Parsing measurement is straightforward - 
-                # First, slice the setpoint and measurement out of the chained response and convert the hex string to an integer
+                # First, slice the measurement out of the response and convert the hex string to an integer
                 measure = int(meas[11:15], 16)
-                # Then, scale the raw output (an int between 0-32000) to the measurement signal (0-100%)
-                measure = np.interp(measure, [0,41942], [0,131.07]) # This is basically the same as the setpoint, but can measure over 100%
-
+                # Then, scale the raw output (an int between 0-41942) to the measurement signal (0-131%)
+                measure = np.interp(measure, [0,41942], [0,131.07])
+                # 2 & 3.
                 # Parsing fsetpoint, fmeasure and temperature is a little more complicated -
                 # grab their respective slices from the chained response, then convert from IEEE754 floating point notation to decimal
                 fsetpoint = ieee754_conversions.dec_from_hex(fsetpoint[11:19])
                 fmeasure = ieee754_conversions.dec_from_hex(fmeas_and_temp[11:19])
                 temp = ieee754_conversions.dec_from_hex(fmeas_and_temp[23:])
-                
-                self.big_data["Bronkhorst Pressure"]["Time (epoch)"] = timestamp
+                # Finally, append everything to the big data dictionary
                 self.big_data["Bronkhorst Pressure"]["Data"]["Setpoint (mbar a)"] = fsetpoint
                 self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (%)"] = measure
                 self.big_data["Bronkhorst Pressure"]["Data"]["Measurement (mbar a)"] = fmeasure
                 self.big_data["Bronkhorst Pressure"]["Data"]["Temperature (C)"] = temp
-                
             except KeyError as e:
                 logger.warning(f"Error in saving bronkhorst data to big dictionary: No key {e}. Not updating measurement")
             except Exception as e:

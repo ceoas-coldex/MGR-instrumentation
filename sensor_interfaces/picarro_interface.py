@@ -50,9 +50,6 @@ class Picarro():
         try:
             self.ser = serial.Serial(port, baud, timeout=0.5)
             logger.info(f"Connected to serial port {port} with baud {baud}")
-            # print(self.ser.writable())
-            # print(self.ser.readable())
-            # print(self.ser.BAUDRATES)
         except SerialException:
             logger.warning(f"Could not connect to serial port {port}")
 
@@ -115,32 +112,18 @@ class Picarro():
             Returns - timestamp (float, epoch time), output (str)
         """
         # Write the command
-        # print("trying with readline")
-        # self.ser.write(self.QUERY)
-        # print(self.ser.readline())
-
-        # print("trying with read_until")
         self.ser.write(self.QUERY)
-        output = self.ser.read_until(b'\n\r')
-        # print(output)
-        
-        
-        # print("trying with custom")
-        # self.ser.write(self.QUERY)
-        # output = self._read_picarro()
-        # print(output)
+        output = self.ser.readline()
 
         output = output.decode()
         timestamp = time.time()
         # Split along the semicolons
         output = output.split(";")
 
-        
         return timestamp, output
     
 
 if __name__ == "__main__":
-    my_picarro = Picarro(serial_port="COM7", baud_rate=19200)
     # order of the gas measurements returned by query()
     #   I had to manually watch the picarro and the serial output to determine this order, not sure where it's specified
     gasses = ["Cavity Pressure", "Outlet Valve", "CO", "CO2", "CH4", "H2O"]
@@ -148,16 +131,21 @@ if __name__ == "__main__":
 
     ## ------- UNIT TESTING  ------- ##
     stop = False
+    
     while not stop:
-        picarro_type = input("Enter Picarro type -- w: Water, a: Air \n")
-        if picarro_type == "a" or picarro_type == "A":
+        picarro_type = input("Enter Picarro type -- w: Water, g: Gas \n")
+        if picarro_type == "g" or picarro_type == "G":
             output_names = gasses
+            my_picarro = Picarro(serial_port="COM8", baud_rate=19200)
+            break
         elif picarro_type == "w" or picarro_type == "W":
             output_names = isotopes
+            my_picarro = Picarro(serial_port="COM7", baud_rate=19200)
+            break
         else:
             print("Unknown. Try again")
-            continue
         
+    while not stop:
         command = input("a: Query, x: Quit \n")
         if command == "a" or command == "A":
             timestamp, output = my_picarro.query()
