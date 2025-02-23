@@ -43,7 +43,7 @@ class Interpreter():
         """
         # Read in the sensor data config file to initialize the data buffer. 
         try:
-            with open("config/sensor_data.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
                 self.big_data = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")

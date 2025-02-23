@@ -39,7 +39,7 @@ from sensor_interfaces import sim_instruments
 
 # Load the sensor comms configuration file - dictionary with sensor serial ports and baud rates
 try:
-    with open("config/sensor_comms.yaml", 'r') as stream:
+    with open(f"{dir_path}/config/sensor_comms.yaml", 'r') as stream:
         comms_config = yaml.safe_load(stream)
 except FileNotFoundError as e:
     logger.error(f"Error in loading the sensor_comms configuration file: {e} Check your file storage and directories")
@@ -117,7 +117,7 @@ class Sensor():
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
-            with open("config/sensor_data.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
                 self.big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
