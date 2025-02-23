@@ -108,7 +108,7 @@ class Writer():
         """Method to set up data storage and configure internal data management"""
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
-            with open("config/sensor_data.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
                 big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
@@ -132,7 +132,7 @@ class Writer():
         """
         # Read the log_entries config file to grab all the entries we'll be logging
         try:
-            with open("config/log_entries.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/log_entries.yaml", 'r') as stream:
                 notes_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the notes entries config file: {e}")
