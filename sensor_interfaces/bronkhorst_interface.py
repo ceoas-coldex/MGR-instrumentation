@@ -3,6 +3,7 @@ from serial import SerialException
 import time
 import yaml
 import numpy as np
+import os
 
 try:
     import ieee754_conversions
@@ -22,7 +23,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+dir_path = os.path.join(os.path.dirname( __file__ ), '..')
+fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 # fh = logging.StreamHandler()
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)

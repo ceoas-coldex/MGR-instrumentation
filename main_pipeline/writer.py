@@ -5,7 +5,7 @@
 import time
 import yaml
 import csv
-import pandas as pd
+import os
 
 # from gui import GUI
 try:
@@ -21,7 +21,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+dir_path = os.path.join(os.path.dirname( __file__ ), '..')
+fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -53,10 +54,11 @@ class Writer():
         date = datetime.split(" ")[0]
         # Try to read in the data saving config file to get the directory and filename suffix
         try:
-            with open("config/data_saving.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/data_saving.yaml", 'r') as stream:
                 saving_config_dict = yaml.safe_load(stream)
             # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
-            directory = saving_config_dict["Notes"]["Directory"]
+            # directory = saving_config_dict["Notes"]["Directory"]
+            directory = f"{dir_path}/data"
             suffix = saving_config_dict["Notes"]["Suffix"]
             self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
@@ -83,10 +85,11 @@ class Writer():
         date = datetime.split(" ")[0]
         # Try to read in the data saving config file to get the directory and filename suffix
         try:
-            with open("config/data_saving.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/data_saving.yaml", 'r') as stream:
                 saving_config_dict = yaml.safe_load(stream)
             # Create filepaths in the data saving directory with the date (may change to per hour depending on size)
-            directory = saving_config_dict["Sensor Data"]["Directory"]
+            # directory = saving_config_dict["Sensor Data"]["Directory"]
+            directory = f"{dir_path}/data"
             suffix = saving_config_dict["Sensor Data"]["Suffix"]
             self.csv_filepath = f"{directory}\\{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory

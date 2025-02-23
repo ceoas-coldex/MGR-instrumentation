@@ -9,9 +9,7 @@ import serial
 from serial import SerialException
 import time
 import yaml
-import numpy as np
-import pandas as pd
-import datetime
+import os
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -21,7 +19,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+dir_path = os.path.join(os.path.dirname( __file__ ), '..')
+fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -38,7 +37,7 @@ from sensor_interfaces import sim_instruments
 
 # Load the sensor comms configuration file - dictionary with sensor serial ports and baud rates
 try:
-    with open("config/sensor_comms.yaml", 'r') as stream:
+    with open(f"{dir_path}/config/sensor_comms.yaml", 'r') as stream:
         comms_config = yaml.safe_load(stream)
 except FileNotFoundError as e:
     logger.error(f"Error in loading the sensor_comms configuration file: {e} Check your file storage and directories")
@@ -139,7 +138,7 @@ class Sensor():
 
         # Read in the sensor config file to grab a list of all the sensors we're working with
         try:
-            with open("config/sensor_data.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
                 self.big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")

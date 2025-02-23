@@ -22,6 +22,7 @@ from functools import partial
 import concurrent.futures
 import traceback
 import pandas as pd
+import os
 
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
@@ -30,7 +31,8 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-fh = logging.FileHandler(f"logs\\{time.strftime('%Y-%m-%d', time.localtime())}.log")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 # Create a formatter to specify our log format
@@ -632,7 +634,7 @@ class ApplicationWindow(QWidget):
         """
         # Read in the logging config file to initialize the notes entries 
         try:
-            with open("config/log_entries.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/log_entries.yaml", 'r') as stream:
                 self.notes_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.warning(f"Error in reading log_entries config file: {e}. Leaving logging panel empty.")
@@ -741,7 +743,7 @@ class ApplicationWindow(QWidget):
         # If we can find it, read in the main page configuration yaml file. This loads a dictionary with the names of sensors and channels
         # we want to put on the main page. It has key-value pairs of {"sensor name":{["channel name", "other channel name"]}, ...}
         try:
-            with open("config/main_page_plots.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/main_page_plots.yaml", 'r') as stream:
                 self.main_page_plots = yaml.safe_load(stream)
         # If we can't find it, note that
         except FileNotFoundError:
@@ -938,7 +940,7 @@ class ApplicationWindow(QWidget):
         # Read in the sensor data config file to initialize the data buffer. 
         # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
         try:
-            with open("config/sensor_data.yaml", 'r') as stream:
+            with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
                 self.big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
