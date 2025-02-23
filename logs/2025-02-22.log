@@ -6172,3 +6172,164 @@ INFO: 16:52:04 - main_pipeline.sensor:  Shutting down sensors
 INFO: 16:52:04 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 16:52:05 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 16:52:05 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 17:09:48 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 17:09:48 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 17:09:48 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 17:09:48 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 17:09:48 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 17:09:48 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 17:09:48 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 17:09:48 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 17:09:48 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 17:09:48 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 17:09:48 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 17:09:48 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 17:09:48 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 17:09:48 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 17:09:48 - main_pipeline.sensor:  Sensor class initiated
+INFO: 17:09:48 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 17:09:48 - main_pipeline.writer:  Display class initiated
+INFO: 17:09:48 - __main__:  No control inputs for the Picarro Gas
+INFO: 17:09:48 - __main__:  No control inputs for the Picarro Water
+INFO: 17:09:48 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 17:09:48 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 17:09:48 - __main__:  No control inputs for the Flowmeter
+INFO: 17:09:52 - main_pipeline.sensor:  Initializing sensors
+INFO: 17:09:52 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 17:09:52 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 17:09:52 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 17:09:52 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 17:09:52 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 17:09:53 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 17:09:53 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 17:09:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:53 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 17:09:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:54 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 17:09:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:54 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 17:09:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:55 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 17:09:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:55 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 17:09:56 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:56 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 17:09:56 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:56 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 17:09:57 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:57 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 17:09:57 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:57 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 17:09:58 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:58 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 17:09:58 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 17:09:58 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:09:58 - sensor_interfaces.picarro_interface:  Picarro initialized
+INFO: 17:09:58 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 17:09:58 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 17:09:58 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 17:09:58 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 17:09:58 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 17:09:58 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 17:09:58 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 17:09:58 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 17:09:58 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 17:09:58 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 17:09:58 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 17:10:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 17:10:01 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 17:10:01 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 17:10:01 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 17:10:05 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 17:10:05 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 17:10:05 - main_pipeline.sensor:  Finished initializing sensors
+WARNING: 17:10:17 - main_pipeline.interpreter:  Error in extracting time and data from Abakus reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 17:10:17 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 17:10:17 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLS1500 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 17:10:17 - main_pipeline.interpreter:  Error in extracting Dimetix laser data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 17:10:17 - main_pipeline.interpreter:  Encountered exception in extracting picarro GAS data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+WARNING: 17:10:17 - main_pipeline.interpreter:  Encountered exception in extracting picarro WATER: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+INFO: 17:10:17 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:17 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 17:10:17 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+WARNING: 17:10:18 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:18 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:18 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:19 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:19 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:19 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:20 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:20 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:20 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:21 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:21 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:21 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:22 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:22 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:22 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:23 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:23 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:23 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:24 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:24 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:24 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:25 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:25 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:26 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:26 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:26 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:27 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:27 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:27 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:28 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:28 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:28 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:29 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:29 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:29 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:30 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:30 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:30 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:31 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:31 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:31 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 17:10:32 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+INFO: 17:10:32 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:33 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 17:10:33 - main_pipeline.sensor:  Shutting down sensors
+INFO: 17:10:33 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 17:10:33 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 17:10:33 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 17:10:35 - main_pipeline.sensor:  Shutting down sensors
+INFO: 17:10:35 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 17:10:35 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 17:10:35 - main_pipeline.sensor:  Finished shutting down sensors

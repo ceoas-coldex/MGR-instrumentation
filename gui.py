@@ -1013,7 +1013,7 @@ class ApplicationWindow(QWidget):
                 try:    # Check if the dictionary key exists... 
                     ch_data = new_data[name]["Data"][channel]
                     self.big_data_dict[name]["Data"][channel].append(ch_data)
-                except KeyError:    # ... otherwise log an exception
+                except KeyError as e:    # ... otherwise log an exception
                     logger.warning(f"Error updating the {name} buffer data: {e}")
                     pass
                 except TypeError as e: 
