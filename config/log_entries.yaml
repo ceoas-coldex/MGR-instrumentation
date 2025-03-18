@@ -2,7 +2,7 @@
 # in case we need to pass in additional information per entry (default value, cap the answer at X chars, etc)
 # but currently all we use are the keys
 ---
-Core Length (units):
-Core ID:
+Core Length (cm):
+Core ID (core_section_segment):
 Timestamp (HH:MM:SS):
 Notes:
