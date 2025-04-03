@@ -70824,3 +70824,51 @@ INFO: 19:22:37 - main_pipeline.sensor:  Shutting down sensors
 INFO: 19:22:37 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 19:22:37 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 19:22:37 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 19:25:15 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 19:25:15 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 19:25:15 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 19:25:16 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 19:25:16 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 19:25:16 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 19:25:16 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 19:25:16 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 19:25:16 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 19:25:16 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 19:25:16 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 19:25:16 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 19:25:16 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 19:25:16 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 19:25:16 - main_pipeline.sensor:  Sensor class initiated
+INFO: 19:25:16 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 19:25:16 - main_pipeline.writer:  Display class initiated
+INFO: 19:25:16 - __main__:  No control inputs for the Picarro Gas
+INFO: 19:25:16 - __main__:  No control inputs for the Picarro Water
+INFO: 19:25:16 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 19:25:16 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 19:25:16 - __main__:  No control inputs for the Flowmeter
+INFO: 19:28:54 - main_pipeline.sensor:  Shutting down sensors
+INFO: 19:28:54 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 19:28:54 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 19:28:54 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 19:29:01 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 19:29:01 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 19:29:01 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 19:29:01 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 19:29:02 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 19:29:02 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 19:29:02 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 19:29:02 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 19:29:02 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 19:29:02 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 19:29:02 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 19:29:02 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 19:29:02 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 19:29:02 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 19:29:02 - main_pipeline.sensor:  Sensor class initiated
+INFO: 19:29:02 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 19:29:02 - main_pipeline.writer:  Display class initiated
+INFO: 19:29:02 - __main__:  No control inputs for the Picarro Gas
+INFO: 19:29:02 - __main__:  No control inputs for the Picarro Water
+INFO: 19:29:02 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 19:29:02 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 19:29:02 - __main__:  No control inputs for the Flowmeter

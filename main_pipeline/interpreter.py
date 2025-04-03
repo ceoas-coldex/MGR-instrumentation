@@ -111,6 +111,8 @@ class Interpreter():
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
 
+        print(self.big_data)
+
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))
 

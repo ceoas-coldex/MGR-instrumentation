@@ -994,9 +994,6 @@ class ApplicationWindow(QWidget):
                 plot_flag = big_data_dict[name]["Data"][channel]["Plot"]
                 self.plotting_dict[name].update({channel: plot_flag})
 
-        print("--")
-        print(self.plotting_dict)
-
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
 
