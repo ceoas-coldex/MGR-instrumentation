@@ -70,6 +70,8 @@ class Interpreter():
                 self.big_data[name]["Data"][channel] = np.nan
                 self.channels.append(f"{name} {channel}")
 
+        print(self.big_data)
+
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, picarro_water_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
         """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 

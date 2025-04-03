@@ -802,15 +802,16 @@ class ApplicationWindow(QWidget):
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
             t = self.big_data_dict[plot_name]["Time (epoch)"]
             y = list(self.big_data_dict[plot_name]["Data"].values())
-            if plot_name == "Abakus Particle Counter":
-                print(t, y)
 
+            # Make sure the data won't throw an error if we plot it
             y_data_list = []
-            # make sure the data won't throw an error if we plot it
+            # Loop through the data for this sensor
             for i, channel_y_data in enumerate(y):
+                # If we can convert it to a np array, we can probably plot it
                 try:
                     np.array(channel_y_data)
                     y_data_list.append(channel_y_data)
+                # If we can't, don't try
                 except ValueError as e:
                     channel_name = list(self.big_data_dict[plot_name]["Data"].keys())[i]
                     logger.warning(f"{plot_name} '{channel_name}' has an invalid structure for plotting: {e}")

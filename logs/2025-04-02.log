@@ -69704,3 +69704,331 @@ INFO: 18:26:51 - main_pipeline.sensor:  Shutting down sensors
 INFO: 18:26:51 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 18:26:51 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 18:26:51 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 18:41:40 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 18:41:41 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 18:41:41 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 18:41:41 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 18:41:41 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 18:41:41 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 18:41:41 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 18:41:41 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 18:41:41 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 18:41:41 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 18:41:41 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 18:41:41 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 18:41:41 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 18:41:41 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 18:41:42 - main_pipeline.sensor:  Shutting down sensors
+INFO: 18:41:42 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 18:41:42 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 18:41:42 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 18:45:51 - __main__:  Interpreter class initiated
+INFO: 18:47:01 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 18:47:01 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 18:47:01 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 18:47:01 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 18:47:01 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 18:47:01 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 18:47:01 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 18:47:01 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 18:47:01 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 18:47:01 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 18:47:01 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 18:47:01 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 18:47:01 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 18:47:01 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 18:47:01 - main_pipeline.sensor:  Sensor class initiated
+INFO: 18:47:01 - main_pipeline.interpreter:  Interpreter class initiated
+INFO: 18:47:01 - main_pipeline.writer:  Display class initiated
+INFO: 18:47:01 - __main__:  No control inputs for the Picarro Gas
+INFO: 18:47:01 - __main__:  No control inputs for the Picarro Water
+INFO: 18:47:01 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 18:47:01 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 18:47:01 - __main__:  No control inputs for the Flowmeter
+INFO: 18:47:12 - main_pipeline.sensor:  Initializing sensors
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 18:47:12 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 18:47:12 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 18:47:13 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:13 - sensor_interfaces.picarro_interface:  Picarro initialized
+INFO: 18:47:13 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 18:47:13 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:13 - sensor_interfaces.picarro_interface:  Picarro initialized
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 2/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 3/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 4/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 5/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 6/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 7/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 8/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 9/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 10/10
+WARNING: 18:47:13 - sensor_interfaces.laser_interface:  Laser distance initialization failed after 10 attempts
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 18:47:13 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 18:47:13 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 18:47:13 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 18:47:13 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 18:47:13 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 18:47:13 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 18:47:13 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 18:47:17 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 18:47:17 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 18:47:17 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 18:47:17 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 18:47:21 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 18:47:21 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 18:47:21 - main_pipeline.sensor:  Finished initializing sensors
+WARNING: 18:47:24 - main_pipeline.interpreter:  Error in extracting time and data from Abakus reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 18:47:24 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 18:47:24 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLS1500 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 18:47:24 - main_pipeline.interpreter:  Error in extracting Dimetix laser data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 18:47:24 - main_pipeline.interpreter:  Encountered exception in extracting picarro GAS data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+WARNING: 18:47:24 - main_pipeline.interpreter:  Encountered exception in extracting picarro WATER: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+INFO: 18:47:25 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:25 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:25 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:26 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:26 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:26 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:27 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:27 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:27 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:28 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:28 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:28 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:29 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:29 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:29 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:30 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:30 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:30 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:31 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:31 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:31 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:32 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:32 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:32 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:33 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:33 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:33 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:33 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:34 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:34 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:34 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:35 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:35 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:35 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:36 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:36 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:36 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:37 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:37 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:37 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:37 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:37 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:37 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:37 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:37 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:37 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:38 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:38 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:38 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:38 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:39 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:39 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:39 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:40 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:40 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:40 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:41 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:41 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:41 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:42 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:42 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:42 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:43 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:43 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:43 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:44 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:44 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:44 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:45 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:45 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:45 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:45 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:46 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:46 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:46 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:47 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:47 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:47 - __main__:  Abakus Particle Counter 'Bins' has an invalid structure for plotting: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (24,) + inhomogeneous part.
+WARNING: 18:47:47 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:48 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:48 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:48 - __main__:  Abakus Particle Counter 'Bins' has an invalid structure for plotting: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (25,) + inhomogeneous part.
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 51, 181, 126]
+WARNING: 18:47:48 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:48 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:49 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:49 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:49 - __main__:  Abakus Particle Counter 'Bins' has an invalid structure for plotting: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (26,) + inhomogeneous part.
+WARNING: 18:47:49 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:50 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:50 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:50 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:51 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:51 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:51 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:52 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:52 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:52 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:53 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:53 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:53 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:54 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:54 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:54 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:55 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:55 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Encountered exception in validating flowmeter SLI2000: Bad checksum. Raw output [126, 0, 53, 0, 2, 0, 125, 49, 183, 126]
+WARNING: 18:47:55 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable
+WARNING: 18:47:55 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:56 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:56 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:56 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:57 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:57 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:57 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:58 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:58 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:58 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:47:59 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:47:59 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:47:59 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:00 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:00 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:00 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:01 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:01 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:01 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:02 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:02 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:02 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:03 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:03 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:03 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:04 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:04 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:04 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:05 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:05 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:05 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:06 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:06 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:06 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:07 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:07 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:07 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:08 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:08 - sensor_interfaces.picarro_interface:  Picarro queried
+WARNING: 18:48:08 - main_pipeline.interpreter:  Recieved error message from laser distance: g0@E256
+ Check manual for error code. Not updating measurement
+INFO: 18:48:09 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:09 - sensor_interfaces.picarro_interface:  Picarro queried
+INFO: 18:48:10 - main_pipeline.sensor:  Shutting down sensors
+INFO: 18:48:10 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 18:48:10 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 18:48:10 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 18:48:15 - main_pipeline.sensor:  Shutting down sensors
+INFO: 18:48:15 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 18:48:15 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 18:48:15 - main_pipeline.sensor:  Finished shutting down sensors
