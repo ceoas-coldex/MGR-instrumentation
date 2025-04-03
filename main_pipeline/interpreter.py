@@ -153,8 +153,8 @@ class Interpreter():
                 # If we've received the correct number of bins, update the measurement. Otherwise, log an error
                 abakus_bin_num = 32
                 if len(bins) == abakus_bin_num: 
-                    self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
-                    self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
+                    self.big_data["Abakus Particle Counter"]["Data"]["Bins"] = bins
+                    self.big_data["Abakus Particle Counter"]["Data"]["Counts/Bin"] = counts
                     self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
                 else:
                     logger.warning("Didn't receive the expected 32 Abakus channels. Not updating measurement")

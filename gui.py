@@ -802,9 +802,27 @@ class ApplicationWindow(QWidget):
             num_subplots = len(self.big_data_dict[plot_name]["Data"].keys())
             t = self.big_data_dict[plot_name]["Time (epoch)"]
             y = list(self.big_data_dict[plot_name]["Data"].values())
+            if plot_name == "Abakus Particle Counter":
+                print(t, y)
+
+            y_data_list = []
+            # make sure the data won't throw an error if we plot it
+            for i, channel_y_data in enumerate(y):
+                try:
+                    np.array(channel_y_data)
+                    y_data_list.append(channel_y_data)
+                except ValueError as e:
+                    channel_name = list(self.big_data_dict[plot_name]["Data"].keys())[i]
+                    logger.warning(f"{plot_name} '{channel_name}' has an invalid structure for plotting: {e}")
+                    dummy_list = deque([np.nan]*len(t))
+                    y_data_list.append(dummy_list)
+
+                    # set the plot flag for this channel to false
+                    # now I need to go set up plot flags
+
             # Convert from UTC epoch time to pacific time, passing in the y_data too to ensure the arrays
             # stay the same shape
-            t_pacific_time, y_data_list = epoch_to_pacific_time(t, y)
+            t_pacific_time, y_data_list = epoch_to_pacific_time(t, y_data_list)
             # All sensor channels have the same timestamp, so make n_subplots copies of the time
             x_data_list = [t_pacific_time]*num_subplots 
             
@@ -832,6 +850,11 @@ class ApplicationWindow(QWidget):
                 logger.error(f"Error in reading the data buffer when updating plots: {e}")
                 x_data_list = None
                 y_data_list = None
+
+        except Exception as e:
+            logger.error(f"Unexpected error in updating {plot_name} plots: {e}")
+            x_data_list = None
+            y_data_list = None
 
         return x_data_list, y_data_list
 
@@ -994,7 +1017,7 @@ class ApplicationWindow(QWidget):
             new_data (dict): Most recent data update. Should have the same key/value structure as big_data_dict
             use_noise (bool): Adds some random noise if true. For testing only
         """
-        print(new_data)
+        # print(new_data)
         # For each sensor, grab the timestamp and the data from each sensor channel
         for name in self.sensor_names:
             # Grab and append the timestamp
