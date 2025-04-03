@@ -70,8 +70,6 @@ class Interpreter():
                 self.big_data[name]["Data"][channel] = np.nan
                 self.channels.append(f"{name} {channel}")
 
-        print(self.big_data)
-
     def main_consumer_producer(self, abakus_bus:Bus, flowmeter_sli_bus:Bus, flowmeter_sls_bus:Bus, laser_bus:Bus,
                                picarro_gas_bus:Bus, picarro_water_bus:Bus, bronkhorst_bus:Bus, output_bus:Bus):
         """Method to read from all the sensor busses, process the data it reads, and write one compiled output file. 
@@ -110,8 +108,6 @@ class Interpreter():
         # print(f"time difference 2: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Laser Distance Sensor"]["Time (epoch)"]}")
         # print(f"time difference 3: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Flowmeter"]["Time (epoch)"]}")
         # # print(f"time difference 4: {self.big_data["Abakus Particle Counter"]["Time (epoch)"] - self.big_data["Picarro Water"]["Time (epoch)"]}")
-
-        print(self.big_data)
 
         # Write to the output bus
         output_bus.write(copy.deepcopy(self.big_data))

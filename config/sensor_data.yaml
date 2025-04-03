@@ -51,7 +51,7 @@ Abakus Particle Counter:
       Plot: Y
     Bins:
       Plot: N
-    Counts:
+    Counts/Bin:
       Plot: N
   # Other:
   #   Bins: []
