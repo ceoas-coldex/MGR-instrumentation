@@ -22,6 +22,7 @@ from functools import partial
 import concurrent.futures
 import traceback
 import pandas as pd
+import copy
 import os
 
 import logging
@@ -673,12 +674,19 @@ class ApplicationWindow(QWidget):
             tab.setObjectName(sensor)
             tab_vbox = QVBoxLayout(tab)
             # For each figure, we want a subplot corresponding to each piece of data returned by the sensor. Grab that number
-            num_subplots = len(self.big_data_dict[sensor]["Data"])
+            # num_subplots = len(self.big_data_dict[sensor]["Data"])
+            num_subplots = 0
+            ylabels = []
+            data_channels = list(self.big_data_dict[sensor]["Data"].keys())
+            for channel in data_channels:
+                if self.plotting_dict[sensor][channel] == "Y":
+                    num_subplots += 1
+                    ylabels.append(channel)
             # Create the figure and toolbar
             fig = MyFigureCanvas(x_init=[[np.nan]]*num_subplots,   # List of lists, one for each subplot, to initialize the figure x-data
                                  y_init=[[np.nan]]*num_subplots, # List of lists, one for each subplot, to initialize the figure y-data
                                  xlabels=["Time"]*num_subplots,
-                                 ylabels=list(self.big_data_dict[sensor]["Data"].keys()),
+                                 ylabels= ylabels, # list(self.big_data_dict[sensor]["Data"].keys()),
                                  num_subplots=num_subplots,
                                  x_range=self.default_plot_length, # Set xlimit range of each axis
                                  )
@@ -807,25 +815,24 @@ class ApplicationWindow(QWidget):
             y_data_list = []
             # Loop through the data for this sensor
             for i, channel_y_data in enumerate(y):
-                # If we can convert it to a np array, we can probably plot it
-                try:
-                    np.array(channel_y_data)
-                    y_data_list.append(channel_y_data)
-                # If we can't, don't try
-                except ValueError as e:
-                    channel_name = list(self.big_data_dict[plot_name]["Data"].keys())[i]
-                    logger.warning(f"{plot_name} '{channel_name}' has an invalid structure for plotting: {e}")
-                    dummy_list = deque([np.nan]*len(t))
-                    y_data_list.append(dummy_list)
-
-                    # set the plot flag for this channel to false
-                    # now I need to go set up plot flags
+                channel_name = list(self.big_data_dict[plot_name]["Data"].keys())[i]
+                if self.plotting_dict[plot_name][channel_name] == "Y":
+                    # If we can convert it to a np array, we can probably plot it
+                    try:
+                        np.array(channel_y_data)
+                        y_data_list.append(channel_y_data)
+                    # If we can't, don't try
+                    except ValueError as e:
+                        logger.warning(f"{plot_name} '{channel_name}' has an invalid structure for plotting: {e}")
+                        dummy_list = deque([np.nan]*len(t))
+                        y_data_list.append(dummy_list)
+                        self.plotting_dict[plot_name][channel_name] = "N" # set the plot flag for this channel to false
 
             # Convert from UTC epoch time to pacific time, passing in the y_data too to ensure the arrays
             # stay the same shape
             t_pacific_time, y_data_list = epoch_to_pacific_time(t, y_data_list)
             # All sensor channels have the same timestamp, so make n_subplots copies of the time
-            x_data_list = [t_pacific_time]*num_subplots 
+            x_data_list = [t_pacific_time]*len(y_data_list)
             
         # If we can't find it in the buffer, we're probably on the "main page plots" tab, in which case the plot name is "All"
         except KeyError as e:
@@ -965,18 +972,30 @@ class ApplicationWindow(QWidget):
         # Creates a properly formatted, empty dictionary to store timestamps and data readings to each sensor
         try:
             with open(f"{dir_path}/config/sensor_data.yaml", 'r') as stream:
-                self.big_data_dict = yaml.safe_load(stream)
+                big_data_dict = yaml.safe_load(stream)
         except FileNotFoundError as e:
             logger.error(f"Error in loading the sensor data config file: {e}")
-            self.big_data_dict = {}
+            big_data_dict = {}
+
+        sensor_names = big_data_dict.keys()
+
+        # Comb through the keys, pull out info relevant to plotting
+        self.plotting_dict = {}
 
         # Comb through the keys, set the timestamp to the current time and the data to zero
-        sensor_names = self.big_data_dict.keys()
+        self.big_data_dict = copy.deepcopy(big_data_dict)
         for name in sensor_names:
-            channels = self.big_data_dict[name]["Data"].keys()
+            channels = big_data_dict[name]["Data"].keys()
             self.big_data_dict[name]["Time (epoch)"] = deque([np.nan], maxlen=self.max_buffer_length)
+            self.plotting_dict.update({name: {}})
             for channel in channels:
                 self.big_data_dict[name]["Data"][channel] = deque([np.nan], maxlen=self.max_buffer_length)
+
+                plot_flag = big_data_dict[name]["Data"][channel]["Plot"]
+                self.plotting_dict[name].update({channel: plot_flag})
+
+        print("--")
+        print(self.plotting_dict)
 
         # Grab the names of the sensors from the dictionary
         self.sensor_names = list(sensor_names)
