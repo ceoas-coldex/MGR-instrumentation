@@ -53,9 +53,6 @@ Abakus Particle Counter:
       Plot: N
     Counts/Bin:
       Plot: N
-  # Other:
-  #   Bins: []
-  #   Counts: []
 Flowmeter:
   Time (epoch):
   Data:
