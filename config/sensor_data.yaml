@@ -8,54 +8,77 @@
 #   the risk of saving data to the incorrect header.
 ---
 Picarro Gas:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    CavityPressure: []
-    OutletValve: []
-    CO: []
-    CO2: []
-    CH4: []
-    H2O: []
+    CavityPressure:
+      Plot: N
+    OutletValve:
+      Plot: N
+    CO:
+      Plot: Y
+    CO2:
+      Plot: Y
+    CH4:
+      Plot: Y
+    H2O:
+      Plot:  Y
 Picarro Water:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    CavityPressure: []
-    OutletValve: []
-    H2O: []
-    Delta_18: []
-    Delta_D: []
-    ValcoPosition: []
+    CavityPressure:
+      Plot: N
+    OutletValve:
+      Plot: N
+    H2O:
+      Plot: Y
+    Delta_18:
+      Plot: Y
+    Delta_D:
+      Plot: Y
+    ValcoPosition:
+      Plot: N
 Laser Distance Sensor:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    Distance (cm): []
-    Temperature (C): []
+    Distance (cm):
+      Plot: Y
+    Temperature (C):
+      Plot: Y
 Abakus Particle Counter:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    Total Counts: []
-  Other:
-    Bins: []
-    Counts: []
+    Total Counts:
+      Plot: Y
+    Bins:
+      Plot: N
+    Counts/Bin:
+      Plot: N
 Flowmeter:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    SLI2000 (uL/min): []
-    SLS1500 (mL/min): []
+    SLI2000 (uL/min):
+      Plot: Y
+    SLS1500 (mL/min):
+      Plot: Y
   Other:
     Samples Per Query: 15
 Bronkhorst Pressure:
-  Time (epoch): []
+  Time (epoch):
   Data:
-    Setpoint (mbar a): []
-    Measurement (%): []
-    Measurement (mbar a): []
-    Temperature (C): []
+    Setpoint (mbar a):
+      Plot: N
+    Measurement (%):
+      Plot: N
+    Measurement (mbar a):
+      Plot: Y
+    Temperature (C):
+      Plot: Y
   Control:
     Pressure (mbar):
 Melthead:
   Time (epoch):
   Data:
     Temperature (Not Yet Integrated):
+      Plot: N
   Control:
     Temperature (C):

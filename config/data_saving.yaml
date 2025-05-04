@@ -3,9 +3,7 @@
 ---
 Sensor Data:
   Directory: "data"
-  # Directory: "C:\\Users\\ceoas_coldex\\Documents\\GitHub\\MGR-instrumentation\\data"
-  Suffix: ""
+  Suffix: "_post_abakus_fix"
 Notes:
   Directory: "data"
-  # Directory: "C:\\Users\\ceoas_coldex\\Documents\\GitHub\\MGR-instrumentation\\data"
   Suffix: "_notes"

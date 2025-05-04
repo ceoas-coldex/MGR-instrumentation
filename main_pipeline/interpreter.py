@@ -153,8 +153,8 @@ class Interpreter():
                 # If we've received the correct number of bins, update the measurement. Otherwise, log an error
                 abakus_bin_num = 32
                 if len(bins) == abakus_bin_num: 
-                    self.big_data["Abakus Particle Counter"]["Other"]["Bins"] = bins
-                    self.big_data["Abakus Particle Counter"]["Other"]["Counts/Bin"] = counts
+                    self.big_data["Abakus Particle Counter"]["Data"]["Bins"] = bins
+                    self.big_data["Abakus Particle Counter"]["Data"]["Counts/Bin"] = counts
                     self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
                 else:
                     logger.warning("Didn't receive the expected 32 Abakus channels. Not updating measurement")
@@ -401,12 +401,13 @@ class Interpreter():
                         return
                     # If we're getting real data or running in simulated debug mode, data_out will be a list of values. Assign those accordingly
                     # data_out[0] # the time at which the measurement was sampled
+                    # ["Cavity Pressure", "Outlet Valve", "CO", "CO2", "CH4", "H2O"]
                     self.big_data["Picarro Gas"]["Data"]["CavityPressure"] = float(data_out[1])
                     self.big_data["Picarro Gas"]["Data"]["OutletValve"] = float(data_out[2])
                     self.big_data["Picarro Gas"]["Data"]["CO"] = float(data_out[3])
-                    self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[2])
-                    self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[3])
-                    self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[4])
+                    self.big_data["Picarro Gas"]["Data"]["CO2"] = float(data_out[4])
+                    self.big_data["Picarro Gas"]["Data"]["CH4"] = float(data_out[5])
+                    self.big_data["Picarro Gas"]["Data"]["H2O"] = float(data_out[6])
                 except KeyError as e:
                     logger.warning(f"Encountered exception in processing picarro {model} data: No key {e}. Not updating measurement.")
                 except Exception as e:
