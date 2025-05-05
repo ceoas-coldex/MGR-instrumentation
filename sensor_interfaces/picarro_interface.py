@@ -4,7 +4,7 @@
 # must be properly configured (Picarro Utilities > Setup Tool > Port Manager) to enable the interface, see README for full docs
 #
 # Ali Jones
-# Last updated 9/4/24
+# Last updated 5/4/25
 # -------------
 
 import serial
@@ -104,7 +104,6 @@ class Picarro():
         else:
             return buf
 
-    @log_on_end(logging.INFO, "Picarro queried", logger=logger)
     def query(self):
         """
         Queries the picarro to get the most recent measurement and timestamp. The first element of the query 
@@ -123,7 +122,6 @@ class Picarro():
         output = output.split(";")
 
         return timestamp, output
-    
 
 if __name__ == "__main__":
     # order of the gas measurements returned by query()

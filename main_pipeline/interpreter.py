@@ -7,31 +7,34 @@ import time
 import yaml
 import copy
 import os
-
-try:
-    from main_pipeline.bus import Bus
-except ImportError:
-    from bus import Bus
-
-try:
-    import ieee754_conversions
-except ImportError:
-    import pathlib
-    import sys
-    _parentdir = pathlib.Path(__file__).parent.parent.resolve()
-    sys.path.insert(0, str(_parentdir))
-    import ieee754_conversions
-    sys.path.remove(str(_parentdir))
-
+import sys
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
+
+# Check if we're running as an executable or from source, and set the directory filepath appropriately
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'): # maaagic. From https://pyinstaller.org/en/stable/runtime-information.html
+    running_from = ".exe"
+    dir_path = sys._MEIPASS
+else:
+    running_from = "source"
+    dir_path = os.path.join(os.path.dirname( __file__ ), '..')
+
+try: # If we're running from gui.py
+    import ieee754_conversions
+    from main_pipeline.bus import Bus
+except ImportError: # If we're running from interpreter.py (here)
+    from bus import Bus
+    # This is a bit cheeky. Adds the parent directory to sys.path, imports what we need, then removes it. 
+    # Only shows up when running this script on its own, so not a problem for the executable
+    sys.path.insert(0, str(dir_path)) 
+    import ieee754_conversions
+    sys.path.remove(str(dir_path))
 
 # Set up a logger for this module
 logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-dir_path = os.path.join(os.path.dirname( __file__ ), '..')
 fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
@@ -41,7 +44,7 @@ fh.setFormatter(formatter)
 
 class Interpreter():
     """Class that reads data from each sensor bus, does some processing, and republishes on an Interpreter bus."""
-    @log_on_end(logging.INFO, "Interpreter class initiated", logger=logger)
+    @log_on_end(logging.INFO, f"Interpreter class initiated, running from {running_from}", logger=logger)
     def __init__(self) -> None:
 
        self._initialize_data_storage()
@@ -189,8 +192,8 @@ class Interpreter():
             # First, save the timestamp to the data dictionary 
             try:
                 self.big_data["Flowmeter"]["Time (epoch)"] = timestamp
-                # If we're running shadow hardware and not in debug mode, the sensors return "nan". Check for that first
-                if data_out == "nan":
+                # If we're running shadow hardware and not in debug mode, the sensors return a list of "nan". Check for that first
+                if data_out[0] == "nan":
                     return
                 # If we're not running shadow hardware, the flowmeter data is a list of n samples of flowmeter data.
                 # For each one of those samples...
@@ -217,7 +220,7 @@ class Interpreter():
                         flow_rates.append(np.nan)
                 if np.nan in flow_rates:
                     # Take the average of our list (make it a nanmean in case any of the elements came through wrong)
-                    if all(flow_rates == np.nan):
+                    if all(np.isnan(np.array(flow_rates))):
                         averaged_flow_rate = np.nan
                     else:
                         averaged_flow_rate = np.nanmean(flow_rates)

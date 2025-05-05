@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-dir_path = os.path.dirname(os.path.realpath(__file__))
+dir_path = os.path.abspath(os.path.dirname(__file__))
 fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
@@ -479,11 +479,13 @@ class ApplicationWindow(QWidget):
         self.title_buttons["Start Data Collection"].setEnabled(False)
         self.title_buttons["Stop Data Collection"].setEnabled(False)
     
+    @log_on_end(logging.INFO, "Started data collection", logger=logger)
     def _on_start_data(self):
         """Callback function for the "Start Data Collection" button. Sets the data_collection flag to true
         """
         self.data_collection = True
         
+    @log_on_end(logging.INFO, "Stopped data collection", logger=logger)
     def _on_stop_data(self):
         """Callback function for the "Stop Data Collection" button. Sets the data_collection flag to false
         """

@@ -1,0 +1,2 @@
+5/4/25
+WARNING: 11:48:50 - main_pipeline.interpreter:  Unexpected error in processing flowmeter SLI2000: 'bool' object is not iterable

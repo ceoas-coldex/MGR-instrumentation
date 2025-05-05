@@ -1,27 +1,35 @@
 # -------------
-# The display class
+# The writer class
 # -------------
 
+# General imports
 import time
 import yaml
 import csv
 import os
+import sys
+import logging
+from logdecorator import log_on_start , log_on_end , log_on_error
 
-# from gui import GUI
+# Custom imports
 try:
     from main_pipeline.bus import Bus
 except ImportError:
     from bus import Bus
 
-import logging
-from logdecorator import log_on_start , log_on_end , log_on_error
+# Check if we're running as an executable or from source, and set the directory filepath appropriately
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'): # maaagic. From https://pyinstaller.org/en/stable/runtime-information.html
+    running_from = ".exe"
+    dir_path = sys._MEIPASS
+else:
+    running_from = "source"
+    dir_path = os.path.join(os.path.dirname( __file__ ), '..')
 
 # Set up a logger for this module
 logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-dir_path = os.path.join(os.path.dirname( __file__ ), '..')
 fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
@@ -31,9 +39,8 @@ fh.setFormatter(formatter)
 
 class Writer():
     """Class that reads the interpreted data and saves it to the disk"""
-    @log_on_end(logging.INFO, "Display class initiated", logger=logger)
+    @log_on_end(logging.INFO, f"Writer class initiated, running from {running_from}", logger=logger)
     def __init__(self) -> None:
-
         self.load_data_directory()
         self.load_notes_directory()
         self.init_data_saving()
@@ -60,7 +67,7 @@ class Writer():
             # directory = saving_config_dict["Notes"]["Directory"]
             directory = f"{dir_path}/data"
             suffix = saving_config_dict["Notes"]["Suffix"]
-            self.notes_filepath = f"{directory}\\{date}{suffix}.csv"
+            self.notes_filepath = f"{directory}/{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
             logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
@@ -91,7 +98,7 @@ class Writer():
             # directory = saving_config_dict["Sensor Data"]["Directory"]
             directory = f"{dir_path}/data"
             suffix = saving_config_dict["Sensor Data"]["Suffix"]
-            self.csv_filepath = f"{directory}\\{date}{suffix}.csv"
+            self.csv_filepath = f"{directory}/{date}{suffix}.csv"
         # If we can't find the file, note that and set the filepath to the current working directory
         except FileNotFoundError as e:
             logger.warning(f"Error in loading data_saving config file: {e}. Saving to current working directory")
@@ -225,3 +232,6 @@ class Writer():
 
 if __name__ == "__main__":
     mywriter = Writer()
+    print(mywriter.data_titles)
+    print(f"Saving data to {mywriter.csv_filepath}")
+    print(f"Saving notes to {mywriter.notes_filepath}")

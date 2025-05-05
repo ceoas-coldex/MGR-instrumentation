@@ -1,7 +1,5 @@
 # -------------
 # The sensor class
-# 
-# Currently can't be run from here, since it's importing things from the sensor_interfaces package. Need to figure that out.
 # -------------
 
 # General imports
@@ -10,16 +8,35 @@ from serial import SerialException
 import time
 import yaml
 import os
-
+import sys
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
+
+# Check if we're running as an executable or from source, and set the directory filepath appropriately
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'): # maaagic. From https://pyinstaller.org/en/stable/runtime-information.html
+    running_from = ".exe"
+    dir_path = sys._MEIPASS
+else:
+    running_from = "source"
+    dir_path = os.path.join(os.path.dirname( __file__ ), '..')
+
+# Custom imports
+try:
+    from main_pipeline.bus import Bus
+    from sensor_interfaces import sim_instruments
+except ImportError:
+    from bus import Bus
+    # This is a bit cheeky. Adds the parent directory to sys.path, imports what we need, then removes it. 
+    # Only shows up when running this script on its own, so not a problem for the executable
+    sys.path.insert(0, str(dir_path)) 
+    from sensor_interfaces import sim_instruments
+    sys.path.remove(str(dir_path))
 
 # Set up a logger for this module
 logger = logging.getLogger(__name__)
 # Set the lowest-severity log message the logger will handle (debug = lowest, critical = highest)
 logger.setLevel(logging.DEBUG)
 # Create a handler that saves logs to the log folder named as the current date
-dir_path = os.path.join(os.path.dirname( __file__ ), '..')
 fh = logging.FileHandler(f"{dir_path}/logs/{time.strftime('%Y-%m-%d', time.localtime())}.log")
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
@@ -27,21 +44,18 @@ logger.addHandler(fh)
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(name)s:  %(message)s", datefmt="%H:%M:%S")
 fh.setFormatter(formatter)
 
-# Custom imports
-from main_pipeline.bus import Bus
-from sensor_interfaces import sim_instruments
-
 ####### -------------------------------- Try to connect to all the sensors -------------------------------- #######
 # If we can connect, use the real sensor at the specified serial port and baud. if not, use simulated hardware. 
 # This allows us to have the entire process running even if we only want a few sensors online
 
 # Load the sensor comms configuration file - dictionary with sensor serial ports and baud rates
+
 try:
     with open(f"{dir_path}/config/sensor_comms.yaml", 'r') as stream:
         comms_config = yaml.safe_load(stream)
 except FileNotFoundError as e:
     logger.error(f"Error in loading the sensor_comms configuration file: {e} Check your file storage and directories")
-
+    
 # Picarro Gas
 try:
     serial.Serial(port=comms_config["Picarro Gas"]["serial port"], baudrate=comms_config["Picarro Gas"]["baud rate"])
@@ -122,9 +136,11 @@ except SerialException:
 except KeyError as e:
     logger.error(f"Key error in reading sensor_comms configuration file: {e}. Check that your dictionary keys match")
 
+
+####### -------------------------------- Set up the sensor class -------------------------------- #######
 class Sensor():
     """Class that reads from the different sensors and publishes that data over busses"""
-    @log_on_end(logging.INFO, "Sensor class initiated", logger=logger)
+    @log_on_end(logging.INFO, f"Sensor class initiated, running from {running_from}", logger=logger)
     def __init__(self, debug=False) -> None:
         # Initialize the sensors with the appropriate serial port and baud rate (set in config/sensor_comms.yaml, make sure the dictionary keys here match)
         self.abakus = Abakus(serial_port=comms_config["Abakus Particle Counter"]["serial port"], baud_rate=comms_config["Abakus Particle Counter"]["baud rate"])
@@ -307,3 +323,6 @@ class Sensor():
         timestamp, data_out = self.bronkhorst.query()
         return timestamp, data_out
     
+if __name__ == "__main__":
+    mysensor = Sensor()
+    print(mysensor.sensor_names)
