@@ -45,7 +45,6 @@ from main_pipeline.interpreter import Interpreter
 from main_pipeline.writer import Writer
 from main_pipeline.bus import Bus
 
-
 # main window
 class ApplicationWindow(QWidget):
     """
@@ -206,7 +205,7 @@ class ApplicationWindow(QWidget):
         for sensor in self.sensor_names:
             try:
                 self.big_data_dict[sensor]["Control"]
-            except KeyError:
+            except KeyError as e:
                 pass
             else:
                 for control_param in self.big_data_dict[sensor]["Control"]:
@@ -1047,7 +1046,6 @@ class ApplicationWindow(QWidget):
                 logger.warning(f"Error updating the {name} buffer timestamp: {e}")
             except TypeError as e:  # Sometimes due to threading shenanigans it comes through as "NoneType", check for that too
                 logger.warning(f"Error updating the {name} buffer timestamp: {e}")
-                pass
             
             # Grab and append the data from each channel
             channels = list(self.big_data_dict[name]["Data"].keys())
@@ -1060,7 +1058,7 @@ class ApplicationWindow(QWidget):
                     pass
                 except TypeError as e: 
                     logger.warning(f"Error updating the {name} buffer data: {e}")
-                    pass
+                    
     
     def run_data_collection(self):
         """Method to complete the entire sense/interpret/save data pipeline once. This is called by a timer way back in __init__, so gets triggered every time that
