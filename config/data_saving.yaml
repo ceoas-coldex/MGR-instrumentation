@@ -3,7 +3,8 @@
 ---
 Sensor Data:
   Directory: "data"
-  Suffix: "_post_abakus_fix"
+  # Suffix: "_post_abakus_fix"
+  Suffix: ""
 Notes:
   Directory: "data"
   Suffix: "_notes"
