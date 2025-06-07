@@ -53,6 +53,8 @@ Abakus Particle Counter:
       Plot: N
     Counts/Bin:
       Plot: N
+    Incremental Counts:
+      Plot: Y
 Flowmeter:
   Time (epoch):
   Data:

@@ -48,6 +48,7 @@ class Interpreter():
     def __init__(self) -> None:
 
        self._initialize_data_storage()
+       self._last_abakus_count = 0
 
     def _initialize_data_storage(self):
         """Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
@@ -159,6 +160,9 @@ class Interpreter():
                     self.big_data["Abakus Particle Counter"]["Data"]["Bins"] = bins
                     self.big_data["Abakus Particle Counter"]["Data"]["Counts/Bin"] = counts
                     self.big_data["Abakus Particle Counter"]["Data"]["Total Counts"] = total_counts
+                    inc_counts = total_counts - self._last_abakus_count
+                    self.big_data["Abakus Particle Counter"]["Data"]["Incremental Counts"] = inc_counts
+                    self._last_abakus_count = total_counts
                 else:
                     logger.warning("Didn't receive the expected 32 Abakus channels. Not updating measurement")
             except KeyError as e:
