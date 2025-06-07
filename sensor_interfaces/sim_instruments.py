@@ -10,6 +10,7 @@ import time
 import os
 import logging
 from logdecorator import log_on_start , log_on_end , log_on_error
+import numpy as np
 
 # Set up a logger for this module
 logger = logging.getLogger(__name__)
@@ -44,7 +45,12 @@ class Abakus():
     def __init__(self, serial_port="COM3", baud_rate=38400) -> None:
         """Fake hardware, pretends to do everything the real Abakus class does"""
         self.initialize_pyserial(serial_port, baud_rate)
-
+        # Holding onto fake abakus data as a class variable in this case because the Abakus should be cumulative
+        self.fake_abakus_data = "00000008 00000000 00000009 00000000 00000010 00000000 00000011 00000000 00000012 00000000 00000013 00000000 00000014 00000000 00000016 00000000 00000018 00000000 00000020 00000000 00000022 00000000 00000024 00000000 00000026 00000000 00000028 00000000 00000030 00000000 00000032 00000000 00000034 00000000 00000037 00000000 00000040 00000000 00000043 00000000 00000046 00000000 00000049 00000000 00000052 00000000 00000055 00000000 00000058 00000000 00000062 00000000 00000066 00000000 00000070 00000000 00000075 00000000 00000080 00000000 00000090 00000000 00000100 00000000"
+        num_bins = len(self.fake_abakus_data.split()[::2])
+        # Create a dummy array of counts, initialized to 0
+        self.counts = np.array([0]*num_bins)
+    
     def __del__(self) -> None:
         self.stop_measurement()
 
@@ -71,15 +77,30 @@ class Abakus():
         return 0
 
     # @log_on_end(logging.INFO, "Abakus queried", logger=logger)
-    def query(self):
+    def query(self, verbose=False):
         """Returns - timestamp (float, epoch time), data_out (str, unprocessed string)"""
-
-        fake_abakus_data = "00000008 00000000 00000009 00000000 00000010 00000000 00000011 00000000 00000012 00000000 00000013 00000000 00000014 00000000 00000016 00000000 00000018 00000000 00000020 00000000 00000022 00000000 00000024 00000000 00000026 00000000 00000028 00000000 00000030 00000000 00000032 00000000 00000034 00000000 00000037 00000000 00000040 00000000 00000043 00000000 00000046 00000000 00000049 00000000 00000052 00000000 00000055 00000000 00000058 00000000 00000062 00000000 00000066 00000000 00000070 00000000 00000075 00000000 00000080 00000000 00000090 00000000 00000100 00000000"
+        
         timestamp = time.time()
+
+        # fake_abakus_data is a string of "bins, counts". Make it a list, then grab every other element pull out the bins
+        bins = self.fake_abakus_data.split()[::2]
+        # Create an array of random integers between 0-11 with the same length as bins
+        new_ab = np.random.randint(0, 11, len(bins))
+        # Add it to our running tally of counts
+        self.counts += new_ab
+        if verbose:
+            print(self.counts)
+
+        # Gnarly string comprehension my beloved. This remakes the original "bins, counts" string, and ensures they have 
+        # leading zeros to keep them the original length (8 chars)
+        strlen = len(bins[0])
+        cumulative_abakus_data = " ".join(str(x).rjust(strlen, '0') for y in zip(bins, self.counts) for x in y)
+        if verbose:
+            print(cumulative_abakus_data)
 
         # If we're in debug mode, return this fake reading
         if debug:
-            output = fake_abakus_data
+            output = cumulative_abakus_data
         # Otherwise, return NAN
         else:
             output = "nan"
@@ -340,3 +361,7 @@ class MeltHead:
             logger.info(f"Set melthead setpoint to {setpoint} degC")
 
 
+if __name__ == "__main__":
+    my_abakus = Abakus()
+    for _ in range(10):
+        my_abakus.query(verbose=True)
