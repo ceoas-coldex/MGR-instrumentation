@@ -49,6 +49,10 @@ class Interpreter():
 
        self._initialize_data_storage()
        self._last_abakus_count = 0
+       self._last_laser_average = 0
+       self._last_laser_timestamp = time.time()
+       self._laser_distance_list = []
+       self._laser_melt_rate_interval = 4 # seconds
 
     def _initialize_data_storage(self):
         """Method to set up the dict for all sensors, with initial measurements zeroed and the correct formatting to be 
@@ -353,7 +357,33 @@ class Interpreter():
                 else:
                     distance = distance[3:].strip()
                     distance_cm = float(distance) / 100.0
+
+                    # distance_cm = timestamp # for debugging, make sure this is COMMENTED OUT
+                    # Update the big dictionary
                     self.big_data["Laser Distance Sensor"]["Data"]["Distance (cm)"] = distance_cm
+
+                    # We want to track melt rate, so we need a running average. Every time we get a new reading, stick it 
+                    #   in this list
+                    self._laser_distance_list.append(distance_cm)
+                    # If it's been 4 seconds since the last average...
+                    if (timestamp - self._last_laser_timestamp) > self._laser_melt_rate_interval:
+                        # Take a new average of our list
+                        laser_dist_avg = np.mean(self._laser_distance_list)
+                        # Find the exact time difference
+                        laser_dist_time = timestamp - self._last_laser_timestamp # should be close to 4
+                        # And use that to calculate melt rate (change in distance over time)
+                        melt_rate = (laser_dist_avg - self._last_laser_average) / laser_dist_time
+                        # Reset our trackers and clear our list
+                        self._last_laser_average = laser_dist_avg
+                        self._last_laser_timestamp = timestamp
+                        self._laser_distance_list.clear()
+                    # If it hasn't been 4 seconds, return nan.
+                    else:
+                        melt_rate = np.nan
+
+                    # Update the big dictionary
+                    self.big_data["Laser Distance Sensor"]["Data"]["Melt Rate (cm/s)"] = melt_rate
+
             except ValueError as e:
                 logger.warning(f"Error in converting distance reading to float: {e}. Not updating measurement")
             except KeyError as e:

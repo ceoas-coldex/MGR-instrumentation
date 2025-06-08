@@ -231,3 +231,1202 @@ INFO: 19:52:41 - main_pipeline.sensor:  Shutting down sensors
 INFO: 19:52:41 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
 INFO: 19:52:41 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
 INFO: 19:52:41 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:09:07 - __main__:  Interpreter class initiated, running from source
+INFO: 20:09:28 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:09:28 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:09:28 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:09:28 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:09:28 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:09:28 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:09:28 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:09:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:09:28 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:09:28 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:09:28 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:09:28 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:09:28 - __main__:  No control inputs for the Picarro Water
+INFO: 20:09:28 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:09:28 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:09:28 - __main__:  No control inputs for the Flowmeter
+INFO: 20:09:34 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:09:34 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:09:34 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:09:35 - __main__:  Started data collection
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:09:36 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:09:54 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:09:54 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:09:54 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:09:54 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:10:05 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:10:05 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:10:05 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:10:06 - __main__:  Started data collection
+INFO: 20:10:40 - __main__:  Stopped data collection
+INFO: 20:11:04 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:11:04 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:11:04 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:11:04 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:11:39 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:11:39 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:11:39 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:11:39 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:11:39 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:11:39 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:11:39 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:11:39 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:11:39 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:11:39 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:11:39 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:11:39 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:11:39 - __main__:  No control inputs for the Picarro Water
+INFO: 20:11:39 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:11:39 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:11:39 - __main__:  No control inputs for the Flowmeter
+INFO: 20:11:44 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:11:44 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:11:44 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:11:45 - __main__:  Started data collection
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:11:46 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:12:14 - __main__:  Stopped data collection
+INFO: 20:12:19 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:12:19 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:12:19 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:12:19 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:12:38 - __main__:  Interpreter class initiated, running from source
+INFO: 20:12:43 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:12:43 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:12:43 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:12:43 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:12:43 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:12:43 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:12:43 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:12:43 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:12:43 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:12:43 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:12:43 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:12:43 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:12:43 - __main__:  No control inputs for the Picarro Water
+INFO: 20:12:43 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:12:43 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:12:43 - __main__:  No control inputs for the Flowmeter
+INFO: 20:12:47 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:12:47 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:12:47 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:12:48 - __main__:  Started data collection
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:12:49 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:13:09 - __main__:  Stopped data collection
+INFO: 20:13:12 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:13:12 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:13:12 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:13:12 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:13:31 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:13:31 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:13:31 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:13:31 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:13:31 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:13:31 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:13:31 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:13:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:13:31 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:13:31 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:13:31 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:13:31 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:13:31 - __main__:  No control inputs for the Picarro Water
+INFO: 20:13:31 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:13:31 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:13:31 - __main__:  No control inputs for the Flowmeter
+INFO: 20:13:35 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:13:35 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:13:35 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:13:36 - __main__:  Started data collection
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:13:36 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:14:11 - __main__:  Stopped data collection
+INFO: 20:16:23 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:16:23 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:16:23 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:16:23 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:16:24 - __main__:  Interpreter class initiated, running from source
+INFO: 20:16:28 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:16:28 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:16:28 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:16:28 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:16:28 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:16:28 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:16:28 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:16:28 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:16:28 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:16:28 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:16:28 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:16:28 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:16:28 - __main__:  No control inputs for the Picarro Water
+INFO: 20:16:28 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:16:28 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:16:28 - __main__:  No control inputs for the Flowmeter
+INFO: 20:16:33 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:16:33 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:16:33 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:16:34 - __main__:  Started data collection
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:16:34 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:17:02 - __main__:  Stopped data collection
+INFO: 20:17:06 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:17:06 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:17:06 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:17:06 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:17:18 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:17:18 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:17:18 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:17:18 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:17:18 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:17:18 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:17:18 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:17:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:17:18 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:17:18 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:17:18 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:17:18 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:17:18 - __main__:  No control inputs for the Picarro Water
+INFO: 20:17:18 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:17:18 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:17:18 - __main__:  No control inputs for the Flowmeter
+INFO: 20:17:22 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:17:22 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:17:22 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:17:23 - __main__:  Started data collection
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:17:24 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:19:46 - __main__:  Interpreter class initiated, running from source
+INFO: 20:19:55 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:19:55 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:19:55 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:19:55 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:19:55 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:19:55 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:19:55 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:19:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:19:55 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:19:55 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:19:56 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:19:56 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:19:56 - __main__:  No control inputs for the Picarro Water
+INFO: 20:19:56 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:19:56 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:19:56 - __main__:  No control inputs for the Flowmeter
+INFO: 20:20:02 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:20:02 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:20:02 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:20:02 - __main__:  Started data collection
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:20:03 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:20:36 - __main__:  Stopped data collection
+INFO: 20:20:39 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:20:39 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:20:39 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:20:39 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:25:52 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:25:52 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:25:52 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:25:52 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:25:52 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:25:52 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:25:52 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:25:52 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:25:52 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:25:52 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:25:52 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:25:52 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:25:52 - __main__:  No control inputs for the Picarro Water
+INFO: 20:25:52 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:25:52 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:25:52 - __main__:  No control inputs for the Flowmeter
+INFO: 20:25:57 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:25:57 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:25:57 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:25:58 - __main__:  Started data collection
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:25:58 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:26:59 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:26:59 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:26:59 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:26:59 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:26:59 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:26:59 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:26:59 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:26:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:26:59 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:26:59 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:26:59 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:26:59 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:26:59 - __main__:  No control inputs for the Picarro Water
+INFO: 20:26:59 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:26:59 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:26:59 - __main__:  No control inputs for the Flowmeter
+INFO: 20:27:03 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:27:03 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:27:03 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:27:04 - __main__:  Started data collection
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:27:05 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:27:54 - __main__:  Stopped data collection
+INFO: 20:27:56 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:27:56 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:27:56 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:27:56 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:28:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:28:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:28:17 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:28:17 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:28:17 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:28:17 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:28:17 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:28:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:28:17 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:28:17 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:28:17 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:28:17 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:28:17 - __main__:  No control inputs for the Picarro Water
+INFO: 20:28:17 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:28:17 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:28:17 - __main__:  No control inputs for the Flowmeter
+INFO: 20:28:24 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:28:24 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:28:24 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:28:25 - __main__:  Started data collection
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:28:25 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:28:36 - __main__:  Stopped data collection
+INFO: 20:30:10 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:30:10 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:30:10 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:30:10 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:30:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:30:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:30:17 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:30:17 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:30:17 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:30:17 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:30:17 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:30:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:30:17 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:30:17 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:30:17 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:30:17 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:30:17 - __main__:  No control inputs for the Picarro Water
+INFO: 20:30:17 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:30:17 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:30:18 - __main__:  No control inputs for the Flowmeter
+INFO: 20:31:05 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:31:05 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:31:05 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:31:06 - __main__:  Started data collection
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:31:07 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:31:33 - __main__:  Stopped data collection
+INFO: 20:31:37 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:31:37 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:31:37 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:31:37 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:32:18 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:32:18 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:32:18 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:32:18 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:32:18 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:32:18 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:32:18 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:32:18 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:32:18 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:32:18 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:32:18 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:32:18 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:32:18 - __main__:  No control inputs for the Picarro Water
+INFO: 20:32:18 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:32:18 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:32:18 - __main__:  No control inputs for the Flowmeter
+INFO: 20:32:22 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:32:22 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:32:22 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:32:22 - __main__:  Started data collection
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:32:23 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:32:48 - __main__:  Stopped data collection
+INFO: 20:33:27 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:33:27 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:33:27 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:33:27 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:33:30 - __main__:  Interpreter class initiated, running from source
+INFO: 20:33:33 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:33:33 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:33:33 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:33:33 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:33:33 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:33:33 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:33:33 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:33:33 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:33:34 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:33:34 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:33:34 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:33:34 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:33:34 - __main__:  No control inputs for the Picarro Water
+INFO: 20:33:34 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:33:34 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:33:34 - __main__:  No control inputs for the Flowmeter
+INFO: 20:33:37 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:33:37 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:33:37 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:33:38 - __main__:  Started data collection
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:38 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:33:39 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:34:28 - __main__:  Interpreter class initiated, running from source
+INFO: 20:35:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:35:17 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:35:17 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:35:17 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:35:17 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:35:17 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:35:17 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:35:17 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:35:17 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:35:17 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:35:17 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:35:18 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:35:18 - __main__:  No control inputs for the Picarro Water
+INFO: 20:35:18 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:35:18 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:35:18 - __main__:  No control inputs for the Flowmeter
+INFO: 20:35:22 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:35:22 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:35:22 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:35:23 - __main__:  Started data collection
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:35:23 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:39:54 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:39:54 - main_pipeline.sensor:  Couldn't find Picarro at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:39:54 - main_pipeline.sensor:  Couldn't find Abakus at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:39:54 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM9 and COM9, shadowing sensor calls with substitute functions
+WARNING: 20:39:54 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:39:54 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 20:39:54 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 115200
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 19200
+INFO: 20:39:54 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 20:39:54 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 20:39:54 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 20:39:54 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 20:39:54 - __main__:  No control inputs for the Picarro Gas
+INFO: 20:39:54 - __main__:  No control inputs for the Picarro Water
+INFO: 20:39:54 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 20:39:54 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 20:39:54 - __main__:  No control inputs for the Flowmeter
+INFO: 20:39:58 - main_pipeline.sensor:  Initializing sensors
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Abakus
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Abakus initialized
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Picarro
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initialized Picarro
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Flowmeter sli2000 initialized
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Initializing Flowmeter
+INFO: 20:39:58 - sensor_interfaces.sim_instruments:  Flowmeter sls1500 initialized
+INFO: 20:39:58 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 20:39:59 - __main__:  Started data collection
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Gas buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Picarro Water buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Laser Distance Sensor buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Laser Distance Sensor buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Abakus Particle Counter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Abakus Particle Counter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Flowmeter buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Flowmeter buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Bronkhorst Pressure buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Bronkhorst Pressure buffer data: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Melthead buffer timestamp: 'NoneType' object is not subscriptable
+WARNING: 20:39:59 - __main__:  Error updating the Melthead buffer data: 'NoneType' object is not subscriptable
+INFO: 20:41:40 - __main__:  Stopped data collection
+INFO: 20:48:22 - __main__:  Stopped data collection
+INFO: 20:48:26 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:48:26 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:48:26 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:48:26 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 20:48:29 - main_pipeline.sensor:  Shutting down sensors
+INFO: 20:48:29 - sensor_interfaces.sim_instruments:  Abakus measurements stopped
+INFO: 20:48:29 - sensor_interfaces.sim_instruments:  Dimetix laser turned off
+INFO: 20:48:29 - main_pipeline.sensor:  Finished shutting down sensors

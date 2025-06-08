@@ -866,7 +866,7 @@ class ApplicationWindow(QWidget):
             logger.error(f"Unexpected error in updating {plot_name} plots: {e}")
             x_data_list = None
             y_data_list = None
-
+            
         return x_data_list, y_data_list
 
     def _get_entire_day_data(self, sensor):
@@ -1037,7 +1037,9 @@ class ApplicationWindow(QWidget):
             new_data (dict): Most recent data update. Should have the same key/value structure as big_data_dict
             use_noise (bool): Adds some random noise if true. For testing only
         """
+        # print("-----")
         print(new_data)
+        # print("-----")
         # For each sensor, grab the timestamp and the data from each sensor channel
         for name in self.sensor_names:
             # Grab and append the timestamp

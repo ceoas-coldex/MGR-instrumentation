@@ -44,6 +44,8 @@ Laser Distance Sensor:
       Plot: Y
     Temperature (C):
       Plot: Y
+    Melt Rate (cm/s):
+      Plot: Y
 Abakus Particle Counter:
   Time (epoch):
   Data:
