@@ -13,6 +13,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT  as Navigati
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 import yaml
 import sys
@@ -853,6 +854,7 @@ class ApplicationWindow(QWidget):
                                                              y_data = self.big_data_dict[sensor]["Data"][subplot_name])
                         x_data_list.append(t)
                         y_data_list.append(y)
+
             # Otherwise (and we should never get here since all dict keys are passed in externally), something went wrong. 
             # The plots safely don't update if we pass in None, so do that
             else:
