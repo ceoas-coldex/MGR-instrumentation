@@ -29,5 +29,5 @@ Bronkhorst Pressure:
   serial port: "COM9"
   baud rate: 38400
 Melthead:
-  serial port: "COM9" # Nothing
+  serial port: "COM11" # lab computer
   baud rate: 38400

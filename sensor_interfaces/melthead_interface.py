@@ -58,7 +58,7 @@ class MeltHead:
             logger.warning(f"Could not connect to serial port {port}")
     
     @log_on_start(logging.INFO, "Initializing Melthead", logger=logger)
-    def initialize_pid(self, timeout):
+    def initialize_pid(self, timeout=10):
         """
         I don't have a great way to verify the Melthead is working as expected since I don't have full comms, all 
         I can do is see if we're reading data and can decode it properly.
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     while not stop:
         command = input("a: Initialize, b: Start control loop, c: Stop control loop, d: Send setpoint, x: Quit \n")
         if command == "a" or command == "A":
-            mymelt.initialize_pid()
+            mymelt.initialize_pid(timeout=10)
         elif command == "b" or command == "B":
             mymelt.start_control_loop()
         elif command == "c" or command == "C":

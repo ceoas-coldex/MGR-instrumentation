@@ -63,6 +63,7 @@ Here is a list of the sensors currently integrated into this framework and a bri
     - However, it does say that *Standard Bus EIA-485* is included for all models, so I went deep down a rabbit hole trying to figure out how it uses standard serial communication. There's no documentation, but by using the Configurator software and monitoring the commands sent back and forth (I used [Free Serial Analyzer](https://freeserialanalyzer.com/), but other methods work too!) I was able to piece together some of the comms.
 - I can **send a temperature setpoint** and **start/stop the control loop**. Unfortunately, I was unable to decipher the returned messages so can't read the device temperature.
 - The device has a number of channels you can view, either by cycling through with the buttons or by looking at the configurator software. There are too many to list here (more info in [this master doc](../doc/instrument-manuals/Melthead/Master%20PM%20Command%20Definitions.pdf)), but the following describes how to display the most important parameters on the PID module
+    - Hit the grey `∞` anywhere between 1-10 times. This should get you out of any menu the device has decided to stick itself in.
     - Hold down the two grey up/down buttons for ~3 seconds, until the device reads `AI, oPEr`. You're now in Operation mode, parameter Analog Input. 
     - Repeatedly press the grey `∨` button until the device reads `MON` - Monitor mode. 
     - Press the blue button with circular arrows `⟳` to enter this menu. The device will read `1`
