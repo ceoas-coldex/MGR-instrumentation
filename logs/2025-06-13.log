@@ -144,3 +144,722 @@ INFO: 10:03:56 - main_pipeline.sensor:  Shutting down sensors
 INFO: 10:03:56 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 WARNING: 10:03:57 - sensor_interfaces.laser_interface:  Error returned from stopping Dimetix laser: b''. Check the manual for the error code
 INFO: 10:03:57 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 10:11:55 - __main__:  Connected to serial port COM7 with baud 38400
+INFO: 10:11:58 - __main__:  Initialization attempt 1/10
+INFO: 10:12:00 - __main__:  Initialization attempt 2/10
+INFO: 10:12:02 - __main__:  Initialization attempt 3/10
+INFO: 10:12:04 - __main__:  Initialization attempt 4/10
+INFO: 10:12:06 - __main__:  Initialization attempt 5/10
+INFO: 10:12:08 - __main__:  Initialization attempt 6/10
+INFO: 10:12:10 - __main__:  Initialization attempt 7/10
+INFO: 10:12:12 - __main__:  Initialization attempt 8/10
+INFO: 10:12:14 - __main__:  Initialization attempt 9/10
+INFO: 10:12:16 - __main__:  Initialization attempt 10/10
+WARNING: 10:12:18 - __main__:  Bronkhorst failed to initialize after 10 attempts
+INFO: 10:22:42 - __main__:  Connected to serial port COM9 with baud 38400
+INFO: 10:22:48 - __main__:  Initialization attempt 1/10
+INFO: 10:22:48 - __main__:  Bronkhorst initialized
+INFO: 10:32:42 - __main__:  Connected to serial port COM9 with baud 38400
+INFO: 10:32:44 - __main__:  Initialization attempt 1/10
+INFO: 10:32:44 - __main__:  Bronkhorst initialized
+INFO: 10:41:49 - __main__:  Connected to serial port COM9 with baud 38400
+INFO: 10:41:51 - __main__:  Initialization attempt 1/10
+INFO: 10:41:51 - __main__:  Bronkhorst initialized
+INFO: 10:43:20 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 10:43:20 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 10:43:20 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 10:43:21 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+WARNING: 10:43:21 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+INFO: 10:43:21 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+WARNING: 10:43:21 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:43:21 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 10:43:21 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 10:43:21 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 10:43:21 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 10:43:21 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 10:43:21 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 10:43:21 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 10:43:21 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:43:21 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:43:21 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:43:21 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:43:21 - __main__:  No control inputs for the Picarro Water
+INFO: 10:43:21 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:43:21 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:43:21 - __main__:  No control inputs for the Flowmeter
+INFO: 10:43:28 - main_pipeline.sensor:  Initializing sensors
+INFO: 10:43:28 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:43:28 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 10:43:28 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 10:43:29 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 10:43:30 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 10:43:31 - sensor_interfaces.abakus_interface:  Initialization attempt 4/10
+INFO: 10:43:32 - sensor_interfaces.abakus_interface:  Initialization attempt 5/10
+INFO: 10:43:33 - sensor_interfaces.abakus_interface:  Initialization attempt 6/10
+INFO: 10:43:34 - sensor_interfaces.abakus_interface:  Initialization attempt 7/10
+INFO: 10:43:35 - sensor_interfaces.abakus_interface:  Initialization attempt 8/10
+INFO: 10:43:36 - sensor_interfaces.abakus_interface:  Initialization attempt 9/10
+INFO: 10:43:37 - sensor_interfaces.abakus_interface:  Initialization attempt 10/10
+INFO: 10:43:38 - sensor_interfaces.abakus_interface:  Abakus initialization failed after 10 attempts
+INFO: 10:43:38 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:43:39 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:43:39 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:43:40 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:43:40 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:43:41 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:43:41 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:43:42 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:43:42 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:43:43 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:43:44 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:43:44 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:43:44 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:43:44 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:43:44 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:43:44 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 10:43:44 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 10:43:44 - sensor_interfaces.bronkhorst_interface:  Initialization attempt 1/10
+INFO: 10:43:44 - sensor_interfaces.bronkhorst_interface:  Bronkhorst initialized
+INFO: 10:43:44 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 10:43:44 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 10:43:44 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:43:44 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:43:48 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:43:48 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 10:43:48 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:43:48 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:43:51 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:43:51 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 10:43:51 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 10:45:03 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:45:03 - sensor_interfaces.abakus_interface:  Exception in Abakus initialization: WriteFile failed (PermissionError(13, 'Access is denied.', None, 5))
+INFO: 10:45:03 - sensor_interfaces.abakus_interface:  Abakus initialization failed after 10 attempts
+INFO: 10:45:09 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:45:09 - sensor_interfaces.abakus_interface:  Exception in Abakus initialization: WriteFile failed (PermissionError(13, 'Access is denied.', None, 5))
+INFO: 10:45:09 - sensor_interfaces.abakus_interface:  Abakus initialization failed after 10 attempts
+INFO: 10:45:12 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:45:54 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 10:45:54 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 10:45:54 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 10:45:55 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+WARNING: 10:45:55 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+INFO: 10:45:55 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+WARNING: 10:45:55 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:45:55 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 10:45:55 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 10:45:55 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 10:45:55 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 10:45:55 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 10:45:55 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 10:45:55 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 10:45:55 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:45:55 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:45:55 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:45:55 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:45:55 - __main__:  No control inputs for the Picarro Water
+INFO: 10:45:55 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:45:55 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:45:55 - __main__:  No control inputs for the Flowmeter
+INFO: 10:45:59 - main_pipeline.sensor:  Initializing sensors
+INFO: 10:45:59 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:45:59 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 10:45:59 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 10:46:00 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 10:46:01 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 10:46:02 - sensor_interfaces.abakus_interface:  Initialization attempt 4/10
+INFO: 10:46:04 - sensor_interfaces.abakus_interface:  Initialization attempt 5/10
+INFO: 10:46:05 - sensor_interfaces.abakus_interface:  Initialization attempt 6/10
+INFO: 10:46:06 - sensor_interfaces.abakus_interface:  Initialization attempt 7/10
+INFO: 10:46:07 - sensor_interfaces.abakus_interface:  Initialization attempt 8/10
+INFO: 10:46:08 - sensor_interfaces.abakus_interface:  Initialization attempt 9/10
+INFO: 10:46:09 - sensor_interfaces.abakus_interface:  Initialization attempt 10/10
+INFO: 10:46:10 - sensor_interfaces.abakus_interface:  Abakus initialization failed after 10 attempts
+INFO: 10:46:10 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:46:10 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:46:11 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:46:11 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:46:12 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:46:12 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:46:13 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:46:13 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:46:14 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:46:14 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:46:15 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:46:15 - sensor_interfaces.sim_instruments:  Initializing Dimetix laser
+INFO: 10:46:15 - sensor_interfaces.sim_instruments:  Laser initialized
+INFO: 10:46:15 - sensor_interfaces.bronkhorst_interface:  Initialization attempt 1/10
+INFO: 10:46:16 - sensor_interfaces.bronkhorst_interface:  Bronkhorst initialized
+INFO: 10:46:16 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 10:46:16 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 10:46:16 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:46:16 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:46:19 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:46:19 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 10:46:19 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:46:19 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:46:23 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:46:23 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 10:46:23 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 10:46:43 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:46:43 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 10:46:43 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 10:46:44 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 10:46:45 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 10:46:46 - sensor_interfaces.abakus_interface:  Initialization attempt 4/10
+INFO: 10:46:47 - sensor_interfaces.abakus_interface:  Initialization attempt 5/10
+INFO: 10:46:48 - sensor_interfaces.abakus_interface:  Initialization attempt 6/10
+INFO: 10:46:49 - sensor_interfaces.abakus_interface:  Initialization attempt 7/10
+INFO: 10:46:50 - sensor_interfaces.abakus_interface:  Initialization attempt 8/10
+INFO: 10:46:51 - sensor_interfaces.abakus_interface:  Initialization attempt 9/10
+INFO: 10:46:52 - sensor_interfaces.abakus_interface:  Initialization attempt 10/10
+INFO: 10:46:53 - sensor_interfaces.abakus_interface:  Abakus initialization failed after 10 attempts
+INFO: 10:49:19 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:49:38 - __main__:  Connected to serial port COM4 with baud 38400
+INFO: 10:49:41 - __main__:  Initializing Abakus
+INFO: 10:49:41 - __main__:  Abakus measurements started
+INFO: 10:49:41 - __main__:  Initialization attempt 1/10
+INFO: 10:49:42 - __main__:  Initialization attempt 2/10
+INFO: 10:49:43 - __main__:  Initialization attempt 3/10
+INFO: 10:49:44 - __main__:  Initialization attempt 4/10
+INFO: 10:49:45 - __main__:  Initialization attempt 5/10
+INFO: 10:49:46 - __main__:  Initialization attempt 6/10
+INFO: 10:49:47 - __main__:  Initialization attempt 7/10
+INFO: 10:49:48 - __main__:  Initialization attempt 8/10
+INFO: 10:49:49 - __main__:  Initialization attempt 9/10
+INFO: 10:49:50 - __main__:  Initialization attempt 10/10
+INFO: 10:49:51 - __main__:  Abakus initialization failed after 10 attempts
+INFO: 10:50:32 - __main__:  Abakus measurements stopped
+INFO: 10:50:37 - __main__:  Connected to serial port COM4 with baud 38400
+INFO: 10:50:39 - __main__:  Initializing Abakus
+INFO: 10:50:39 - __main__:  Abakus measurements started
+INFO: 10:50:39 - __main__:  Initialization attempt 1/10
+INFO: 10:50:39 - __main__:  Initialization attempt 2/10
+INFO: 10:50:39 - __main__:  Initialization attempt 3/10
+INFO: 10:50:40 - __main__:  Abakus initialized
+INFO: 10:51:07 - __main__:  Abakus measurements stopped
+INFO: 10:51:14 - __main__:  Abakus measurements stopped
+INFO: 10:51:28 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 10:51:29 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 10:51:29 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 10:51:29 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 10:51:29 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+INFO: 10:51:29 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+WARNING: 10:51:29 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:51:29 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 10:51:29 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 10:51:29 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 10:51:29 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 10:51:29 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 10:51:29 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 10:51:29 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 10:51:29 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:51:29 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:51:30 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:51:30 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:51:30 - __main__:  No control inputs for the Picarro Water
+INFO: 10:51:30 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:51:30 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:51:30 - __main__:  No control inputs for the Flowmeter
+INFO: 10:52:49 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:52:49 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 10:52:49 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 10:52:49 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 10:52:56 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 10:52:56 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 10:52:56 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 10:52:57 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 10:52:57 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+INFO: 10:52:57 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+WARNING: 10:52:57 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:52:57 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 10:52:57 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 10:52:57 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 10:52:57 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 10:52:57 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 10:52:57 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 10:52:57 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 10:52:57 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:52:57 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:52:57 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:52:57 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:52:57 - __main__:  No control inputs for the Picarro Water
+INFO: 10:52:57 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:52:57 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:52:57 - __main__:  No control inputs for the Flowmeter
+INFO: 10:53:05 - main_pipeline.sensor:  Initializing sensors
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 10:53:05 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 10:53:05 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:53:06 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:53:06 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:53:07 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:53:07 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:53:08 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:53:08 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:53:09 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:53:09 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:53:10 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:53:11 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:53:11 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 10:53:11 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 10:53:12 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 10:53:12 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 10:53:12 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 10:53:12 - sensor_interfaces.bronkhorst_interface:  Initialization attempt 1/10
+INFO: 10:53:12 - sensor_interfaces.bronkhorst_interface:  Bronkhorst initialized
+INFO: 10:53:12 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 10:53:12 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 10:53:12 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:53:12 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:53:16 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:53:16 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 10:53:16 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:53:16 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:53:19 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:53:19 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 10:53:19 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 10:54:32 - main_pipeline.sensor:  Couldn't find Picarro at port COM8, shadowing sensor calls with substitute functions
+INFO: 10:54:32 - main_pipeline.sensor:  Couldn't find Picarro at port COM7, shadowing sensor calls with substitute functions
+WARNING: 10:54:32 - main_pipeline.sensor:  Couldn't find Abakus at port COM4, shadowing sensor calls with substitute functions
+WARNING: 10:54:32 - main_pipeline.sensor:  Couldn't find Flowmeter at port COM3 and COM5, shadowing sensor calls with substitute functions
+WARNING: 10:54:32 - main_pipeline.sensor:  Couldn't find Dimetix laser at port COM6, shadowing sensor calls with substitute functions
+WARNING: 10:54:32 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 10:54:32 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM4 with baud 38400
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM3 with baud 115200
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM5 with baud 115200
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM6 with baud 19200
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM8 with baud 19200
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM7 with baud 19200
+INFO: 10:54:32 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 10:54:32 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:54:32 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:54:32 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:54:32 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:54:32 - __main__:  No control inputs for the Picarro Water
+INFO: 10:54:32 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:54:32 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:54:32 - __main__:  No control inputs for the Flowmeter
+INFO: 10:55:18 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:55:18 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 10:55:18 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 10:55:18 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 10:55:28 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 10:55:29 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 10:55:29 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 10:55:29 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 10:55:29 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+INFO: 10:55:29 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+WARNING: 10:55:29 - main_pipeline.sensor:  Couldn't find Melthead at port COM11, shadowing sensor calls with substitute functions
+INFO: 10:55:29 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 10:55:29 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 10:55:29 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 10:55:29 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 10:55:29 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 10:55:29 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 10:55:29 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 10:55:29 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 10:55:29 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 10:55:29 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 10:55:29 - __main__:  No control inputs for the Picarro Gas
+INFO: 10:55:29 - __main__:  No control inputs for the Picarro Water
+INFO: 10:55:29 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 10:55:29 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 10:55:29 - __main__:  No control inputs for the Flowmeter
+INFO: 10:55:36 - main_pipeline.sensor:  Initializing sensors
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 10:55:36 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 10:55:36 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:55:37 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:55:37 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:55:38 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:55:38 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:55:39 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:55:39 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:55:40 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:55:40 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:55:41 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:55:41 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:55:41 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 10:55:42 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 10:55:42 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 10:55:42 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 10:55:43 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 10:55:43 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 10:55:43 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 10:55:43 - sensor_interfaces.bronkhorst_interface:  Initialization attempt 1/10
+INFO: 10:55:43 - sensor_interfaces.bronkhorst_interface:  Bronkhorst initialized
+INFO: 10:55:43 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 10:55:43 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 10:55:43 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:55:43 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:55:47 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:55:47 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 10:55:47 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 10:55:47 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 10:55:50 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 10:55:50 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 10:55:50 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 10:55:55 - __main__:  Started data collection
+WARNING: 10:55:56 - main_pipeline.interpreter:  Error in extracting time and data from Abakus reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 10:55:56 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLI2000 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 10:55:56 - main_pipeline.interpreter:  Error in extracting time and data from flowmeter SLS1500 reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 10:55:56 - main_pipeline.interpreter:  Error in extracting Dimetix laser data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 10:55:56 - main_pipeline.interpreter:  Encountered exception in extracting picarro GAS data: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+WARNING: 10:55:56 - main_pipeline.interpreter:  Encountered exception in extracting picarro WATER: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement.
+WARNING: 10:55:56 - main_pipeline.interpreter:  Error in extracting time and data from bronkhorst reading: cannot unpack non-iterable NoneType object. Probably not a tuple. Not updating measurement
+WARNING: 10:55:57 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:55:57 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:55:58 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:55:58 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:55:59 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:55:59 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:00 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:00 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:01 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:01 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:02 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:02 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:03 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:03 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:04 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:04 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:05 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:05 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:06 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:06 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:07 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:07 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:08 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:08 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:09 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:09 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:10 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:10 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:11 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:11 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:12 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:12 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:13 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:13 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:14 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:14 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:15 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:15 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:16 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:16 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:17 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:17 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:18 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:18 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:19 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:19 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:20 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:20 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:21 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:21 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:22 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:22 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:23 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:23 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:24 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:24 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:26 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:26 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:27 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:27 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:28 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:28 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:29 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:29 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:30 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:30 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:31 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:31 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:32 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:32 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:33 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:33 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:34 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:34 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:35 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:35 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:36 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:36 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:37 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:37 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:38 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:38 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:39 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:39 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:40 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:40 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:41 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:41 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:42 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:42 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:43 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:43 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:44 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:44 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:45 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:45 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:46 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:46 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:47 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:47 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:48 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:48 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:49 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:49 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:50 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:50 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:51 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:51 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:52 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:52 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:53 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:53 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:54 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:54 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:55 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:55 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:56 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:56 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:57 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:57 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:58 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:58 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:56:59 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:56:59 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:00 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:00 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:01 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:01 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:02 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:02 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:03 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:03 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:04 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:04 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:05 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:05 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:06 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:06 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:07 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:07 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:08 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:08 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:09 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:09 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:10 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:10 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:11 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:11 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:12 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:12 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:13 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:13 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:14 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:14 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:15 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:15 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:16 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:16 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:17 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:17 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:18 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:18 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:19 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:19 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:20 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:20 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:21 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:21 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:22 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:22 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:23 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:23 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:24 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:24 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:25 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:26 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:26 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:27 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:27 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:28 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:28 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:29 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:29 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:30 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:30 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:31 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:31 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:32 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:32 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:33 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:33 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:34 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:34 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:35 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:35 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:36 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:36 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+WARNING: 10:57:37 - main_pipeline.interpreter:  Unexpected exception in processing picarro GAS data: list index out of range. Not updating measurement
+WARNING: 10:57:37 - main_pipeline.interpreter:  Unexpected exception in processing picarro WATER data: list index out of range. Not updating measurement
+INFO: 10:57:38 - __main__:  Stopped data collection
+INFO: 10:57:40 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:57:40 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 10:57:40 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 10:57:40 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 10:57:45 - main_pipeline.sensor:  Shutting down sensors
+INFO: 10:57:46 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 10:57:46 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 10:57:46 - main_pipeline.sensor:  Finished shutting down sensors
+WARNING: 10:57:51 - __main__:  Could not connect to serial port COM11
+INFO: 10:57:53 - __main__:  Initializing Melthead
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:57:53 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+WARNING: 10:58:49 - __main__:  Could not connect to serial port COM11
+INFO: 10:59:03 - __main__:  Initializing Melthead
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 10:59:03 - __main__:  Encountered exception in Melthead initialization: 'MeltHead' object has no attribute 'ser'
+INFO: 11:00:09 - __main__:  Connected to serial port COM11 with baud 38400
+INFO: 11:00:12 - __main__:  Initializing Melthead
+INFO: 11:00:12 - __main__:  Melthead initialized
+INFO: 11:00:59 - main_pipeline.sensor:  Couldn't find Picarro at port COM8, shadowing sensor calls with substitute functions
+INFO: 11:00:59 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 11:01:00 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 11:01:00 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 11:01:00 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+INFO: 11:01:00 - main_pipeline.sensor:  Successfully connected to port COM9, using real Bronkhorst hardware
+INFO: 11:01:00 - main_pipeline.sensor:  Successfully connected to port COM11, using real Melthead hardware
+INFO: 11:01:00 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 11:01:00 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 11:01:00 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 11:01:00 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+WARNING: 11:01:00 - sensor_interfaces.picarro_interface:  Could not connect to serial port COM8
+INFO: 11:01:00 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 11:01:00 - sensor_interfaces.bronkhorst_interface:  Connected to serial port COM9 with baud 38400
+INFO: 11:01:00 - sensor_interfaces.melthead_interface:  Connected to serial port COM11 with baud 38400
+INFO: 11:01:00 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 11:01:00 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 11:01:00 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 11:01:00 - __main__:  No control inputs for the Picarro Gas
+INFO: 11:01:00 - __main__:  No control inputs for the Picarro Water
+INFO: 11:01:00 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 11:01:00 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 11:01:00 - __main__:  No control inputs for the Flowmeter
+INFO: 11:01:25 - main_pipeline.sensor:  Initializing sensors
+INFO: 11:01:25 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 11:01:25 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 11:01:25 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 11:01:26 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 11:01:26 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 11:01:26 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Exception in Picarro initialization: 'Picarro' object has no attribute 'ser'
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 11:01:26 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 11:01:26 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 11:01:26 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 11:01:27 - sensor_interfaces.laser_interface:  Laser distance initialized
+INFO: 11:01:27 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 11:01:27 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 11:01:27 - sensor_interfaces.bronkhorst_interface:  Initialization attempt 1/10
+INFO: 11:01:27 - sensor_interfaces.bronkhorst_interface:  Bronkhorst initialized
+INFO: 11:01:27 - sensor_interfaces.melthead_interface:  Initializing Melthead
+INFO: 11:01:27 - sensor_interfaces.melthead_interface:  Melthead initialized
+INFO: 11:01:27 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 11:01:27 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 11:01:32 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 11:01:32 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 11:01:32 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 11:01:32 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 11:01:36 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 11:01:36 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 11:01:36 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 11:02:25 - __main__:  Stopped data collection
+INFO: 11:02:30 - main_pipeline.sensor:  Shutting down sensors
+INFO: 11:02:30 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 11:02:30 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 11:02:30 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 11:02:36 - main_pipeline.sensor:  Shutting down sensors
+INFO: 11:02:36 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 11:02:36 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 11:02:36 - main_pipeline.sensor:  Finished shutting down sensors
