@@ -431,3 +431,178 @@ INFO: 18:35:59 - main_pipeline.sensor:  Shutting down sensors
 INFO: 18:35:59 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
 INFO: 18:35:59 - sensor_interfaces.laser_interface:  Dimetix laser turned off
 INFO: 18:35:59 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 19:02:30 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 19:02:30 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 19:02:31 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 19:02:31 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 19:02:31 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 19:02:31 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 19:02:31 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 19:02:31 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 19:02:31 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 19:02:31 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 19:02:31 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 19:02:31 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 19:02:31 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 19:02:31 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 19:02:31 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 19:02:31 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 19:02:31 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 19:02:31 - __main__:  No control inputs for the Picarro Gas
+INFO: 19:02:31 - __main__:  No control inputs for the Picarro Water
+INFO: 19:02:31 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 19:02:31 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 19:02:31 - __main__:  No control inputs for the Flowmeter
+INFO: 19:02:38 - main_pipeline.sensor:  Initializing sensors
+INFO: 19:02:38 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 19:02:38 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 19:02:38 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 19:02:39 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 19:02:39 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 19:02:39 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 19:02:39 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 19:02:39 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 19:02:40 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 19:02:40 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 19:02:41 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 19:02:41 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 19:02:42 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 19:02:42 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 19:02:43 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 19:02:43 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 19:02:44 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 19:02:44 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 19:02:44 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 19:02:45 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 19:02:45 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 19:02:46 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 19:02:46 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 19:02:47 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 19:02:47 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 19:02:48 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 19:02:48 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 19:02:49 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+WARNING: 19:02:49 - sensor_interfaces.laser_interface:  Error returned from starting Dimetix laser: b'g0@E203\r\n'. Check the manual for the error code
+INFO: 19:02:49 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 19:02:49 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 19:02:49 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 19:02:49 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 19:02:49 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 19:02:49 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 19:02:52 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 19:02:52 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 19:02:52 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 19:02:52 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 19:02:56 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 19:02:56 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 19:02:56 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 19:03:14 - main_pipeline.sensor:  Shutting down sensors
+INFO: 19:03:14 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 19:03:14 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 19:03:14 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 19:03:35 - __main__:  Connected to serial port COM6 with baud 19200
+INFO: 19:03:38 - __main__:  Dimetix laser turned on
+INFO: 19:03:38 - __main__:  Laser distance initialization attempt 1/10
+INFO: 19:03:38 - __main__:  Laser distance initialization attempt 2/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 3/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 4/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 5/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 6/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 7/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 8/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 9/10
+INFO: 19:03:39 - __main__:  Laser distance initialization attempt 10/10
+WARNING: 19:03:39 - __main__:  Laser distance initialization failed after 10 attempts
+INFO: 19:03:39 - __main__:  Laser temperature initialization attempt 1/10
+INFO: 19:03:39 - __main__:  Laser temperature initialized
+INFO: 19:04:41 - __main__:  Dimetix laser turned on
+WARNING: 19:04:52 - __main__:  Recieved error message from laser distance: g0@E256
+ Check manual for error code.
+INFO: 19:04:56 - __main__:  Temp measurement -2.6°C, timestamp 1749521096.4502153
+INFO: 19:05:42 - __main__:  Dimetix laser turned off
+INFO: 19:05:58 - main_pipeline.sensor:  Successfully connected to port COM8, using real Picarro Gas hardware
+INFO: 19:05:58 - main_pipeline.sensor:  Successfully connected to port COM7, using real Picarro Water hardware
+INFO: 19:05:59 - main_pipeline.sensor:  Successfully connected to port COM4, using real Abakus hardware
+INFO: 19:05:59 - main_pipeline.sensor:  Successfully connected to port COM3 and COM5, using real Flowmeter hardware
+INFO: 19:05:59 - main_pipeline.sensor:  Successfully connected to port COM6, using real Dimetix hardware
+WARNING: 19:05:59 - main_pipeline.sensor:  Couldn't find Bronkhorst at port COM9, shadowing sensor calls with substitute functions
+WARNING: 19:05:59 - main_pipeline.sensor:  Couldn't find Melthead at port COM9, shadowing sensor calls with substitute functions
+INFO: 19:05:59 - sensor_interfaces.abakus_interface:  Connected to serial port COM4 with baud 38400
+INFO: 19:05:59 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM3 with baud 115200
+INFO: 19:05:59 - sensor_interfaces.flowmeter_interface:  Connected to serial port COM5 with baud 115200
+INFO: 19:05:59 - sensor_interfaces.laser_interface:  Connected to serial port COM6 with baud 19200
+INFO: 19:05:59 - sensor_interfaces.picarro_interface:  Connected to serial port COM8 with baud 19200
+INFO: 19:05:59 - sensor_interfaces.picarro_interface:  Connected to serial port COM7 with baud 19200
+INFO: 19:05:59 - sensor_interfaces.sim_instruments:  Fake hardware, pretending to use serial port COM9 with baud 38400
+INFO: 19:05:59 - main_pipeline.sensor:  Sensor class initiated, running from source
+INFO: 19:05:59 - main_pipeline.interpreter:  Interpreter class initiated, running from source
+INFO: 19:05:59 - main_pipeline.writer:  Writer class initiated, running from source
+INFO: 19:05:59 - __main__:  No control inputs for the Picarro Gas
+INFO: 19:05:59 - __main__:  No control inputs for the Picarro Water
+INFO: 19:05:59 - __main__:  No control inputs for the Laser Distance Sensor
+INFO: 19:05:59 - __main__:  No control inputs for the Abakus Particle Counter
+INFO: 19:05:59 - __main__:  No control inputs for the Flowmeter
+INFO: 19:06:19 - main_pipeline.sensor:  Initializing sensors
+INFO: 19:06:19 - sensor_interfaces.abakus_interface:  Initializing Abakus
+INFO: 19:06:19 - sensor_interfaces.abakus_interface:  Abakus measurements started
+INFO: 19:06:19 - sensor_interfaces.abakus_interface:  Initialization attempt 1/10
+INFO: 19:06:20 - sensor_interfaces.abakus_interface:  Initialization attempt 2/10
+INFO: 19:06:20 - sensor_interfaces.abakus_interface:  Initialization attempt 3/10
+INFO: 19:06:20 - sensor_interfaces.abakus_interface:  Abakus initialized
+INFO: 19:06:20 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 19:06:20 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 19:06:21 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 19:06:21 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 19:06:22 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 19:06:22 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 19:06:23 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 19:06:23 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 19:06:24 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 19:06:25 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 19:06:25 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 19:06:25 - sensor_interfaces.picarro_interface:  Initialization attempt 1/10
+INFO: 19:06:26 - sensor_interfaces.picarro_interface:  Initialization attempt 2/10
+INFO: 19:06:26 - sensor_interfaces.picarro_interface:  Initialization attempt 3/10
+INFO: 19:06:27 - sensor_interfaces.picarro_interface:  Initialization attempt 4/10
+INFO: 19:06:27 - sensor_interfaces.picarro_interface:  Initialization attempt 5/10
+INFO: 19:06:28 - sensor_interfaces.picarro_interface:  Initialization attempt 6/10
+INFO: 19:06:28 - sensor_interfaces.picarro_interface:  Initialization attempt 7/10
+INFO: 19:06:29 - sensor_interfaces.picarro_interface:  Initialization attempt 8/10
+INFO: 19:06:29 - sensor_interfaces.picarro_interface:  Initialization attempt 9/10
+INFO: 19:06:30 - sensor_interfaces.picarro_interface:  Initialization attempt 10/10
+INFO: 19:06:30 - sensor_interfaces.picarro_interface:  Picarro initialization failed after 10 attempts
+INFO: 19:06:30 - sensor_interfaces.laser_interface:  Dimetix laser turned on
+INFO: 19:06:30 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 1/10
+INFO: 19:06:30 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 2/10
+INFO: 19:06:30 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 3/10
+INFO: 19:06:30 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 4/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 5/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 6/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 7/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 8/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 9/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization attempt 10/10
+WARNING: 19:06:31 - sensor_interfaces.laser_interface:  Laser distance initialization failed after 10 attempts
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser temperature initialization attempt 1/10
+INFO: 19:06:31 - sensor_interfaces.laser_interface:  Laser temperature initialized
+INFO: 19:06:31 - sensor_interfaces.sim_instruments:  Initializing Bronkhorst
+INFO: 19:06:31 - sensor_interfaces.sim_instruments:  Bronkhorst initialized
+INFO: 19:06:31 - sensor_interfaces.sim_instruments:  Initializing Melthead
+INFO: 19:06:31 - sensor_interfaces.sim_instruments:  Melthead initialized
+INFO: 19:06:31 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 19:06:31 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 19:06:36 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 19:06:36 - sensor_interfaces.flowmeter_interface:  Flowmeter sli2000 initialized
+INFO: 19:06:36 - sensor_interfaces.flowmeter_interface:  Flowmeter measurements started
+INFO: 19:06:36 - sensor_interfaces.flowmeter_interface:  Initialization attempt 1/10
+INFO: 19:06:40 - sensor_interfaces.flowmeter_interface:  Initialization attempt 2/10
+INFO: 19:06:40 - sensor_interfaces.flowmeter_interface:  Flowmeter sls1500 initialized
+INFO: 19:06:40 - main_pipeline.sensor:  Finished initializing sensors
+INFO: 19:06:47 - main_pipeline.sensor:  Shutting down sensors
+INFO: 19:06:47 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 19:06:47 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 19:06:47 - main_pipeline.sensor:  Finished shutting down sensors
+INFO: 19:06:53 - main_pipeline.sensor:  Shutting down sensors
+INFO: 19:06:53 - sensor_interfaces.abakus_interface:  Abakus measurements stopped
+INFO: 19:06:53 - sensor_interfaces.laser_interface:  Dimetix laser turned off
+INFO: 19:06:53 - main_pipeline.sensor:  Finished shutting down sensors
